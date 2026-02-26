@@ -41,7 +41,7 @@ export default async function queryPlatform({
       where: {
         platform,
         accountId: account.id,
-        createdAt: { gte: newerThan.toString() },
+        createdAt: { gte: new Date(`${newerThan.toString()}Z`) },
       },
       orderBy: { createdAt: "desc" },
     });

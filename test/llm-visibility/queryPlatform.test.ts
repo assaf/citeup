@@ -1,0 +1,133 @@
+import { Temporal } from "@js-temporal/polyfill";
+import { invariant } from "es-toolkit";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import queryPlatform from "~/lib/llm-visibility/queryPlatform";
+import prisma from "~/lib/prisma.server";
+
+vi.mock("@sentry/node", () => ({ captureException: vi.fn() }));
+
+vi.mock("es-toolkit", async (importOriginal) => {
+  const original = await importOriginal<typeof import("es-toolkit")>();
+  return { ...original, delay: vi.fn().mockResolvedValue(undefined) };
+});
+
+// Citations cycle across repetitions — rentail.space appears at varying positions
+const CITATION_SETS = [
+  {
+    citations: ["https://rentail.space/listings", "https://other.com"],
+    extraQueries: [],
+    text: "You can find short-term retail space on rentail.space.",
+  },
+  {
+    citations: [
+      "https://other.com",
+      "https://example.com",
+      "https://rentail.space/faq",
+    ],
+    extraQueries: [],
+    text: "Platforms like rentail.space offer temporary retail options.",
+  },
+  {
+    citations: ["https://example.com", "https://unrelated.com"],
+    extraQueries: [],
+    text: "Shopping centers often have specialty leasing programs.",
+  },
+];
+
+const QUERIES = [
+  {
+    query: "How do I find short-term retail space in shopping malls?",
+    category: "1.discovery",
+  },
+  {
+    query: "Find available temporary retail space in shopping centers",
+    category: "2.active_search",
+  },
+];
+
+const PLATFORM_ARGS = {
+  modelId: "claude-haiku-4-5-20251001",
+  platform: "claude",
+  queries: QUERIES,
+  repetitions: 3,
+} as const;
+
+function newerThan24h() {
+  return Temporal.Now.instant()
+    .subtract({ hours: 24 })
+    .toZonedDateTimeISO("UTC")
+    .toPlainDateTime();
+}
+
+describe("queryPlatform", () => {
+  let account: { id: string; hostname: string; createdAt: Date };
+
+  beforeAll(async () => {
+    account = await prisma.account.create({
+      data: { hostname: "rentail.space" },
+    });
+  });
+
+  afterAll(async () => {
+    await prisma.account.delete({ where: { id: account.id } });
+  });
+
+  it(
+    "creates a run and stores citation queries for each query x repetition",
+    { timeout: 30_000 },
+    async () => {
+      let callIndex = 0;
+      const queryFn = vi.fn(async () => CITATION_SETS[callIndex++ % 3]);
+
+      await queryPlatform({
+        ...PLATFORM_ARGS,
+        account,
+        newerThan: newerThan24h(),
+        queryFn,
+      });
+
+      const run = await prisma.citationQueryRun.findFirst({
+        where: { accountId: account.id, platform: "claude" },
+        include: {
+          queries: { orderBy: [{ query: "asc" }, { repetition: "asc" }] },
+        },
+      });
+
+      invariant(run, "run is not null");
+      expect(run.model).toBe("claude-haiku-4-5-20251001");
+      expect(run.queries).toHaveLength(6); // 2 queries × 3 repetitions
+      expect(queryFn).toHaveBeenCalledTimes(6);
+
+      // Ordered alphabetically: "Find..." before "How..."
+      // "Find..." reps 1-3 map to citationSets 3,4,5 (indices 0,1,2)
+      const [find1, find2, find3, how1, how2, how3] = run!.queries;
+
+      expect(find1.category).toBe("2.active_search");
+      expect(find1.position).toBe(0); // rentail.space at index 0
+      expect(find2.position).toBe(2); // rentail.space at index 2
+      expect(find3.position).toBeNull(); // not present
+
+      expect(how1.category).toBe("1.discovery");
+      expect(how1.position).toBe(0);
+      expect(how2.position).toBe(2);
+      expect(how3.position).toBeNull();
+    },
+  );
+
+  it(
+    "skips creating a new run if one already exists within newerThan",
+    { timeout: 30_000 },
+    async () => {
+      const queryFn = vi.fn();
+
+      await queryPlatform({
+        ...PLATFORM_ARGS,
+        account,
+        newerThan: newerThan24h(),
+        queryFn,
+      });
+
+      expect(queryFn).not.toHaveBeenCalled();
+    },
+  );
+});
