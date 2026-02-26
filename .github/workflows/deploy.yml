@@ -2,9 +2,9 @@ name: Deploy
 
 on:
   workflow_run:
-    workflows: ["Deploy"]
-    types:
-      - completed
+    workflows: [test]
+    types: [completed]
+    branches: [main]
 jobs:
   deploy:
     name: Deploy
