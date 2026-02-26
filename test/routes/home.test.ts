@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { beforeAll, describe, it } from "vitest";
 import prisma from "~/lib/prisma.server";
 import { goto } from "../helpers/launchBrowser";
+import { removeElements } from "../helpers/formatHTML";
 import "../helpers/toMatchInnerHTML";
 import "../helpers/toMatchScreenshot";
 
@@ -158,7 +159,13 @@ describe("home route", () => {
 
   it("HTML matches baseline", { timeout: 30_000 }, async () => {
     const page = await goto("/");
-    await expect(page).toMatchInnerHTML();
+    // Strip chart SVGs: Recharts computes floating-point coordinates from
+    // ResizeObserver measurements that drift slightly between runs. The
+    // screenshot test covers visual regressions in charts.
+    await expect(page).toMatchInnerHTML({
+      strip: (html) =>
+        removeElements(html, (node) => node.attributes["data-slot"] === "chart"),
+    });
   });
 
   it("screenshot matches baseline", { timeout: 30_000 }, async () => {
