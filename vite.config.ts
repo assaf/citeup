@@ -6,11 +6,22 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig(async (config) =>
   mergeConfig(config, {
+    build: {
+      sourcemap: true,
+    },
     plugins: [
       tailwindcss(),
       reactRouter(),
       tsconfigPaths(),
-      sentryReactRouter({ telemetry: false }, config),
+      sentryReactRouter(
+        {
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+          org: "labnotes",
+          project: "citeup",
+          telemetry: false,
+        },
+        config,
+      ),
     ],
     optimizeDeps: {
       include: ["react", "react-dom"],

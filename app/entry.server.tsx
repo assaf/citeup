@@ -5,6 +5,7 @@ import type {
   EntryContext,
   LoaderFunctionArgs,
 } from "react-router";
+import "~/lib/logger.server";
 import msw from "~/test/mocks/msw";
 
 // Only enable Sentry in production
