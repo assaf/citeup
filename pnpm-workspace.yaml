@@ -1,0 +1,14 @@
+allowedDeprecatedVersions:
+
+ignoredBuiltDependencies:
+
+minimumReleaseAge: 2880
+minimumReleaseAgeExclude:
+  - "@biomejs/biome"
+  - "@biomejs/*"
+
+onlyBuiltDependencies:
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "@sentry/cli"
+  - prisma
