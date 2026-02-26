@@ -6,3 +6,5 @@ prisma/generated
 # React Router
 /.react-router/
 /build/
+.vercel
+.env*.local

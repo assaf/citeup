@@ -38,6 +38,13 @@ jobs:
       - name: Install NPM dependencies
         run: pnpm install
 
+      - name: Set PLAYWRIGHT_VERSION
+        run: echo "PLAYWRIGHT_VERSION=$(pnpm exec playwright --version)" >> $GITHUB_ENV
+
+      - name: Install Playwright (Chromium)
+        timeout-minutes: 5
+        run: pnpm exec playwright install chromium --with-deps
+
       - name: Setup database schema for testing
         run: |
           pnpm prisma generate 
@@ -74,3 +81,10 @@ jobs:
           OPENAI_API_KEY: "sk-proj-"
           PERPLEXITY_API_KEY: "pk-prod-"
           GOOGLE_GENERATIVE_AI_API_KEY: "AIza"
+
+      - name: Upload Playwright Test Results
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: playwright-test-results
+          path: __screenshots__
