@@ -1,0 +1,340 @@
+<main class="mx-auto max-w-5xl space-y-6 px-6 py-12">
+  <h1 class="font-heading text-3xl">
+    LLM Citation Visibility
+  </h1>
+  <div data-activation-direction="none" data-orientation="horizontal">
+    <div class="inline-flex items-center justify-center gap-2 rounded-base border-2 border-black bg-[hsl(60,100%,99%)] p-2 shadow-[2px_2px_0px_0px_black]" data-activation-direction="none" data-orientation="horizontal" role="tablist">
+      <button aria-disabled="false" aria-selected="true" class="inline-flex items-center justify-center whitespace-nowrap rounded-base border-2 border-transparent px-4 py-2 font-bold text-black text-sm transition-all duration-100 hover:border-black hover:bg-white data-active:border-black data-active:bg-[hsl(37,92%,65%)] data-active:shadow-[2px_2px_0px_0px_black]" data-active data-composite-item-active data-orientation="horizontal" id="base-ui-_R_2j5_" role="tab" tabindex="0" type="button">
+        ChatGPT
+      </button>
+      <button aria-disabled="false" aria-selected="false" class="inline-flex items-center justify-center whitespace-nowrap rounded-base border-2 border-transparent px-4 py-2 font-bold text-black text-sm transition-all duration-100 hover:border-black hover:bg-white data-active:border-black data-active:bg-[hsl(37,92%,65%)] data-active:shadow-[2px_2px_0px_0px_black]" data-orientation="horizontal" id="base-ui-_R_4j5_" role="tab" tabindex="-1" type="button">
+        Perplexity
+      </button>
+      <button aria-disabled="false" aria-selected="false" class="inline-flex items-center justify-center whitespace-nowrap rounded-base border-2 border-transparent px-4 py-2 font-bold text-black text-sm transition-all duration-100 hover:border-black hover:bg-white data-active:border-black data-active:bg-[hsl(37,92%,65%)] data-active:shadow-[2px_2px_0px_0px_black]" data-orientation="horizontal" id="base-ui-_R_6j5_" role="tab" tabindex="-1" type="button">
+        Anthropic
+      </button>
+      <button aria-disabled="false" aria-selected="false" class="inline-flex items-center justify-center whitespace-nowrap rounded-base border-2 border-transparent px-4 py-2 font-bold text-black text-sm transition-all duration-100 hover:border-black hover:bg-white data-active:border-black data-active:bg-[hsl(37,92%,65%)] data-active:shadow-[2px_2px_0px_0px_black]" data-orientation="horizontal" id="base-ui-_R_8j5_" role="tab" tabindex="-1" type="button">
+        Gemini
+      </button>
+    </div>
+  </div>
+  <div class="flex flex-col gap-6 rounded-base border-2 border-border py-6 font-base shadow-shadow bg-secondary-background text-foreground" data-slot="card">
+    <div class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-[data-slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6" data-slot="card-header">
+      <div class="font-heading leading-none" data-slot="card-title">
+        Most Recent Run
+      </div>
+      <div class="font-base text-sm" data-slot="card-description">
+        2/26/2026 · gpt-5-chat-latest · 9 checks
+      </div>
+    </div>
+    <div class="px-6" data-slot="card-content">
+      <div class="relative w-full overflow-auto">
+        <table class="w-full caption-bottom text-sm">
+          <thead class="[&amp;_tr]:border-b">
+            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <th class="h-10 px-2 text-left align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] font-bold text-foreground">
+                Query
+              </th>
+              <th class="h-10 px-2 text-left align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] font-bold text-foreground">
+                Category
+              </th>
+              <th class="h-10 px-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right font-bold text-foreground">
+                Visibility
+              </th>
+              <th class="h-10 px-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right font-bold text-foreground">
+                Avg Citations
+              </th>
+              <th class="h-10 px-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right font-bold text-foreground">
+                Score
+              </th>
+            </tr>
+          </thead>
+          <tbody class="[&amp;_tr:last-child]:border-0">
+            <tr class="border-b transition-colors data-[state=selected]:bg-muted bg-green-100 hover:bg-green-100/80">
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] max-w-xs truncate">
+                How do I find short-term retail space in shopping malls?
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-foreground/60 text-xs">
+                1.discovery
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
+                67%
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
+                2.3
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
+                23.3
+              </td>
+            </tr>
+            <tr class="border-b transition-colors data-[state=selected]:bg-muted bg-green-100 hover:bg-green-100/80">
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] max-w-xs truncate">
+                What are the best platforms for finding pop-up shops in shopping centers?
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-foreground/60 text-xs">
+                1.discovery
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
+                67%
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
+                2.7
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
+                20.0
+              </td>
+            </tr>
+            <tr class="border-b transition-colors data-[state=selected]:bg-muted bg-green-100 hover:bg-green-100/80">
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] max-w-xs truncate">
+                Where can I lease a kiosk in a mall for 3-6 months?
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-foreground/60 text-xs">
+                2.active_search
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
+                67%
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
+                3.0
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
+                33.3
+              </td>
+            </tr>
+          </tbody>
+          <tfoot class="border-t bg-muted/50 font-medium [&amp;&gt;tr]:last:border-b-0">
+            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] font-bold" colspan="2">
+                Average
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right font-bold">
+                67%
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right font-bold">
+                2.7
+              </td>
+              <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right font-bold">
+                25.6
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="grid gap-4 md:grid-cols-3">
+    <div class="flex flex-col gap-6 rounded-base border-2 border-border py-6 font-base shadow-shadow bg-secondary-background text-foreground" data-slot="card">
+      <div class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-[data-slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6" data-slot="card-header">
+        <div class="font-heading text-sm" data-slot="card-title">
+          Visibility %
+        </div>
+      </div>
+      <div class="px-6" data-slot="card-content">
+        <div class="flex justify-center text-xs [&amp;_.recharts-cartesian-axis-tick_text]:fill-foreground [&amp;_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-[#80808080] [&amp;_.recharts-curve.recharts-tooltip-cursor]:stroke-[#80808080] [&amp;_.recharts-dot[stroke='#fff']]:stroke-transparent [&amp;_.recharts-polar-grid_[stroke='#ccc']]:stroke-black [&amp;_.recharts-polar-grid_[stroke='#ccc']]:dark:stroke-white [&amp;_.recharts-reference-line_[stroke='#ccc']]:stroke-black [&amp;_.recharts-reference-line_[stroke='#ccc']]:dark:stroke-white [&amp;_.recharts-sector[stroke='#fff']]:stroke-border [&amp;_.recharts-sector]:outline-hidden [&amp;_.recharts-surface]:outline-hidden [&amp;_.recharts-layer_path]:stroke-2 [&amp;_.recharts-layer_path]:[fill-opacity:1] [&amp;_.recharts-layer_path]:[stroke:var(--color-border)] h-36 w-full" data-chart="chart-_R_j35_" data-slot="chart">
+          <style>
+            [data-chart=chart-_R_j35_] { --color-visibilityPct: var(--chart-1); --color-citationRatio: var(--chart-3); --color-score: var(--chart-4); } .dark [data-chart=chart-_R_j35_] { --color-visibilityPct: var(--chart-1); --color-citationRatio: var(--chart-3); --color-score: var(--chart-4); }
+          </style>
+          <div class="recharts-responsive-container" style="width:100%;height:100%;min-width:0">
+            <div style="width:0;height:0;overflow:visible">
+              <div class="recharts-wrapper" height="144" style="position: relative; cursor: default; width: 263px; height: 144px;" width="263">
+                <div class="recharts-tooltip-wrapper" style="visibility: hidden; pointer-events: none; position: absolute; top: 0px; left: 0px;" tabindex="-1" xmlns="http://www.w3.org/1999/xhtml"></div>
+                <svg class="recharts-surface" height="144" role="application" style="width: 100%; height: 100%; display: block;" tabindex="0" viewBox="0 0 263 144" width="263">
+                  <title></title>
+                  <desc></desc>
+                  <g tabindex="-1">
+                    <g class="recharts-cartesian-grid">
+                      <g class="recharts-cartesian-grid-horizontal">
+                        <line fill="none" height="104" stroke="#ccc" width="253" x="5" x1="5" x2="258" y="5" y1="109" y2="109"></line>
+                        <line fill="none" height="104" stroke="#ccc" width="253" x="5" x1="5" x2="258" y="5" y1="57" y2="57"></line>
+                        <line fill="none" height="104" stroke="#ccc" width="253" x="5" x1="5" x2="258" y="5" y1="5" y2="5"></line>
+                      </g>
+                    </g>
+                  </g>
+                  <g tabindex="-1"></g>
+                  <defs>
+                    <clipPath id="recharts1-clip">
+                      <rect height="104" width="253" x="5" y="5"></rect>
+                    </clipPath>
+                  </defs>
+                  <g tabindex="-1">
+                    <g class="recharts-layer recharts-area">
+                      <g class="recharts-layer">
+                        <defs>
+                          <clipPath id="animationClipPath-recharts-area-_r_0_">
+                            <rect height="110" width="217.83518279307202" x="5" y="0"></rect>
+                          </clipPath>
+                        </defs>
+                        <g class="recharts-layer" clip-path="url(#animationClipPath-recharts-area-_r_0_)">
+                          <g class="recharts-layer">
+                            <path class="recharts-curve recharts-area-area" d="M5,22.29C47.167,22.29,89.333,22.29,131.5,22.29C173.667,22.29,215.833,22.29,258,22.29L258,109C215.833,109,173.667,109,131.5,109C89.333,109,47.167,109,5,109Z" fill="var(--color-visibilityPct)" fill-opacity="0.2" height="104" id="recharts-area-_r_0_" stroke="none" stroke-width="1" width="253"></path>
+                            <path class="recharts-curve recharts-area-curve" d="M5,22.29C47.167,22.29,89.333,22.29,131.5,22.29C173.667,22.29,215.833,22.29,258,22.29" fill="none" fill-opacity="0.2" height="104" stroke="var(--color-visibilityPct)" stroke-width="1" width="253"></path>
+                          </g>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1">
+                    <g class="recharts-layer recharts-cartesian-axis recharts-xAxis xAxis">
+                      <g class="recharts-cartesian-axis-ticks recharts-xAxis-ticks"></g>
+                    </g>
+                  </g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col gap-6 rounded-base border-2 border-border py-6 font-base shadow-shadow bg-secondary-background text-foreground" data-slot="card">
+      <div class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-[data-slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6" data-slot="card-header">
+        <div class="font-heading text-sm" data-slot="card-title">
+          Citation Ratio %
+        </div>
+      </div>
+      <div class="px-6" data-slot="card-content">
+        <div class="flex justify-center text-xs [&amp;_.recharts-cartesian-axis-tick_text]:fill-foreground [&amp;_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-[#80808080] [&amp;_.recharts-curve.recharts-tooltip-cursor]:stroke-[#80808080] [&amp;_.recharts-dot[stroke='#fff']]:stroke-transparent [&amp;_.recharts-polar-grid_[stroke='#ccc']]:stroke-black [&amp;_.recharts-polar-grid_[stroke='#ccc']]:dark:stroke-white [&amp;_.recharts-reference-line_[stroke='#ccc']]:stroke-black [&amp;_.recharts-reference-line_[stroke='#ccc']]:dark:stroke-white [&amp;_.recharts-sector[stroke='#fff']]:stroke-border [&amp;_.recharts-sector]:outline-hidden [&amp;_.recharts-surface]:outline-hidden [&amp;_.recharts-layer_path]:stroke-2 [&amp;_.recharts-layer_path]:[fill-opacity:1] [&amp;_.recharts-layer_path]:[stroke:var(--color-border)] h-36 w-full" data-chart="chart-_R_l35_" data-slot="chart">
+          <style>
+            [data-chart=chart-_R_l35_] { --color-visibilityPct: var(--chart-1); --color-citationRatio: var(--chart-3); --color-score: var(--chart-4); } .dark [data-chart=chart-_R_l35_] { --color-visibilityPct: var(--chart-1); --color-citationRatio: var(--chart-3); --color-score: var(--chart-4); }
+          </style>
+          <div class="recharts-responsive-container" style="width:100%;height:100%;min-width:0">
+            <div style="width:0;height:0;overflow:visible">
+              <div class="recharts-wrapper" height="144" style="position: relative; cursor: default; width: 263px; height: 144px;" width="263">
+                <div class="recharts-tooltip-wrapper" style="visibility: hidden; pointer-events: none; position: absolute; top: 0px; left: 0px;" tabindex="-1" xmlns="http://www.w3.org/1999/xhtml"></div>
+                <svg class="recharts-surface" height="144" role="application" style="width: 100%; height: 100%; display: block;" tabindex="0" viewBox="0 0 263 144" width="263">
+                  <title></title>
+                  <desc></desc>
+                  <g tabindex="-1">
+                    <g class="recharts-cartesian-grid">
+                      <g class="recharts-cartesian-grid-horizontal">
+                        <line fill="none" height="104" stroke="#ccc" width="253" x="5" x1="5" x2="258" y="5" y1="109" y2="109"></line>
+                        <line fill="none" height="104" stroke="#ccc" width="253" x="5" x1="5" x2="258" y="5" y1="57" y2="57"></line>
+                        <line fill="none" height="104" stroke="#ccc" width="253" x="5" x1="5" x2="258" y="5" y1="5" y2="5"></line>
+                      </g>
+                    </g>
+                  </g>
+                  <g tabindex="-1"></g>
+                  <defs>
+                    <clipPath id="recharts3-clip">
+                      <rect height="104" width="253" x="5" y="5"></rect>
+                    </clipPath>
+                  </defs>
+                  <g tabindex="-1">
+                    <g class="recharts-layer recharts-area">
+                      <g class="recharts-layer">
+                        <defs>
+                          <clipPath id="animationClipPath-recharts-area-_r_1_">
+                            <rect height="110" width="217.83518279307202" x="5" y="0"></rect>
+                          </clipPath>
+                        </defs>
+                        <g class="recharts-layer" clip-path="url(#animationClipPath-recharts-area-_r_1_)">
+                          <g class="recharts-layer">
+                            <path class="recharts-curve recharts-area-area" d="M5,19.486C47.167,19.486,89.333,19.486,131.5,19.486C173.667,19.486,215.833,19.486,258,19.486L258,109C215.833,109,173.667,109,131.5,109C89.333,109,47.167,109,5,109Z" fill="var(--color-citationRatio)" fill-opacity="0.2" height="104" id="recharts-area-_r_1_" stroke="none" stroke-width="1" width="253"></path>
+                            <path class="recharts-curve recharts-area-curve" d="M5,19.486C47.167,19.486,89.333,19.486,131.5,19.486C173.667,19.486,215.833,19.486,258,19.486" fill="none" fill-opacity="0.2" height="104" stroke="var(--color-citationRatio)" stroke-width="1" width="253"></path>
+                          </g>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1">
+                    <g class="recharts-layer recharts-cartesian-axis recharts-xAxis xAxis">
+                      <g class="recharts-cartesian-axis-ticks recharts-xAxis-ticks"></g>
+                    </g>
+                  </g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col gap-6 rounded-base border-2 border-border py-6 font-base shadow-shadow bg-secondary-background text-foreground" data-slot="card">
+      <div class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-[data-slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6" data-slot="card-header">
+        <div class="font-heading text-sm" data-slot="card-title">
+          Score
+        </div>
+      </div>
+      <div class="px-6" data-slot="card-content">
+        <div class="flex justify-center text-xs [&amp;_.recharts-cartesian-axis-tick_text]:fill-foreground [&amp;_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-[#80808080] [&amp;_.recharts-curve.recharts-tooltip-cursor]:stroke-[#80808080] [&amp;_.recharts-dot[stroke='#fff']]:stroke-transparent [&amp;_.recharts-polar-grid_[stroke='#ccc']]:stroke-black [&amp;_.recharts-polar-grid_[stroke='#ccc']]:dark:stroke-white [&amp;_.recharts-reference-line_[stroke='#ccc']]:stroke-black [&amp;_.recharts-reference-line_[stroke='#ccc']]:dark:stroke-white [&amp;_.recharts-sector[stroke='#fff']]:stroke-border [&amp;_.recharts-sector]:outline-hidden [&amp;_.recharts-surface]:outline-hidden [&amp;_.recharts-layer_path]:stroke-2 [&amp;_.recharts-layer_path]:[fill-opacity:1] [&amp;_.recharts-layer_path]:[stroke:var(--color-border)] h-36 w-full" data-chart="chart-_R_n35_" data-slot="chart">
+          <style>
+            [data-chart=chart-_R_n35_] { --color-visibilityPct: var(--chart-1); --color-citationRatio: var(--chart-3); --color-score: var(--chart-4); } .dark [data-chart=chart-_R_n35_] { --color-visibilityPct: var(--chart-1); --color-citationRatio: var(--chart-3); --color-score: var(--chart-4); }
+          </style>
+          <div class="recharts-responsive-container" style="width:100%;height:100%;min-width:0">
+            <div style="width:0;height:0;overflow:visible">
+              <div class="recharts-wrapper" height="144" style="position: relative; cursor: default; width: 263px; height: 144px;" width="263">
+                <div class="recharts-tooltip-wrapper" style="visibility: hidden; pointer-events: none; position: absolute; top: 0px; left: 0px;" tabindex="-1" xmlns="http://www.w3.org/1999/xhtml"></div>
+                <svg class="recharts-surface" height="144" role="application" style="width: 100%; height: 100%; display: block;" tabindex="0" viewBox="0 0 263 144" width="263">
+                  <title></title>
+                  <desc></desc>
+                  <g tabindex="-1">
+                    <g class="recharts-cartesian-grid">
+                      <g class="recharts-cartesian-grid-horizontal">
+                        <line fill="none" height="104" stroke="#ccc" width="253" x="5" x1="5" x2="258" y="5" y1="109" y2="109"></line>
+                        <line fill="none" height="104" stroke="#ccc" width="253" x="5" x1="5" x2="258" y="5" y1="57" y2="57"></line>
+                        <line fill="none" height="104" stroke="#ccc" width="253" x="5" x1="5" x2="258" y="5" y1="5" y2="5"></line>
+                      </g>
+                    </g>
+                  </g>
+                  <g tabindex="-1"></g>
+                  <defs>
+                    <clipPath id="recharts5-clip">
+                      <rect height="104" width="253" x="5" y="5"></rect>
+                    </clipPath>
+                  </defs>
+                  <g tabindex="-1">
+                    <g class="recharts-layer recharts-area">
+                      <g class="recharts-layer">
+                        <defs>
+                          <clipPath id="animationClipPath-recharts-area-_r_2_">
+                            <rect height="110" width="217.83518279307202" x="5" y="0"></rect>
+                          </clipPath>
+                        </defs>
+                        <g class="recharts-layer" clip-path="url(#animationClipPath-recharts-area-_r_2_)">
+                          <g class="recharts-layer">
+                            <path class="recharts-curve recharts-area-area" d="M5,13.914C47.167,13.914,89.333,13.914,131.5,13.914C173.667,13.914,215.833,13.914,258,13.914L258,109C215.833,109,173.667,109,131.5,109C89.333,109,47.167,109,5,109Z" fill="var(--color-score)" fill-opacity="0.2" height="104" id="recharts-area-_r_2_" stroke="none" stroke-width="1" width="253"></path>
+                            <path class="recharts-curve recharts-area-curve" d="M5,13.914C47.167,13.914,89.333,13.914,131.5,13.914C173.667,13.914,215.833,13.914,258,13.914" fill="none" fill-opacity="0.2" height="104" stroke="var(--color-score)" stroke-width="1" width="253"></path>
+                          </g>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1">
+                    <g class="recharts-layer recharts-cartesian-axis recharts-xAxis xAxis">
+                      <g class="recharts-cartesian-axis-ticks recharts-xAxis-ticks"></g>
+                    </g>
+                  </g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                  <g tabindex="-1"></g>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<span aria-hidden="true" id="recharts_measurement_span" style="position: absolute; top: -20000px; left: 0px; padding: 0px; margin: 0px; border: none; white-space: pre;">
+  7
+</span>

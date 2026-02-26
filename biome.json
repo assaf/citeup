@@ -8,10 +8,13 @@
   "files": {
     "includes": [
       "**",
-      "!node_modules",
-      "!package.json",
+      "!__screenshots__",
+      "!.env*",
       "!.react-router",
-      "!build"
+      "!.vercel",
+      "!build",
+      "!node_modules",
+      "!package.json"
     ],
     "ignoreUnknown": false
   },
@@ -53,7 +56,12 @@
         "noUnsafeDeclarationMerging": "error",
         "noConsole": {
           "options": {
-            "allow": ["assert", "error", "info", "warn"]
+            "allow": [
+              "assert",
+              "error",
+              "info",
+              "warn"
+            ]
           }
         },
         "noDuplicateDependencies": "error",
