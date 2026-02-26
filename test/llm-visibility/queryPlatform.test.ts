@@ -1,6 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { invariant } from "es-toolkit";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import queryPlatform from "~/lib/llm-visibility/queryPlatform";
 import prisma from "~/lib/prisma.server";
 
@@ -68,10 +68,6 @@ describe("queryPlatform", () => {
     });
   });
 
-  afterAll(async () => {
-    await prisma.account.delete({ where: { id: account.id } });
-  });
-
   it(
     "creates a run and stores citation queries for each query x repetition",
     { timeout: 30_000 },
@@ -100,7 +96,7 @@ describe("queryPlatform", () => {
 
       // Ordered alphabetically: "Find..." before "How..."
       // "Find..." reps 1-3 map to citationSets 3,4,5 (indices 0,1,2)
-      const [find1, find2, find3, how1, how2, how3] = run!.queries;
+      const [find1, find2, find3, how1, how2, how3] = run.queries;
 
       expect(find1.category).toBe("2.active_search");
       expect(find1.position).toBe(0); // rentail.space at index 0
@@ -128,6 +124,86 @@ describe("queryPlatform", () => {
       });
 
       expect(queryFn).not.toHaveBeenCalled();
+    },
+  );
+
+  it(
+    "final db state: exactly 1 run with 6 citation_queries with correct fields",
+    { timeout: 30_000 },
+    async () => {
+      const runs = await prisma.citationQueryRun.findMany({
+        where: { accountId: account.id },
+        include: {
+          queries: { orderBy: [{ query: "asc" }, { repetition: "asc" }] },
+        },
+      });
+
+      expect(runs).toHaveLength(1);
+
+      const [run] = runs;
+      expect(run.platform).toBe("claude");
+      expect(run.model).toBe("claude-haiku-4-5-20251001");
+      expect(run.accountId).toBe(account.id);
+      expect(run.queries).toHaveLength(6);
+
+      // Ordered by query ASC, repetition ASC: "Find..." before "How..."
+      const [find1, find2, find3, how1, how2, how3] = run.queries;
+
+      expect(find1).toMatchObject({
+        query: "Find available temporary retail space in shopping centers",
+        category: "2.active_search",
+        repetition: 1,
+        citations: ["https://rentail.space/listings", "https://other.com"],
+        text: "You can find short-term retail space on rentail.space.",
+        position: 0,
+        extraQueries: [],
+      });
+      expect(find2).toMatchObject({
+        repetition: 2,
+        citations: [
+          "https://other.com",
+          "https://example.com",
+          "https://rentail.space/faq",
+        ],
+        text: "Platforms like rentail.space offer temporary retail options.",
+        position: 2,
+        extraQueries: [],
+      });
+      expect(find3).toMatchObject({
+        repetition: 3,
+        citations: ["https://example.com", "https://unrelated.com"],
+        text: "Shopping centers often have specialty leasing programs.",
+        position: null,
+        extraQueries: [],
+      });
+
+      expect(how1).toMatchObject({
+        query: "How do I find short-term retail space in shopping malls?",
+        category: "1.discovery",
+        repetition: 1,
+        citations: ["https://rentail.space/listings", "https://other.com"],
+        text: "You can find short-term retail space on rentail.space.",
+        position: 0,
+        extraQueries: [],
+      });
+      expect(how2).toMatchObject({
+        repetition: 2,
+        citations: [
+          "https://other.com",
+          "https://example.com",
+          "https://rentail.space/faq",
+        ],
+        text: "Platforms like rentail.space offer temporary retail options.",
+        position: 2,
+        extraQueries: [],
+      });
+      expect(how3).toMatchObject({
+        repetition: 3,
+        citations: ["https://example.com", "https://unrelated.com"],
+        text: "Shopping centers often have specialty leasing programs.",
+        position: null,
+        extraQueries: [],
+      });
     },
   );
 });
