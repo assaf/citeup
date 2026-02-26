@@ -102,10 +102,9 @@ jobs:
       - name: Update database
         if: github.ref == 'refs/heads/main'
         run: |
-          pnpm prisma db push --url "${{ DIRECT_URL }}"
+          pnpm prisma db push --url "${{ env.DIRECT_URL }}"
         env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/citeup"
-          DIRECT_URL: ${{ env.DIRECT_URL }}
+          DATABASE_URL: "${{ env.DIRECT_URL }}"
 
       - name: Deploy to Vercel
         uses: nexterias/actions-vercel@v1
