@@ -44,7 +44,6 @@ jobs:
           pnpm prisma db push
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/citeup"
-          DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/citeup"
           NODE_ENV: "test"
 
       - name: Check secrets
