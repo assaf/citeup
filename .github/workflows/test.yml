@@ -1,0 +1,74 @@
+name: Deploy
+
+on:
+  - push
+  - workflow_dispatch
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: citeup
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "package.json"
+          cache: "pnpm"
+
+      - name: Install NPM dependencies
+        run: pnpm install
+
+      - name: Setup database schema for testing
+        run: |
+          pnpm prisma generate 
+          pnpm prisma db push
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/citeup"
+          DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/citeup"
+          NODE_ENV: "test"
+
+      - name: Check secrets
+        run: pnpm secretlint "**/*" --format stylish
+
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+
+      - name: Lint code
+        run: biome lint
+
+      - name: Check types
+        run: pnpm tsc --noEmit --strict
+        env:
+          NODE_OPTIONS: "--max-old-space-size=3096"
+
+      - name: Run Tests
+        run: pnpm --expose-gc --max-old-space-size=4096 vitest run
+        env:
+          ANTHROPIC_API_KEY: "sk-ant-"
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/citeup"
+          DEBUG: ""
+          OPENAI_API_KEY: "sk-proj-"
+          PERPLEXITY_API_KEY: "pk-prod-"
+          GOOGLE_GENERATIVE_AI_API_KEY: "AIza"
