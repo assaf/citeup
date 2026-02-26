@@ -5,6 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
+pnpm test        # vitest run (tests live in test/)
+pnpm test:watch  # vitest watch mode
 pnpm check       # secretlint + biome lint + tsc (run after changes)
 pnpm format      # auto-format with Biome
 pnpm typecheck   # tsc --noEmit --strict
