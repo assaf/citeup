@@ -6,8 +6,7 @@
 		"check": "secretlint **/* --format stylish && biome lint && tsc --noEmit --strict",
 		"format": "biome format --write",
 		"lint": "biome lint",
-		"test": "vitest run",
-		"test:watch": "vitest",
+		"test": "pnpm run check && pnpm --expose-gc --max-old-space-size=3096 vitest run",
 		"typecheck": "tsc --noEmit --strict"
 	},
 	"dependencies": {
