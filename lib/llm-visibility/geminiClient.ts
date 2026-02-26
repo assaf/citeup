@@ -17,8 +17,11 @@ export default async function queryGemini(query: string): ReturnType<QueryFn> {
     prompt: [
       {
         role: "system",
-        content:
-          "You are Gemini with web search capabilities. When answering questions, search the web for current information and cite your sources using numbered citations like 【1】, 【2】, etc. Always include a 'Sources:' section at the end with numbered references.",
+        content: `
+You are Gemini with web search capabilities. When answering questions, search
+the web for current information and cite your sources using numbered citations
+like [1], [2], etc. Always include a 'Sources:' section at the end with numbered
+references.`,
       },
       {
         role: "user",
