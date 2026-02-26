@@ -92,12 +92,17 @@ jobs:
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
 
+      - name: Read DIRECT_URL from Doppler
+        id: doppler-direct-url
+        run: |
+          echo "DIRECT_URL=$(doppler secrets get DIRECT_URL --plain)" >> $GITHUB_ENV
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+
       - name: Update database
         if: github.ref == 'refs/heads/main'
         run: |
-          doppler run --config prd -- pnpm prisma db push
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          doppler run --config prd -- pnpm prisma db push --url ${{ env.DIRECT_URL }}
 
       - name: Deploy to Vercel
         uses: nexterias/actions-vercel@v1
