@@ -35,6 +35,9 @@
       ],
       "~/prisma": [
         "./prisma/generated/client"
+      ],
+      "~/test/*": [
+        "./test/*"
       ]
     },
     "resolveJsonModule": true,

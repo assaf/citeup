@@ -21,7 +21,7 @@ export default defineConfig({
     exclude: [],
     execArgv: ["--max-old-space-size=3072"],
     fileParallelism: false,
-    globalSetup: "test/helpers/globalSetup.ts",
+    globalSetup: "test/helpers/setupGlobal.ts",
     hookTimeout: 30_000, // 30 seconds for beforeAll/afterAll (server + browser startup)
     include: ["test/**/*.test.ts"],
     maxConcurrency: 1, // Run tests sequentially to reduce memory pressure
@@ -31,7 +31,7 @@ export default defineConfig({
     reporters: process.env.GITHUB_ACTIONS
       ? ["github-actions", "verbose"]
       : ["verbose"],
-    setupFiles: "test/helpers/testSuiteSetup.ts",
+    setupFiles: "test/helpers/setupTestSuite.ts",
     teardownTimeout: 5_000, // 5 seconds - Prisma disconnect will timeout anyway on macOS
     testTimeout: 30_000, // 30 seconds
 

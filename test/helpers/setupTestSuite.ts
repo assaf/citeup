@@ -5,6 +5,7 @@
 import * as Sentry from "@sentry/react-router";
 import { afterAll, beforeAll } from "vitest";
 import prisma from "~/lib/prisma.server";
+import msw from "../mocks/msw";
 import "./trimConsole";
 
 Sentry.init({ enabled: false });
@@ -12,6 +13,8 @@ Sentry.init({ enabled: false });
 beforeAll(async () => {
   // Cleanup database
   await prisma.account.deleteMany();
+
+  msw();
 });
 
 afterAll(async () => {

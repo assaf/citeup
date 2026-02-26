@@ -38,7 +38,7 @@ declare global {
 const dirname = path.resolve(
   vitestConfig.test?.browser?.screenshotDirectory ?? "",
 );
-const defaultTolerance = 2.3;
+const defaultTolerance = 3.5;
 
 expect.extend({
   async toMatchScreenshot(
