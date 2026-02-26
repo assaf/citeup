@@ -1,0 +1,54 @@
+generator client {
+  provider               = "prisma-client"
+  output                 = "generated"
+  previewFeatures        = ["postgresqlExtensions"]
+  engineType             = "client"
+  generatedFileExtension = "ts"
+  importFileExtension    = "ts"
+  moduleFormat           = "esm"
+  runtime                = "nodejs"
+}
+
+datasource db {
+  provider     = "postgresql"
+  relationMode = "foreignKeys"
+}
+
+model Account {
+  id        String                                @id @default(cuid())
+  createdAt DateTime           @map("created_at") @default(now())
+  hostname  String             @map("hostname")
+  runs      CitationQueryRun[]
+
+  @@map("accounts")
+}
+
+model CitationQueryRun {
+  id        String                             @id @default(cuid())
+  createdAt DateTime        @map("created_at") @default(now())
+  platform  String          @map("platform")
+  model     String          @map("model")
+  queries   CitationQuery[]
+  accountId String          @map("account_id")
+  account   Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("citation_query_runs")
+}
+
+model CitationQuery {
+  id           String                                 @id @default(cuid())
+  createdAt    DateTime         @map("created_at")    @default(now())
+  runId        String           @map("run_id")
+  run          CitationQueryRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  query        String           @map("query")
+  category     String           @map("category")
+  repetition   Int              @map("repetition")
+  extraQueries String[]         @map("extra_queries")
+  text         String           @map("text")
+  position     Int?             @map("position")
+  citations    String[]         @map("citations")
+
+  @@index([runId])
+  @@map("citation_queries")
+}
+

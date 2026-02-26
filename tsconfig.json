@@ -1,0 +1,22 @@
+{
+  "include": ["lib/**/*.ts"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "paths": {
+      "~/*": ["./*"]
+    },
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "types": ["node"],
+    "verbatimModuleSyntax": true
+  }
+}

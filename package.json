@@ -1,0 +1,38 @@
+{
+	"name": "citeup",
+	"type": "module",
+	"scripts": {
+		"build": "prisma generate",
+		"check": "secretlint **/* --format stylish && biome lint && tsc --noEmit --strict",
+		"format": "biome format --write",
+		"lint": "biome lint",
+		"typecheck": "tsc --noEmit --strict"
+	},
+	"dependencies": {
+		"@ai-sdk/anthropic": "^3.0.47",
+		"@ai-sdk/devtools": "^0.0.15",
+		"@ai-sdk/google": "^3.0.31",
+		"@ai-sdk/openai": "^3.0.33",
+		"@ai-sdk/perplexity": "^3.0.19",
+		"@js-temporal/polyfill": "^0.5.1",
+		"@prisma/adapter-pg": "^7.4.1",
+		"@prisma/client": "^7.4.1",
+		"@sentry/node": "^10.40.0",
+		"ai": "^6.0.99",
+		"convert": "^7.0.0",
+		"debug": "^4.4.3",
+		"dotenv": "^17.3.1",
+		"env-var": "^7.5.0",
+		"es-toolkit": "^1.44.0",
+		"pg": "^8.18.0",
+		"prisma": "^7.4.1"
+	},
+	"devDependencies": {
+		"@ai-sdk/provider": "^3.0.8",
+		"@secretlint/secretlint-rule-preset-recommend": "^11.3.1",
+		"@types/debug": "^4.1.12",
+		"@types/node": "^25.3.0",
+		"@types/pg": "^8.16.0",
+		"secretlint": "^11.3.1"
+	}
+}
