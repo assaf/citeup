@@ -1,12 +1,15 @@
 import { openai } from "@ai-sdk/openai";
 import type { LanguageModelV3Source } from "@ai-sdk/provider";
 import { generateText } from "ai";
+import { invariant } from "es-toolkit";
 import envVars from "~/lib/envVars";
 import type { QueryFn } from "./llmVisibility";
 
 const MODEL_ID = "gpt-5-chat-latest";
 
 export default async function openaiClient(query: string): ReturnType<QueryFn> {
+  invariant(envVars.OPENAI_API_KEY, "OPENAI_API_KEY is not set");
+
   const { sources, text } = await generateText({
     maxOutputTokens: 2000,
     model: openai(MODEL_ID),

@@ -8,6 +8,7 @@ const MODEL_ID = "claude-haiku-4-5-20251001";
 
 export default async function queryClaude(query: string): ReturnType<QueryFn> {
   invariant(envVars.ANTHROPIC_API_KEY, "ANTHROPIC_API_KEY is not set");
+
   const { sources, text } = await generateText({
     model: anthropic(MODEL_ID),
     providerOptions: {
