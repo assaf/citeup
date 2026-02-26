@@ -7,9 +7,12 @@ vi.mock("~/lib/envVars", () => ({
 }));
 
 vi.mock("@ai-sdk/openai", () => {
-  const openai = Object.assign(vi.fn(() => "mock-model"), {
-    tools: { webSearch: vi.fn(() => "mock-web-search") },
-  });
+  const openai = Object.assign(
+    vi.fn(() => "mock-model"),
+    {
+      tools: { webSearch: vi.fn(() => "mock-web-search") },
+    },
+  );
   return { openai };
 });
 
