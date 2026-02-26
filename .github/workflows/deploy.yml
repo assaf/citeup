@@ -1,12 +1,12 @@
-name: Tests
+name: Deploy
 
 on:
   - push
   - workflow_dispatch
 
 jobs:
-  test:
-    name: Tests
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -114,7 +114,7 @@ jobs:
           org-id: "team_bjyg9pgn8TQQVP2NLMPnSYSN"
           prebuilt: false
           production: false
-          project-id: "prj_SrqYHd1Olo0XfxQHLe9lyGfcoT9z"
+          project-id: "prj_Ipf1EVCJ9lIgoCIIbiizNp5W5O66"
           token: ${{ secrets.VERCEL_TOKEN }}
         env:
           SENTRY_AUTH_TOKEN: "98ontZY9tk6pr8mZZCxrhZio"
