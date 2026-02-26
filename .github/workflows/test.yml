@@ -58,6 +58,9 @@ jobs:
       - name: Lint code
         run: biome lint
 
+      - name: Generate React Router types
+        run: pnpm react-router typegen
+
       - name: Check types
         run: pnpm tsc --noEmit --strict
         env:
