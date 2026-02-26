@@ -1,7 +1,7 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { groupBy, orderBy } from "es-toolkit";
 import prisma from "~/lib/prisma.server";
-import type { Account } from "~/prisma/generated/client";
+import type { Account } from "~/prisma";
 import queryClaude from "./claudeClient";
 import queryGemini from "./geminiClient";
 import openaiClient from "./openaiClient";

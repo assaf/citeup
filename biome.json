@@ -6,7 +6,13 @@
     "useIgnoreFile": false
   },
   "files": {
-    "includes": ["**", "!node_modules", "!package.json"],
+    "includes": [
+      "**",
+      "!node_modules",
+      "!package.json",
+      "!.react-router",
+      "!build"
+    ],
     "ignoreUnknown": false
   },
   "formatter": {
@@ -47,7 +53,12 @@
         "noUnsafeDeclarationMerging": "error",
         "noConsole": {
           "options": {
-            "allow": ["assert", "error", "info", "warn"]
+            "allow": [
+              "assert",
+              "error",
+              "info",
+              "warn"
+            ]
           }
         },
         "noDuplicateDependencies": "error",

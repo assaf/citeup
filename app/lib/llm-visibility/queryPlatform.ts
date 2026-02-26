@@ -1,9 +1,9 @@
 import type { Temporal } from "@js-temporal/polyfill";
-import { captureException } from "@sentry/node";
+import { captureException } from "@sentry/react-router";
 import { ms } from "convert";
 import { delay } from "es-toolkit";
 import prisma from "~/lib/prisma.server";
-import type { Account } from "~/prisma/generated/client";
+import type { Account } from "~/prisma";
 import type { QueryFn } from "./llmVisibility";
 
 /**

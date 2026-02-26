@@ -1,0 +1,33 @@
+@layer theme, base, components, utilities;
+
+@font-face {
+  font-family: "Archivo";
+  font-weight: 100 900;
+  src: url("/fonts/Archivo-VariableFont_wdth,wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Archivo";
+  src: url("/fonts/Archivo-Italic-VariableFont_wdth,wght.ttf")
+    format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/fonts/Outfit-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Quando";
+  src: url("/fonts/Quando-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Atkinson";
+  src: url("/fonts/AtkinsonHyperlegibleMono-VariableFont_wght.ttf")
+    format("truetype");
+}

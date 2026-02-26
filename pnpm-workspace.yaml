@@ -2,7 +2,7 @@ allowedDeprecatedVersions:
 
 ignoredBuiltDependencies:
 
-minimumReleaseAge: 2880
+minimumReleaseAge: 0
 minimumReleaseAgeExclude:
   - "@biomejs/biome"
   - "@biomejs/*"
