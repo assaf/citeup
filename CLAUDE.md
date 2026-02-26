@@ -5,15 +5,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm test        # vitest run (tests live in test/)
+pnpm dev         # react-router dev server
+pnpm test        # runs check + vitest (tests live in test/)
 pnpm test:watch  # vitest watch mode
 pnpm check       # secretlint + biome lint + tsc (run after changes)
 pnpm format      # auto-format with Biome
-pnpm typecheck   # tsc --noEmit --strict
-pnpm build       # prisma generate
+pnpm typecheck   # react-router typegen + tsc --noEmit --strict
+pnpm build       # prisma generate + react-router build
 ```
 
-No test runner configured. Database: `pnpm prisma migrate dev|deploy|db seed`.
+Single test file: `pnpm vitest run test/llm-visibility/claudeClient.test.ts`
+
+Tests are integration tests that call real LLM APIs — require API keys in `.env`. Database: `pnpm prisma migrate dev|deploy|db seed`.
 
 ## Architecture
 
@@ -21,7 +24,7 @@ No test runner configured. Database: `pnpm prisma migrate dev|deploy|db seed`.
 
 Data flow: `queryAccount.ts` fans out to all platforms in parallel → `queryPlatform.ts` runs one platform (idempotent, skips if run exists within 24h) → per-platform clients (`claudeClient`, `openaiClient`, `geminiClient`, `perplexityClient`) implement the `QueryFn` interface using Vercel AI SDK with web search forced on → results stored as `CitationQueryRun` → `CitationQuery[]` in Postgres.
 
-Key files: `lib/llm-visibility/` contains all query logic; `lib/prisma.server.ts` is the singleton DB client; `prisma/schema.prisma` defines the three models.
+Key files: `app/lib/llm-visibility/` contains all query logic; `app/lib/prisma.server.ts` is the singleton DB client; `prisma/schema.prisma` defines the three models. The `~/` alias maps to `app/`. Env vars are validated in `app/lib/envVars.ts` (`DATABASE_URL` required; LLM API keys optional per platform).
 
 ## Coding style
 
