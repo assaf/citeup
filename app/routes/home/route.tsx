@@ -33,7 +33,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-6 py-12">
-      <h1 className="mb-1 font-heading text-3xl">LLM Citation Visibility</h1>
+      <h1 className="font-heading text-3xl">LLM Citation Visibility</h1>
 
       <Tabs
         defaultValue={platform}
