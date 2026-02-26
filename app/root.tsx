@@ -6,10 +6,48 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
+  redirect,
 } from "react-router";
 import { WaveLoading } from "respinner";
+import {
+  type UtmCookieData,
+  sessionCookie,
+  utmCookie,
+} from "~/lib/cookies.server";
+import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/root";
 import "./global.css";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const cookieHeader = request.headers.get("Cookie");
+  const token = await sessionCookie.parse(cookieHeader);
+
+  if (token) {
+    const session = await prisma.session.findUnique({
+      where: { token },
+      include: { user: true },
+    });
+
+    if (session) return { user: session.user };
+  }
+
+  // No valid session — capture UTM + referrer before redirecting
+  const url = new URL(request.url);
+  if (url.pathname === "/sign-in") return { user: null };
+
+  const utmData: UtmCookieData = {
+    referrer: request.headers.get("Referer") ?? null,
+    utmSource: url.searchParams.get("utm_source"),
+    utmMedium: url.searchParams.get("utm_medium"),
+    utmCampaign: url.searchParams.get("utm_campaign"),
+    utmTerm: url.searchParams.get("utm_term"),
+    utmContent: url.searchParams.get("utm_content"),
+  };
+
+  return redirect("/sign-in", {
+    headers: { "Set-Cookie": await utmCookie.serialize(utmData) },
+  });
+}
 
 export function meta(): Route.MetaDescriptors {
   return [

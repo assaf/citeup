@@ -12,6 +12,7 @@ const envVars = {
     .required(false)
     .asString(),
   DATABASE_URL: env.get("DATABASE_URL").required().asUrlString(),
+  SESSION_SECRET: env.get("SESSION_SECRET").required().asString(),
 };
 
 export default envVars;

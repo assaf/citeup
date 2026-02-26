@@ -36,3 +36,4 @@ Key files: `app/lib/llm-visibility/` contains all query logic; `app/lib/prisma.s
 - `console.info/warn/error` with printf-style strings (`"[%s:%s] msg"`) — not template literals
 - `try/catch` + Sentry `captureException` at orchestration layer; let errors bubble from helpers
 - Prefer `es-toolkit` over `lodash`
+- Single-line conditions and loops: no braces (`if (x) return y;`)
