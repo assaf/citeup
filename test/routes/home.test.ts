@@ -1,8 +1,8 @@
 import { expect } from "@playwright/test";
 import { beforeAll, describe, it } from "vitest";
 import prisma from "~/lib/prisma.server";
-import { goto } from "../helpers/launchBrowser";
 import { removeElements } from "../helpers/formatHTML";
+import { goto } from "../helpers/launchBrowser";
 import "../helpers/toMatchInnerHTML";
 import "../helpers/toMatchScreenshot";
 
@@ -56,7 +56,10 @@ const CITATION_SETS: Array<{ citations: string[]; position: number | null }> = [
     position: 1,
   },
   {
-    citations: [`https://${HOSTNAME}/marketplace`, "https://popupinsider.com/guide"],
+    citations: [
+      `https://${HOSTNAME}/marketplace`,
+      "https://popupinsider.com/guide",
+    ],
     position: 0,
   },
   {
@@ -118,8 +121,8 @@ function daysAgo(n: number): Date {
 
 describe("home route", () => {
   beforeAll(async () => {
-    const account = await prisma.account.create({
-      data: { hostname: HOSTNAME },
+    const site = await prisma.site.create({
+      data: { domain: HOSTNAME, account: { create: {} } },
     });
 
     // Three runs per platform (oldest → newest) so charts have ≥2 data points.
@@ -146,7 +149,7 @@ describe("home route", () => {
 
         await prisma.citationQueryRun.create({
           data: {
-            accountId: account.id,
+            siteId: site.id,
             platform,
             model,
             createdAt: daysAgo(runDays[runIdx]),
@@ -164,7 +167,10 @@ describe("home route", () => {
     // screenshot test covers visual regressions in charts.
     await expect(page).toMatchInnerHTML({
       strip: (html) =>
-        removeElements(html, (node) => node.attributes["data-slot"] === "chart"),
+        removeElements(
+          html,
+          (node) => node.attributes["data-slot"] === "chart",
+        ),
     });
   });
 

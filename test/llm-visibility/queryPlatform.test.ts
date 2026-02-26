@@ -60,11 +60,11 @@ function newerThan24h() {
 }
 
 describe("queryPlatform", () => {
-  let account: { id: string; hostname: string; createdAt: Date };
+  let site: { id: string; domain: string; createdAt: Date };
 
   beforeAll(async () => {
-    account = await prisma.account.create({
-      data: { hostname: "rentail.space" },
+    site = await prisma.site.create({
+      data: { domain: "rentail.space", account: { create: {} } },
     });
   });
 
@@ -77,13 +77,13 @@ describe("queryPlatform", () => {
 
       await queryPlatform({
         ...PLATFORM_ARGS,
-        account,
+        site,
         newerThan: newerThan24h(),
         queryFn,
       });
 
       const run = await prisma.citationQueryRun.findFirst({
-        where: { accountId: account.id, platform: "claude" },
+        where: { siteId: site.id, platform: "claude" },
         include: {
           queries: { orderBy: [{ query: "asc" }, { repetition: "asc" }] },
         },
@@ -118,7 +118,7 @@ describe("queryPlatform", () => {
 
       await queryPlatform({
         ...PLATFORM_ARGS,
-        account,
+        site,
         newerThan: newerThan24h(),
         queryFn,
       });
@@ -132,7 +132,7 @@ describe("queryPlatform", () => {
     { timeout: 30_000 },
     async () => {
       const runs = await prisma.citationQueryRun.findMany({
-        where: { accountId: account.id },
+        where: { siteId: site.id },
         include: {
           queries: { orderBy: [{ query: "asc" }, { repetition: "asc" }] },
         },
@@ -143,7 +143,7 @@ describe("queryPlatform", () => {
       const [run] = runs;
       expect(run.platform).toBe("claude");
       expect(run.model).toBe("claude-haiku-4-5-20251001");
-      expect(run.accountId).toBe(account.id);
+      expect(run.siteId).toBe(site.id);
       expect(run.queries).toHaveLength(6);
 
       // Ordered by query ASC, repetition ASC: "Find..." before "How..."

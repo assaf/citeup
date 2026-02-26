@@ -15,24 +15,12 @@ datasource db {
 }
 
 model Account {
-  id        String                                @id @default(cuid())
-  createdAt DateTime           @map("created_at") @default(now())
-  hostname  String             @map("hostname")
-  runs      CitationQueryRun[]
+  id        String                      @id @default(cuid())
+  createdAt DateTime @map("created_at") @default(now())
+  users     User[]
+  sites     Site[]
 
   @@map("accounts")
-}
-
-model CitationQueryRun {
-  id        String                             @id @default(cuid())
-  createdAt DateTime        @map("created_at") @default(now())
-  platform  String          @map("platform")
-  model     String          @map("model")
-  queries   CitationQuery[]
-  accountId String          @map("account_id")
-  account   Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
-
-  @@map("citation_query_runs")
 }
 
 model CitationQuery {
@@ -52,3 +40,61 @@ model CitationQuery {
   @@map("citation_queries")
 }
 
+model CitationQueryRun {
+  id        String                             @id @default(cuid())
+  createdAt DateTime        @map("created_at") @default(now())
+  platform  String          @map("platform")
+  model     String          @map("model")
+  queries   CitationQuery[]
+  siteId    String          @map("site_id")
+  site      Site            @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@map("citation_query_runs")
+}
+
+model Session {
+  id          String                        @id @default(cuid())
+  createdAt   DateTime @map("created_at")   @default(now())
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String   @map("token")        @unique
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  referrer    String?  @map("referrer")
+  utmSource   String?  @map("utm_source")
+  utmMedium   String?  @map("utm_medium")
+  utmCampaign String?  @map("utm_campaign")
+  utmTerm     String?  @map("utm_term")
+  utmContent  String?  @map("utm_content")
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Site {
+  id           String                                @id @default(cuid())
+  createdAt    DateTime           @map("created_at") @default(now())
+  updatedAt    DateTime           @map("updated_at") @updatedAt
+  accountId    String             @map("account_id")
+  account      Account            @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  domain       String             @map("domain")
+  citationRuns CitationQueryRun[]
+
+  @@index([accountId])
+  @@map("sites")
+}
+
+model User {
+  id              String                              @id @default(cuid())
+  createdAt       DateTime  @map("created_at")        @default(now())
+  updatedAt       DateTime  @map("updated_at")        @updatedAt
+  accountId       String    @map("account_id")
+  account         Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  email           String    @map("email")             @unique
+  passwordHash    String    @map("password_hash")
+  emailVerifiedAt DateTime? @map("email_verified_at")
+  sessions        Session[]
+
+  @@index([accountId])
+  @@map("users")
+}

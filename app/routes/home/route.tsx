@@ -13,16 +13,18 @@ const PLATFORMS = [
 ] as const;
 
 export async function loader() {
-  const account = await prisma.account.findFirst();
-  if (!account) throw new Response("No account found", { status: 404 });
+  const site = await prisma.site.findFirst({
+    where: { domain: "rentail.space" },
+  });
+  if (!site) throw new Response("No site found", { status: 404 });
 
   const runs = await prisma.citationQueryRun.findMany({
     include: { queries: true },
     orderBy: { createdAt: "desc" },
-    where: { accountId: account.id },
+    where: { siteId: site.id },
   });
 
-  return { account, runs };
+  return { site, runs };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {

@@ -1,7 +1,7 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { groupBy, orderBy } from "es-toolkit";
 import prisma from "~/lib/prisma.server";
-import type { Account } from "~/prisma";
+import type { Site } from "~/prisma";
 import queryClaude from "./claudeClient";
 import queryGemini from "./geminiClient";
 import openaiClient from "./openaiClient";
@@ -12,20 +12,20 @@ import {
 } from "./queryPlatform";
 
 /**
- * Query all platforms for a given account and queries.
+ * Query all platforms for a given site and queries.
  *
- * @param account - The account to query.
+ * @param site - The site to query.
  * @param queries - The queries to query.
  * @param repetitions - The number of times to repeat each query. If the last
  *   run is newer than this date, the queries will not be run again.
  * @returns The results of the queries.
  */
 export default async function queryAccount({
-  account,
+  site,
   queries,
   repetitions,
 }: {
-  account: Account;
+  site: Site;
   queries: { query: string; category: string }[];
   repetitions: number;
 }) {
@@ -36,48 +36,48 @@ export default async function queryAccount({
 
   await Promise.all([
     runAllQueries({
-      account,
       modelId: "gpt-5-chat-latest",
       newerThan,
       platform: "chatgpt",
       queries,
       queryFn: openaiClient,
       repetitions,
+      site,
     }),
 
     runAllQueries({
-      account,
       modelId: "sonar",
       newerThan,
       platform: "perplexity",
       queries,
       queryFn: queryPerplexity,
       repetitions,
+      site,
     }),
 
     runPlatform({
-      account,
       modelId: "claude-haiku-4-5-20251001",
       newerThan,
       platform: "claude",
       queries,
       queryFn: queryClaude,
       repetitions,
+      site,
     }),
 
     runPlatform({
-      account,
       modelId: "gemini-2.5-flash",
       newerThan,
       platform: "gemini",
       queries,
       queryFn: queryGemini,
       repetitions,
+      site,
     }),
   ]);
 
   const all = await prisma.citationQueryRun.findMany({
-    where: { accountId: account.id },
+    where: { siteId: site.id },
     include: { queries: true },
     orderBy: { createdAt: "asc" },
   });

@@ -1,5 +1,5 @@
-import prisma from "../app/lib/prisma.server";
 import rawQueries from "../app/lib/llm-visibility/queries";
+import prisma from "../app/lib/prisma.server";
 
 const HOSTNAME = "rentail.space";
 const REPETITIONS = 3;
@@ -7,7 +7,11 @@ const REPETITIONS = 3;
 const PLATFORMS = [
   { platform: "chatgpt", model: "gpt-5-chat-latest", visibilityRate: 0.45 },
   { platform: "perplexity", model: "sonar", visibilityRate: 0.65 },
-  { platform: "claude", model: "claude-haiku-4-5-20251001", visibilityRate: 0.25 },
+  {
+    platform: "claude",
+    model: "claude-haiku-4-5-20251001",
+    visibilityRate: 0.25,
+  },
   { platform: "gemini", model: "gemini-2.5-flash", visibilityRate: 0.35 },
 ] as const;
 
@@ -57,12 +61,14 @@ function daysAgo(n: number): Date {
 async function main() {
   console.info("Seeding database…");
 
-  const existing = await prisma.account.findFirst({ where: { hostname: HOSTNAME } });
-  const account =
+  const existing = await prisma.site.findFirst({ where: { domain: HOSTNAME } });
+  const site =
     existing ??
-    (await prisma.account.create({ data: { hostname: HOSTNAME } }));
+    (await prisma.site.create({
+      data: { domain: HOSTNAME, account: { create: {} } },
+    }));
 
-  console.info("Account: %s (%s)", account.id, account.hostname);
+  console.info("Site: %s (%s)", site.id, site.domain);
 
   const runDates = [21, 14, 7, 0].map(daysAgo);
 
@@ -73,7 +79,7 @@ async function main() {
       // Idempotency: skip if a run already exists within ±1 h of this date
       const existingRun = await prisma.citationQueryRun.findFirst({
         where: {
-          accountId: account.id,
+          siteId: site.id,
           platform,
           createdAt: {
             gte: new Date(createdAt.getTime() - 60 * 60 * 1000),
@@ -95,7 +101,10 @@ async function main() {
         Array.from({ length: REPETITIONS }, (_, i) => {
           const rep = i + 1;
           const seed = qi * 10_000 + rep * 1_000 + runIdx * 10 + platformIdx;
-          const { citations, position } = generateCitations(seed, visibilityRate);
+          const { citations, position } = generateCitations(
+            seed,
+            visibilityRate,
+          );
           return {
             query,
             category,
@@ -110,7 +119,7 @@ async function main() {
 
       await prisma.citationQueryRun.create({
         data: {
-          accountId: account.id,
+          siteId: site.id,
           platform,
           model,
           createdAt,
