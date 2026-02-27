@@ -1,4 +1,4 @@
-import { redirect } from "react-router";
+import { Link, redirect } from "react-router";
 import {
   Card,
   CardContent,
@@ -12,24 +12,24 @@ import type { Route } from "./+types/route";
 export async function loader({ params, request }: Route.LoaderArgs) {
   const { token } = params;
 
-  const record = await prisma.passwordRecoveryToken.findUnique({
-    where: { token },
-  });
-
-  if (!record || record.expiresAt < new Date() || record.usedAt !== null)
-    return { invalid: true };
-
-  await prisma.passwordRecoveryToken.update({
-    where: { token },
+  const result = await prisma.passwordRecoveryToken.updateMany({
+    where: { token, usedAt: null, expiresAt: { gt: new Date() } },
     data: { usedAt: new Date() },
   });
 
-  const setCookie = await createSession(record.userId, request);
+  if (result.count === 0) return { invalid: true };
+
+  const record = await prisma.passwordRecoveryToken.findUnique({
+    where: { token },
+    select: { userId: true },
+  });
+
+  const setCookie = await createSession(record!.userId, request);
 
   return redirect("/", { headers: { "Set-Cookie": setCookie } });
 }
 
-export default function ResetPassword({ loaderData }: Route.ComponentProps) {
+export default function ResetPassword() {
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
@@ -40,9 +40,9 @@ export default function ResetPassword({ loaderData }: Route.ComponentProps) {
           <p className="text-sm">
             This link is invalid or has already been used. Request a new one
             from the{" "}
-            <a href="/password-recovery" className="underline">
+            <Link to="/password-recovery" className="underline">
               password recovery page
-            </a>
+            </Link>
             .
           </p>
         </CardContent>
