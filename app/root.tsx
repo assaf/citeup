@@ -1,10 +1,6 @@
 import {
   type HeadersFunction,
-  Links,
-  Meta,
   Outlet,
-  Scripts,
-  ScrollRestoration,
   isRouteErrorResponse,
   redirect,
 } from "react-router";
@@ -16,6 +12,7 @@ import {
 } from "~/lib/cookies.server";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/root";
+import PageLayout from "./components/layout/PageLayout";
 import "./global.css";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -81,21 +78,7 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
-  );
+  return <PageLayout>{children}</PageLayout>;
 }
 
 export default function App() {

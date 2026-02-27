@@ -79,12 +79,12 @@ describe("password recovery route", () => {
 
   it("HTML matches baseline", async () => {
     const page = await goto("/password-recovery");
-    await expect(page).toMatchInnerHTML();
+    await expect(page.locator("main")).toMatchInnerHTML();
   });
 
   it("screenshot matches baseline", async () => {
     const page = await goto("/password-recovery");
-    await expect(page).toMatchScreenshot();
+    await expect(page.locator("main")).toMatchScreenshot();
   });
 
   it("clicks the sign-in button and redirects to sign-in page", async () => {

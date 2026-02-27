@@ -1,8 +1,9 @@
 import { invariant } from "es-toolkit";
 import { MailIcon } from "lucide-react";
 import { Form, redirect } from "react-router";
+import AuthForm from "~/components/ui/AuthForm";
 import { Button } from "~/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
+import { FieldSet } from "~/components/ui/FieldSet";
 import { createEmailVerificationToken } from "~/lib/auth.server";
 import { sendEmailVerificationEmail } from "~/lib/email.server";
 import prisma from "~/lib/prisma.server";
@@ -59,41 +60,31 @@ export async function action({ params }: Route.ActionArgs) {
 export default function VerifyEmail({ actionData }: Route.ComponentProps) {
   if (actionData?.resent)
     return (
-      <main className="flex min-h-screen items-center justify-center p-4">
-        <Card className="fade-in-0 zoom-in-95 w-full max-w-md animate-in bg-secondary-background text-secondary-foreground duration-300">
-          <CardHeader>
-            <CardTitle className="text-center text-2xl">
-              Check your email
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm">
-              We've sent a new verification link to your email address. It
-              expires in 24 hours.
-            </p>
-          </CardContent>
-        </Card>
-      </main>
+      <AuthForm
+        title="Check your email"
+        form={
+          <p>
+            We've sent a new verification link to your email address. It expires
+            in 24 hours.
+          </p>
+        }
+      />
     );
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      <Card className="fade-in-0 zoom-in-95 w-full max-w-md animate-in bg-secondary-background text-secondary-foreground duration-300">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">Link expired</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-6">
-          <p className="text-sm">
-            This verification link is invalid or has already been used.
-          </p>
-          <Form method="post">
-            <Button type="submit" className="w-full">
+    <AuthForm
+      title="Link expired"
+      form={
+        <Form method="post">
+          <FieldSet>
+            <p>This verification link is invalid or has already been used.</p>
+            <Button type="submit" className="w-full text-lg">
               <MailIcon className="size-4" />
               Send new verification email
             </Button>
-          </Form>
-        </CardContent>
-      </Card>
-    </main>
+          </FieldSet>
+        </Form>
+      }
+    />
   );
 }

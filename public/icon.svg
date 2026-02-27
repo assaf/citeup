@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#F59E0B">
+  <!-- Left bracket -->
+  <rect x="13" y="13" width="10" height="74"/>
+  <rect x="13" y="13" width="23" height="10"/>
+  <rect x="13" y="77" width="23" height="10"/>
+  <!-- Right bracket -->
+  <rect x="77" y="13" width="10" height="74"/>
+  <rect x="64" y="13" width="23" height="10"/>
+  <rect x="64" y="77" width="23" height="10"/>
+  <!-- Arrow: arrowhead then stem -->
+  <polygon points="50,13 33,50 67,50"/>
+  <rect x="44" y="50" width="12" height="27"/>
+</svg>

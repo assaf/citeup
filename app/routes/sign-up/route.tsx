@@ -1,7 +1,7 @@
 import { Form, redirect } from "react-router";
 import { ActiveLink } from "~/components/ui/ActiveLink";
+import AuthForm from "~/components/ui/AuthForm";
 import { Button } from "~/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 import {
   Field,
   FieldError,
@@ -66,67 +66,61 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
   const errors = actionData?.errors ?? {};
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      <Card className="fade-in-0 zoom-in-95 w-full max-w-md animate-in bg-secondary-background text-secondary-foreground duration-300">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">Create account</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-6">
-          <Form method="post">
-            <FieldSet>
-              <FieldGroup>
-                <Field data-invalid={!!errors.email}>
-                  <FieldLabel htmlFor="email">Email</FieldLabel>
-                  <Input
-                    autoFocus
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    placeholder="Your email"
-                  />
-                  {errors.email && <FieldError>{errors.email}</FieldError>}
-                </Field>
-                <Field data-invalid={!!errors.password}>
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    placeholder="Your password"
-                  />
-                  {errors.password && (
-                    <FieldError>{errors.password}</FieldError>
-                  )}
-                </Field>
-                <Field data-invalid={!!errors.confirm}>
-                  <FieldLabel htmlFor="confirm">Confirm password</FieldLabel>
-                  <Input
-                    id="confirm"
-                    name="confirm"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    placeholder="Confirm your password"
-                  />
-                  {errors.confirm && <FieldError>{errors.confirm}</FieldError>}
-                </Field>
-              </FieldGroup>
-              <Button type="submit" className="w-full text-lg">
-                Create account
-              </Button>
-            </FieldSet>
-          </Form>
-          <div className="text-center text-sm">
-            <ActiveLink to="/sign-in" variant="button">
-              Already have an account? Sign in
-            </ActiveLink>
-          </div>
-        </CardContent>
-      </Card>
-    </main>
+    <AuthForm
+      title="Create account"
+      form={
+        <Form method="post">
+          <FieldSet>
+            <FieldGroup>
+              <Field data-invalid={!!errors.email}>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
+                  autoFocus
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  placeholder="Your email"
+                />
+                {errors.email && <FieldError>{errors.email}</FieldError>}
+              </Field>
+              <Field data-invalid={!!errors.password}>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  placeholder="Your password"
+                />
+                {errors.password && <FieldError>{errors.password}</FieldError>}
+              </Field>
+              <Field data-invalid={!!errors.confirm}>
+                <FieldLabel htmlFor="confirm">Confirm password</FieldLabel>
+                <Input
+                  id="confirm"
+                  name="confirm"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  placeholder="Confirm your password"
+                />
+                {errors.confirm && <FieldError>{errors.confirm}</FieldError>}
+              </Field>
+            </FieldGroup>
+            <Button type="submit" className="w-full text-lg">
+              Create account
+            </Button>
+          </FieldSet>
+        </Form>
+      }
+      footer={
+        <ActiveLink to="/sign-in" variant="button">
+          Already have an account? Sign in
+        </ActiveLink>
+      }
+    />
   );
 }

@@ -1,7 +1,7 @@
 import { Form, redirect } from "react-router";
 import { ActiveLink } from "~/components/ui/ActiveLink";
+import AuthForm from "~/components/ui/AuthForm";
 import { Button } from "~/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 import {
   Field,
   FieldError,
@@ -31,53 +31,51 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function SignIn({ actionData }: Route.ComponentProps) {
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      <Card className="fade-in-0 zoom-in-95 w-full max-w-md animate-in bg-secondary-background text-secondary-foreground duration-300">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">Sign in</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-6">
-          <Form method="post">
-            <FieldSet>
-              <FieldGroup>
-                <Field>
-                  <FieldLabel htmlFor="email">Email</FieldLabel>
-                  <Input
-                    autoFocus
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                  />
-                </Field>
-              </FieldGroup>
-              {actionData?.error && <FieldError>{actionData.error}</FieldError>}
-              <Button type="submit" className="w-full text-lg">
-                Sign in
-              </Button>
-            </FieldSet>
-          </Form>
-          <div className="flex flex-col gap-2 text-center">
-            <ActiveLink to="/password-recovery">
-              Forgot your password?
-            </ActiveLink>
-            <ActiveLink to="/sign-up" variant="button">
-              Don't have an account? Sign up
-            </ActiveLink>
-          </div>
-        </CardContent>
-      </Card>
-    </main>
+    <AuthForm
+      title="Sign in"
+      form={
+        <Form method="post">
+          <FieldSet>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
+                  autoFocus
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  placeholder="Your email"
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  placeholder="Your password"
+                />
+              </Field>
+            </FieldGroup>
+            {actionData?.error && <FieldError>{actionData.error}</FieldError>}
+            <Button type="submit" className="w-full text-lg">
+              Sign in
+            </Button>
+          </FieldSet>
+        </Form>
+      }
+      footer={
+        <>
+          <ActiveLink to="/password-recovery">Forgot your password?</ActiveLink>
+          <ActiveLink to="/sign-up" variant="button">
+            Don't have an account? Sign up
+          </ActiveLink>
+        </>
+      }
+    />
   );
 }
