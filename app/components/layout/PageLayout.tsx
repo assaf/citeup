@@ -7,7 +7,7 @@ import { useGoogleAnalytics } from "~/lib/useAnalytics";
 import PageFooter from "./PageFooter";
 import PageHeader from "./PageHeader";
 
-const title = "citeup.com — Monitor AI citation visibility";
+const title = "CiteUp — Monitor AI citation visibility";
 const url = "https://citeup.com/";
 
 export type HeaderLink = {

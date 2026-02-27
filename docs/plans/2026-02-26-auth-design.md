@@ -2,7 +2,7 @@
 
 ## Overview
 
-Sign-in, sign-up, and password recovery pages for citeup. Standard email/password auth with session cookies and Resend for transactional email.
+Sign-in, sign-up, and password recovery pages for CiteUp. Standard email/password auth with session cookies and Resend for transactional email.
 
 ---
 
@@ -55,6 +55,7 @@ Update root loader guard to exempt `/sign-up` and paths starting with `/password
 ### createSession helper
 
 Creates a `Session` row with:
+
 - `token`: `crypto.randomUUID()`
 - `userId`
 - `ipAddress`: from `X-Forwarded-For` or `request.socket.remoteAddress`

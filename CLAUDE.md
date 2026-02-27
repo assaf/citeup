@@ -20,7 +20,7 @@ Single test file: `pnpm vitest run test/llm-visibility/claudeClient.test.ts`
 
 ## Architecture
 
-**citeup** monitors whether a domain gets cited by AI platforms, by querying them with predefined search queries and recording which URLs appear.
+**CiteUp** monitors whether a domain gets cited by AI platforms, by querying them with predefined search queries and recording which URLs appear.
 
 **Query pipeline:** `queryAccount.ts` fans out to all platforms in parallel → `queryPlatform.ts` runs one platform (idempotent, skips if run exists within 24h) → per-platform clients (`claudeClient`, `openaiClient`, `geminiClient`, `perplexityClient`) implement `QueryFn` using Vercel AI SDK with web search forced on → results stored as `CitationQueryRun` + `CitationQuery[]`. Hardcoded queries live in `app/lib/llm-visibility/queries.ts`.
 

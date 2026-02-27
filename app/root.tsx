@@ -31,7 +31,13 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   // No valid session — capture UTM + referrer before redirecting
   const url = new URL(request.url);
-  const PUBLIC_PATHS = ["/sign-in", "/sign-up", "/password-recovery"];
+  const PUBLIC_PATHS = [
+    "/sign-in",
+    "/sign-up",
+    "/password-recovery",
+    "/terms",
+    "/privacy",
+  ];
   if (
     PUBLIC_PATHS.some((p) => url.pathname === p) ||
     url.pathname.startsWith("/reset-password/") ||
@@ -56,7 +62,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 export function meta({ data }: Route.MetaArgs): Route.MetaDescriptors {
   const ogImage = data ? `${data.baseUrl}/og-image.png` : "/og-image.png";
   return [
-    { title: "citeup — Monitor LLM citation visibility" },
+    { title: "CiteUp — Monitor LLM citation visibility" },
     {
       name: "description",
       content: "Monitor LLM citation visibility for your brand.",

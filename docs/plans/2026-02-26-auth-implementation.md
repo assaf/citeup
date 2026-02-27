@@ -13,6 +13,7 @@
 ## Task 1: Schema — add PasswordRecoveryToken, make Account.hostname optional, migrate
 
 **Files:**
+
 - Modify: `prisma/schema.prisma`
 
 **Step 1: Edit schema**
@@ -102,6 +103,7 @@ git commit -m "chore: add bcryptjs and resend"
 ## Task 3: Add env vars
 
 **Files:**
+
 - Modify: `app/lib/envVars.ts`
 
 **Step 1: Edit**
@@ -118,6 +120,7 @@ EMAIL_FROM: env.get("EMAIL_FROM").required().asString(),
 **Step 2: Add to .env**
 
 Add to your local `.env`:
+
 ```
 RESEND_API_KEY=re_...
 APP_URL=http://localhost:5173
@@ -142,6 +145,7 @@ git commit -m "feat: add Resend and APP_URL env vars"
 ## Task 4: Create app/lib/auth.server.ts
 
 **Files:**
+
 - Create: `app/lib/auth.server.ts`
 
 **Step 1: Write the file**
@@ -209,6 +213,7 @@ git commit -m "feat: add auth helpers (hashPassword, verifyPassword, createSessi
 ## Task 5: Create app/lib/email.server.ts
 
 **Files:**
+
 - Create: `app/lib/email.server.ts`
 
 **Step 1: Write the file**
@@ -225,8 +230,8 @@ export async function sendPasswordRecoveryEmail(to: string, token: string) {
   await resend.emails.send({
     from: envVars.EMAIL_FROM,
     to,
-    subject: "Reset your citeup password",
-    html: `<p>Click <a href="${url}">this link</a> to sign in to citeup. The link expires in 30 minutes and can only be used once.</p><p>If you didn't request this, ignore this email.</p>`,
+    subject: "Reset your CiteUp password",
+    html: `<p>Click <a href="${url}">this link</a> to sign in to CiteUp. The link expires in 30 minutes and can only be used once.</p><p>If you didn't request this, ignore this email.</p>`,
   });
 }
 ```
@@ -249,6 +254,7 @@ git commit -m "feat: add Resend email helper for password recovery"
 ## Task 6: Update root loader guard
 
 **Files:**
+
 - Modify: `app/root.tsx`
 
 **Step 1: Edit the guard check**
@@ -285,6 +291,7 @@ git commit -m "feat: exempt sign-up and password recovery from auth redirect"
 ## Task 7: Sign-in route
 
 **Files:**
+
 - Create: `app/routes/sign-in/route.tsx`
 
 **Step 1: Write the file**
@@ -406,6 +413,7 @@ git commit -m "feat: add sign-in page"
 ## Task 8: Sign-up route
 
 **Files:**
+
 - Create: `app/routes/sign-up/route.tsx`
 
 **Step 1: Write the file**
@@ -558,6 +566,7 @@ git commit -m "feat: add sign-up page"
 ## Task 9: Password recovery route (email form)
 
 **Files:**
+
 - Create: `app/routes/password-recovery/route.tsx`
 
 **Step 1: Write the file**
@@ -679,6 +688,7 @@ git commit -m "feat: add password recovery request page"
 This route handles the magic link from the recovery email. It lives at `/reset-password/:token` (separate from the form at `/password-recovery`) to avoid React Router nesting conflicts.
 
 **Files:**
+
 - Create: `app/routes/reset-password.$token/route.tsx`
 
 The folder name `reset-password.$token` is how flatRoutes maps a dynamic segment. The `$` prefix marks the parameter.
