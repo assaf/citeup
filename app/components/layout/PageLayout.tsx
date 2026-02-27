@@ -50,48 +50,7 @@ export default function PageLayout({
 
         <Meta />
         <Links />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@graph": [
-              {
-                "@type": "Organization",
-                name: "CiteUp",
-                description: "Monitor AI citation visibility for your brand.",
-                email: "hello@citeup.com",
-                url: "https://citeup.com",
-                logo: "https://citeup.com/icon-192.png",
-                image: "https://citeup.com/images/og-image.png",
-                contactPoint: {
-                  "@type": "ContactPoint",
-                  email: "hello@citeup.com",
-                  contactType: "Customer Service",
-                },
-                slogan: "Monitor AI citation visibility for your brand.",
-              },
-              {
-                "@id": "https://citeup.com",
-                "@type": "WebSite",
-                name: "CiteUp",
-                description: "Monitor AI citation visibility for your brand.",
-                inLanguage: "en",
-                url: "https://citeup.com",
-                keywords:
-                  "AI citation visibility, AI citation monitoring, AI citation tracking, AI citation analysis, AI citation optimization, AI citation improvement",
-              },
-              {
-                "@id": "https://citeup.com#primaryimage",
-                "@type": "ImageObject",
-                name: "OG Image",
-                caption: "Monitor AI citation visibility for your brand.",
-                contentUrl: "https://citeup.com/images/og-image.png",
-                url: "https://citeup.com/images/og-image.png",
-                height: 1024,
-                width: 1024,
-              },
-            ],
-          })}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </head>
       <body className="relative">
         <DevTag />
@@ -124,3 +83,44 @@ function DevTag() {
     )
   );
 }
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      name: "CiteUp",
+      description: "Monitor AI citation visibility for your brand.",
+      email: "hello@citeup.com",
+      url: "https://citeup.com",
+      logo: "https://citeup.com/icon-192.png",
+      image: "https://citeup.com/images/og-image.png",
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "hello@citeup.com",
+        contactType: "Customer Service",
+      },
+      slogan: "Monitor AI citation visibility for your brand.",
+    },
+    {
+      "@id": "https://citeup.com",
+      "@type": "WebSite",
+      name: "CiteUp",
+      description: "Monitor AI citation visibility for your brand.",
+      inLanguage: "en",
+      url: "https://citeup.com",
+      keywords:
+        "AI citation visibility, AI citation monitoring, AI citation tracking, AI citation analysis, AI citation optimization, AI citation improvement",
+    },
+    {
+      "@id": "https://citeup.com/images/og-image.png",
+      "@type": "ImageObject",
+      name: "OG Image",
+      caption: "Monitor AI citation visibility for your brand.",
+      contentUrl: "https://citeup.com/images/og-image.png",
+      url: "https://citeup.com/images/og-image.png",
+      height: 1024,
+      width: 1024,
+    },
+  ],
+};

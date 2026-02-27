@@ -1,5 +1,6 @@
 import { useSearchParams } from "react-router";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/Tabs";
+import { requireUser } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/route";
 import RecentVisibility from "./RecentVisibility";
@@ -12,9 +13,10 @@ const PLATFORMS = [
   { name: "gemini", label: "Gemini" },
 ] as const;
 
-export async function loader() {
+export async function loader({ request }: Route.LoaderArgs) {
+  const user = await requireUser(request);
   const site = await prisma.site.findFirst({
-    where: { domain: "rentail.space" },
+    where: { accountId: user.accountId },
   });
   if (!site) throw new Response("No site found", { status: 404 });
 

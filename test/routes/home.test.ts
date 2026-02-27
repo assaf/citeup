@@ -3,7 +3,7 @@ import { beforeAll, describe, it } from "vitest";
 import prisma from "~/lib/prisma.server";
 import type { User } from "~/prisma";
 import { removeElements } from "../helpers/formatHTML";
-import { goto } from "../helpers/launchBrowser";
+import { goto, port } from "../helpers/launchBrowser";
 import { signIn } from "../helpers/signIn";
 import "../helpers/toMatchInnerHTML";
 import "../helpers/toMatchScreenshot";
@@ -120,6 +120,16 @@ function daysAgo(n: number): Date {
 }
 
 // ---------------------------------------------------------------------------
+
+describe("unauthenticated access", () => {
+  it("redirects to /sign-in", async () => {
+    const response = await fetch(`http://localhost:${port}/`, {
+      redirect: "manual",
+    });
+    expect(response.status).toBe(302);
+    expect(response.headers.get("location")).toContain("/sign-in");
+  });
+});
 
 describe("home route", () => {
   let user: User;

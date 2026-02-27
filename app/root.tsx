@@ -2,67 +2,17 @@ import {
   type HeadersFunction,
   Outlet,
   isRouteErrorResponse,
-  redirect,
 } from "react-router";
 import { WaveLoading } from "respinner";
-import {
-  type UtmCookieData,
-  sessionCookie,
-  utmCookie,
-} from "~/lib/cookies.server";
-import prisma from "~/lib/prisma.server";
+import { getCurrentUser } from "~/lib/auth.server";
 import type { Route } from "./+types/root";
 import PageLayout from "./components/layout/PageLayout";
 import "./global.css";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  const token = await sessionCookie.parse(cookieHeader);
   const baseUrl = new URL(request.url).origin;
-
-  if (token) {
-    const session = await prisma.session.findUnique({
-      where: { token },
-      include: { user: true },
-    });
-
-    if (session) return { user: session.user, baseUrl };
-  }
-
-  // No valid session — capture UTM + referrer before redirecting
-  const url = new URL(request.url);
-  const PUBLIC_PATHS = [
-    "/sign-in",
-    "/sign-up",
-    "/password-recovery",
-    "/terms",
-    "/privacy",
-    "/about",
-    "/pricing",
-    "/faq",
-    "/blog",
-  ];
-  if (
-    PUBLIC_PATHS.some(
-      (p) => url.pathname === p || url.pathname.startsWith(`${p}/`),
-    ) ||
-    url.pathname.startsWith("/reset-password/") ||
-    url.pathname.startsWith("/verify-email/")
-  )
-    return { user: null, baseUrl };
-
-  const utmData: UtmCookieData = {
-    referrer: request.headers.get("Referer") ?? null,
-    utmSource: url.searchParams.get("utm_source"),
-    utmMedium: url.searchParams.get("utm_medium"),
-    utmCampaign: url.searchParams.get("utm_campaign"),
-    utmTerm: url.searchParams.get("utm_term"),
-    utmContent: url.searchParams.get("utm_content"),
-  };
-
-  return redirect("/sign-in", {
-    headers: { "Set-Cookie": await utmCookie.serialize(utmData) },
-  });
+  const user = await getCurrentUser(request);
+  return { user, baseUrl };
 }
 
 export function meta({ data }: Route.MetaArgs): Route.MetaDescriptors {
