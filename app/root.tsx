@@ -38,12 +38,6 @@ export function meta({ data }: Route.MetaArgs): Route.MetaDescriptors {
     },
     { name: "twitter:image", content: ogImage },
     { name: "robots", content: "index, follow" },
-    { rel: "sitemap", href: "https://citeup.com/sitemap.xml" },
-    {
-      rel: "alternate",
-      href: "https://citeup.com/blog/feed",
-      type: "application/atom+xml",
-    },
   ];
 }
 
@@ -52,6 +46,13 @@ export const headers: HeadersFunction = () => ({
 });
 
 export const links: Route.LinksFunction = () => [
+  {
+    rel: "alternate",
+    type: "application/atom+xml",
+    title: "The CiteUp Blog",
+    href: "https://citeup.com/blog/feed",
+  },
+  { rel: "sitemap", type: "application/xml", href: "https://citeup.com/sitemap.xml" },
   { rel: "icon", href: "/icon-192.png", type: "image/png", sizes: "192x192" },
   { rel: "icon", href: "/icon-512.png", type: "image/png", sizes: "512x512" },
   { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
