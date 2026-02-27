@@ -1,6 +1,7 @@
 {
 	"name": "citeup",
 	"type": "module",
+	"license": "AGPL-3.0-only",
 	"scripts": {
 		"build": "prisma generate && react-router build",
 		"check": "secretlint **/* --format stylish && biome lint && tsc --noEmit --strict",
