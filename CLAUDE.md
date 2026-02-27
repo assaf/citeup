@@ -16,15 +16,19 @@ pnpm build       # prisma generate + react-router build
 
 Single test file: `pnpm vitest run test/llm-visibility/claudeClient.test.ts`
 
-Tests are integration tests that call real LLM APIs — require API keys in `.env`. Database: `pnpm prisma migrate dev|deploy|db seed`.
+`test/llm-visibility/` — integration tests calling real LLM APIs (require API keys in `.env`). `test/routes/` — Playwright browser tests that spin up the full server. Database: `pnpm prisma migrate dev|deploy|db seed`.
 
 ## Architecture
 
-**citeup** tracks LLM citation visibility — queries AI platforms with predefined search queries and records which URLs appear in responses, so you can monitor whether a domain gets cited.
+**citeup** monitors whether a domain gets cited by AI platforms, by querying them with predefined search queries and recording which URLs appear.
 
-Data flow: `queryAccount.ts` fans out to all platforms in parallel → `queryPlatform.ts` runs one platform (idempotent, skips if run exists within 24h) → per-platform clients (`claudeClient`, `openaiClient`, `geminiClient`, `perplexityClient`) implement the `QueryFn` interface using Vercel AI SDK with web search forced on → results stored as `CitationQueryRun` → `CitationQuery[]` in Postgres.
+**Query pipeline:** `queryAccount.ts` fans out to all platforms in parallel → `queryPlatform.ts` runs one platform (idempotent, skips if run exists within 24h) → per-platform clients (`claudeClient`, `openaiClient`, `geminiClient`, `perplexityClient`) implement `QueryFn` using Vercel AI SDK with web search forced on → results stored as `CitationQueryRun` + `CitationQuery[]`. Hardcoded queries live in `app/lib/llm-visibility/queries.ts`.
 
-Key files: `app/lib/llm-visibility/` contains all query logic; `app/lib/prisma.server.ts` is the singleton DB client; `prisma/schema.prisma` defines the three models. The `~/` alias maps to `app/`. Env vars are validated in `app/lib/envVars.ts` (`DATABASE_URL` required; LLM API keys optional per platform).
+**Auth:** `app/lib/auth.server.ts` (bcryptjs, session tokens). Routes: `sign-in`, `sign-up`, `password-recovery`, `verify-email.$token`, `reset-password.$token`. Email via Resend (`app/lib/resend.server.ts`).
+
+**Schema** (`prisma/schema.prisma`): Account, Site, User, Session, CitationQueryRun, CitationQuery, EmailVerificationToken, PasswordRecoveryToken.
+
+**Path aliases:** `~/` → `app/`; `~/prisma` → `prisma/generated/client` (not `@prisma/client`); `~/test/` → `test/`. Required env vars: `DATABASE_URL`, `SESSION_SECRET`. LLM API keys optional per platform.
 
 ## Coding style
 
