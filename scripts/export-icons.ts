@@ -78,4 +78,42 @@ const ico = buildIco(pngs);
 writeFileSync(resolve("public/favicon.ico"), ico);
 console.info("Wrote public/favicon.ico (16, 32, 48px)");
 
+// OG image — 1200×630, horizontal layout
+const fontPath = resolve("public/fonts/Archivo-VariableFont_wdth,wght.ttf");
+await page.setViewportSize({ width: 1200, height: 630 });
+await page.setContent(`
+  <html><head><style>
+    @font-face {
+      font-family: 'Archivo';
+      src: url('file://${fontPath}') format('truetype');
+      font-weight: 100 900;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1200px; height: 630px; background: #111111;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .wrap { display: flex; align-items: center; gap: 72px; padding: 0 100px; }
+    .wordmark {
+      font-family: 'Archivo', sans-serif; font-weight: 800;
+      font-size: 108px; color: #ffffff; letter-spacing: -4px; line-height: 1;
+    }
+    .tagline {
+      font-family: 'Archivo', sans-serif; font-weight: 400;
+      font-size: 26px; color: #6b7280; margin-top: 16px;
+    }
+  </style></head><body>
+    <div class="wrap">
+      <img src="data:image/svg+xml;base64,${svgBase64}" width="200" height="200"/>
+      <div>
+        <div class="wordmark">CiteUp</div>
+        <div class="tagline">Monitor LLM citation visibility</div>
+      </div>
+    </div>
+  </body></html>
+`);
+const ogPng = await page.screenshot({ omitBackground: false });
+writeFileSync(resolve("public/og-image.png"), ogPng);
+console.info("Wrote public/og-image.png (1200x630)");
+
 await browser.close();

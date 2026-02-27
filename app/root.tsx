@@ -18,6 +18,7 @@ import "./global.css";
 export async function loader({ request }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const token = await sessionCookie.parse(cookieHeader);
+  const baseUrl = new URL(request.url).origin;
 
   if (token) {
     const session = await prisma.session.findUnique({
@@ -25,7 +26,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       include: { user: true },
     });
 
-    if (session) return { user: session.user };
+    if (session) return { user: session.user, baseUrl };
   }
 
   // No valid session — capture UTM + referrer before redirecting
@@ -36,7 +37,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     url.pathname.startsWith("/reset-password/") ||
     url.pathname.startsWith("/verify-email/")
   )
-    return { user: null };
+    return { user: null, baseUrl };
 
   const utmData: UtmCookieData = {
     referrer: request.headers.get("Referer") ?? null,
@@ -52,11 +53,28 @@ export async function loader({ request }: Route.LoaderArgs) {
   });
 }
 
-export function meta(): Route.MetaDescriptors {
+export function meta({ data }: Route.MetaArgs): Route.MetaDescriptors {
+  const ogImage = data ? `${data.baseUrl}/og-image.png` : "/og-image.png";
   return [
     { title: "citeup — Monitor LLM citation visibility" },
-    { description: "Monitor LLM citation visibility for your brand." },
-    { keywords: "citeup, llm, visibility monitoring, citation tracking" },
+    {
+      name: "description",
+      content: "Monitor LLM citation visibility for your brand.",
+    },
+    { property: "og:title", content: "CiteUp" },
+    {
+      property: "og:description",
+      content: "Monitor LLM citation visibility for your brand.",
+    },
+    { property: "og:image", content: ogImage },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: "CiteUp" },
+    {
+      name: "twitter:description",
+      content: "Monitor LLM citation visibility for your brand.",
+    },
+    { name: "twitter:image", content: ogImage },
   ];
 }
 
