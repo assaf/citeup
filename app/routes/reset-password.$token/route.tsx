@@ -1,3 +1,4 @@
+import { invariant } from "es-toolkit";
 import { Link, redirect } from "react-router";
 import {
   Card,
@@ -24,7 +25,8 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     select: { userId: true },
   });
 
-  const setCookie = await createSession(record!.userId, request);
+  invariant(record, "token not found after atomic update");
+  const setCookie = await createSession(record.userId, request);
 
   return redirect("/", { headers: { "Set-Cookie": setCookie } });
 }
