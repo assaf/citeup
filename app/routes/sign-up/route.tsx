@@ -1,11 +1,7 @@
-import { Form, Link, redirect } from "react-router";
+import { Form, redirect } from "react-router";
+import { ActiveLink } from "~/components/ui/ActiveLink";
 import { Button } from "~/components/ui/Button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 import {
   Field,
   FieldError,
@@ -32,8 +28,7 @@ export async function action({ request }: Route.ActionArgs) {
   if (password.length < 6)
     errors.password = "Password must be at least 6 characters";
 
-  if (password !== confirm)
-    errors.confirm = "Passwords do not match";
+  if (password !== confirm) errors.confirm = "Passwords do not match";
 
   if (Object.keys(errors).length > 0) return { errors };
 
@@ -60,9 +55,9 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card className="fade-in-0 zoom-in-95 w-full max-w-md animate-in bg-secondary-background text-secondary-foreground duration-300">
         <CardHeader>
-          <CardTitle className="text-2xl">Create account</CardTitle>
+          <CardTitle className="text-center text-2xl">Create account</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
           <Form method="post">
@@ -71,6 +66,7 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
                 <Field data-invalid={!!errors.email}>
                   <FieldLabel htmlFor="email">Email</FieldLabel>
                   <Input
+                    autoFocus
                     id="email"
                     name="email"
                     type="email"
@@ -101,20 +97,18 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
                     autoComplete="new-password"
                     required
                   />
-                  {errors.confirm && (
-                    <FieldError>{errors.confirm}</FieldError>
-                  )}
+                  {errors.confirm && <FieldError>{errors.confirm}</FieldError>}
                 </Field>
               </FieldGroup>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full text-lg">
                 Create account
               </Button>
             </FieldSet>
           </Form>
           <div className="text-center text-sm">
-            <Link to="/sign-in" className="underline">
+            <ActiveLink to="/sign-in" variant="button">
               Already have an account? Sign in
-            </Link>
+            </ActiveLink>
           </div>
         </CardContent>
       </Card>

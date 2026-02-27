@@ -1,11 +1,8 @@
-import { Form, Link } from "react-router";
+import { ArrowLeftIcon, MailIcon } from "lucide-react";
+import { Form } from "react-router";
+import { ActiveLink } from "~/components/ui/ActiveLink";
 import { Button } from "~/components/ui/Button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 import {
   Field,
   FieldGroup,
@@ -41,9 +38,11 @@ export default function PasswordRecovery({ actionData }: Route.ComponentProps) {
   if (actionData?.sent) {
     return (
       <main className="flex min-h-screen items-center justify-center p-4">
-        <Card className="w-full max-w-md">
+        <Card className="fade-in-0 zoom-in-95 w-full max-w-md animate-in bg-secondary-background text-secondary-foreground duration-300">
           <CardHeader>
-            <CardTitle className="text-2xl">Check your email</CardTitle>
+            <CardTitle className="text-center text-2xl">
+              Check your email
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm">
@@ -58,9 +57,9 @@ export default function PasswordRecovery({ actionData }: Route.ComponentProps) {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card className="fade-in-0 zoom-in-95 w-full max-w-md animate-in bg-secondary-background text-secondary-foreground duration-300">
         <CardHeader>
-          <CardTitle className="text-2xl">Reset password</CardTitle>
+          <CardTitle className="text-center text-2xl">Reset password</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
           <Form method="post">
@@ -69,6 +68,7 @@ export default function PasswordRecovery({ actionData }: Route.ComponentProps) {
                 <Field>
                   <FieldLabel htmlFor="email">Email</FieldLabel>
                   <Input
+                    autoFocus
                     id="email"
                     name="email"
                     type="email"
@@ -77,15 +77,17 @@ export default function PasswordRecovery({ actionData }: Route.ComponentProps) {
                   />
                 </Field>
               </FieldGroup>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full text-lg">
+                <MailIcon className="size-4" />
                 Send recovery link
               </Button>
             </FieldSet>
           </Form>
           <div className="text-center text-sm">
-            <Link to="/sign-in" className="underline">
+            <ActiveLink to="/sign-in" variant="button">
+              <ArrowLeftIcon className="size-4" />
               Back to sign in
-            </Link>
+            </ActiveLink>
           </div>
         </CardContent>
       </Card>

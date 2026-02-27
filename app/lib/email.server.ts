@@ -1,7 +1,5 @@
-import { Resend } from "resend";
 import envVars from "~/lib/envVars";
-
-const resend = new Resend(envVars.RESEND_API_KEY);
+import resend from "~/lib/resend.server";
 
 export async function sendPasswordRecoveryEmail(to: string, token: string) {
   const url = `${envVars.APP_URL}/reset-password/${token}`;

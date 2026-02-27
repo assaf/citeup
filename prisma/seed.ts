@@ -65,7 +65,16 @@ async function main() {
   const site =
     existing ??
     (await prisma.site.create({
-      data: { domain: HOSTNAME, account: { create: {} } },
+      data: {
+        domain: HOSTNAME,
+        account: {
+          create: {
+            users: {
+              create: { email: "assaf@labnotes.org", passwordHash: "test" },
+            },
+          },
+        },
+      },
     }));
 
   console.info("Site: %s (%s)", site.id, site.domain);
