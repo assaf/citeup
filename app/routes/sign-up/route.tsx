@@ -84,6 +84,7 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
                     type="email"
                     autoComplete="email"
                     required
+                    placeholder="Your email"
                   />
                   {errors.email && <FieldError>{errors.email}</FieldError>}
                 </Field>
@@ -95,6 +96,7 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
                     type="password"
                     autoComplete="new-password"
                     required
+                    placeholder="Your password"
                   />
                   {errors.password && (
                     <FieldError>{errors.password}</FieldError>
@@ -108,6 +110,7 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
                     type="password"
                     autoComplete="new-password"
                     required
+                    placeholder="Confirm your password"
                   />
                   {errors.confirm && <FieldError>{errors.confirm}</FieldError>}
                 </Field>
