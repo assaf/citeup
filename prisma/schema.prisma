@@ -15,8 +15,9 @@ datasource db {
 }
 
 model Account {
-  id        String                      @id @default(cuid())
+  id        String   @id @default(cuid())
   createdAt DateTime @map("created_at") @default(now())
+  hostname  String?  @map("hostname")
   users     User[]
   sites     Site[]
 
@@ -92,9 +93,23 @@ model User {
   account         Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
   email           String    @map("email")             @unique
   passwordHash    String    @map("password_hash")
-  emailVerifiedAt DateTime? @map("email_verified_at")
-  sessions        Session[]
+  emailVerifiedAt          DateTime?               @map("email_verified_at")
+  sessions                 Session[]
+  passwordRecoveryTokens   PasswordRecoveryToken[]
 
   @@index([accountId])
   @@map("users")
+}
+
+model PasswordRecoveryToken {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @map("created_at") @default(now())
+  token     String    @unique @map("token")
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+
+  @@index([userId])
+  @@map("password_recovery_tokens")
 }
