@@ -37,6 +37,9 @@ export async function loader({ request }: Route.LoaderArgs) {
     "/password-recovery",
     "/terms",
     "/privacy",
+    "/about",
+    "/pricing",
+    "/faq",
   ];
   if (
     PUBLIC_PATHS.some((p) => url.pathname === p) ||

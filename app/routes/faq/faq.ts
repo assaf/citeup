@@ -1,0 +1,92 @@
+export default [
+  {
+    category: "Getting Started",
+    questions: [
+      {
+        question: "What is CiteUp?",
+        answer:
+          "CiteUp monitors whether AI platforms cite your domain. We run your search queries across Claude, ChatGPT, Gemini, and Perplexity, record which URLs appear in responses, and show you the trend over time.",
+      },
+      {
+        question: "What is LLM citation visibility?",
+        answer:
+          "When someone asks an AI platform a question, the AI often cites external sources in its answer. Citation visibility is a measure of how often your domain appears in those citations for queries relevant to your business.",
+      },
+      {
+        question: "Why does LLM citation visibility matter?",
+        answer:
+          "AI platforms are increasingly how people discover products, services, and information. If you're not being cited, you're invisible to a growing share of search traffic. CiteUp tells you where you stand.",
+      },
+      {
+        question: "How do I get started?",
+        answer:
+          "Create an account, add your domain, and we'll start running your queries across all supported platforms. Your first results appear within 24 hours.",
+      },
+    ],
+  },
+  {
+    category: "How It Works",
+    questions: [
+      {
+        question: "How does CiteUp run queries?",
+        answer:
+          "We use the official APIs for each AI platform with web search enabled — the same experience your potential customers have. We don't simulate or proxy responses.",
+      },
+      {
+        question: "How often are queries run?",
+        answer:
+          "Queries run once per platform per day. We skip a platform if a run already exists within the last 24 hours, so you always have fresh daily snapshots without redundant API calls.",
+      },
+      {
+        question: "What counts as a citation?",
+        answer:
+          "A citation is any URL that appears in an AI platform's response to a query. We record the full list of cited URLs and check whether your domain appears — and at what position.",
+      },
+      {
+        question: "Can I customize the search queries?",
+        answer:
+          "Yes. You define the queries that matter to your business. These are the questions your target audience is likely asking AI platforms.",
+      },
+    ],
+  },
+  {
+    category: "Platforms & Data",
+    questions: [
+      {
+        question: "Which AI platforms does CiteUp monitor?",
+        answer:
+          "We currently monitor Claude (Anthropic), ChatGPT (OpenAI), Gemini (Google), and Perplexity. All four are queried in parallel for each monitoring run.",
+      },
+      {
+        question: "How far back does historical data go?",
+        answer:
+          "From the day you start monitoring. We don't backfill historical data, but your visibility trend builds up automatically with each daily run.",
+      },
+      {
+        question: "What if an AI platform doesn't cite any URLs?",
+        answer:
+          "We record the response even when no URLs are cited. A zero-citation result is meaningful data — it tells you the platform answered without referencing external sources.",
+      },
+    ],
+  },
+  {
+    category: "Pricing & Account",
+    questions: [
+      {
+        question: "Is there a free plan?",
+        answer:
+          "Yes. The Starter plan lets you monitor one domain across all four platforms at no cost.",
+      },
+      {
+        question: "Can I cancel anytime?",
+        answer:
+          "Yes. No long-term commitments. Cancel at any time from your account settings.",
+      },
+      {
+        question: "How do I contact support?",
+        answer:
+          "Email us at hello@citeup.com. We respond within 24 hours on business days.",
+      },
+    ],
+  },
+];

@@ -5,7 +5,6 @@ const links = [
   {
     title: "Product",
     links: [
-      { to: "/benefits", label: "Benefits" },
       { to: "/pricing", label: "Pricing" },
       { to: "/faq", label: "FAQ" },
     ],
@@ -16,8 +15,6 @@ const links = [
       { to: "/about", label: "About" },
       { to: "/blog", label: "Blog" },
       { to: "mailto:hello@citeup.com", label: "Contact" },
-      { to: "/glossary", label: "Glossary" },
-      { to: "/for-ai-assistants", label: "For AI Assistants" },
     ],
   },
   {
