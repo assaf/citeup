@@ -1,6 +1,6 @@
 ---
 title: "How CiteUp Was Born: From Rentail to LLM Citation Monitoring"
-image: "2026-02-27-how-citeup-was-born.png"
+image: "2026-02-26-how-citeup-was-born.png"
 alt: "Graph showing LLM citation visibility metrics rising over time, representing a brand's growing presence in AI-generated search results"
 summary: "CiteUp started as a side question while building Rentail: are AI platforms actually citing us? That question exposed a gap nobody had filled—real-time monitoring of LLM citation visibility."
 ---

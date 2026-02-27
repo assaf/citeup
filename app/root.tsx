@@ -87,6 +87,13 @@ export function meta({ data }: Route.MetaArgs): Route.MetaDescriptors {
       content: "Monitor LLM citation visibility for your brand.",
     },
     { name: "twitter:image", content: ogImage },
+    { name: "robots", content: "index, follow" },
+    { rel: "sitemap", href: "https://citeup.com/sitemap.xml" },
+    {
+      rel: "alternate",
+      href: "https://citeup.com/blog/feed",
+      type: "application/atom+xml",
+    },
   ];
 }
 
