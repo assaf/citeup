@@ -5,7 +5,10 @@ dotenv.configDotenv({ quiet: true });
 
 const envVars = {
   ANTHROPIC_API_KEY: env.get("ANTHROPIC_API_KEY").required(false).asString(),
-  APP_URL: env.get("APP_URL").default("http://localhost:5173").asUrlString(),
+  APP_URL: env
+    .get("APP_URL")
+    .default("https://citeup.vercel.app")
+    .asUrlString(),
   DATABASE_URL: env.get("DATABASE_URL").required().asUrlString(),
   EMAIL_FROM: env.get("EMAIL_FROM").default("noreply@citeup.com").asString(),
   GOOGLE_GENERATIVE_AI_API_KEY: env
