@@ -24,7 +24,7 @@ export default defineConfig(async (config) =>
       ),
     ],
     optimizeDeps: {
-      include: ["react", "react-dom", "streamdown", "rehype-harden"],
+      include: ["streamdown", "rehype-harden"],
     },
     ssr: {
       noExternal: [

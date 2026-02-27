@@ -52,6 +52,18 @@ describe("profile route", () => {
       ).toBeVisible();
     });
 
+    it("HTML matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchInnerHTML({
+        name: "profile-email-update",
+      });
+    });
+
+    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchScreenshot({
+        name: "profile-email-update",
+      });
+    });
+
     it("shows error for invalid email", async () => {
       await page
         .getByRole("textbox", { name: "email" })
@@ -99,18 +111,6 @@ describe("profile route", () => {
         expect(updatedUser.email).toBe("newemail@example.com");
       });
     });
-
-    it("HTML matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
-        name: "profile-email-update",
-      });
-    });
-
-    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchScreenshot({
-        name: "profile-email-update",
-      });
-    });
   });
 
   describe("password update", () => {
@@ -134,6 +134,18 @@ describe("profile route", () => {
       await expect(
         page.getByRole("button", { name: "Change password" }),
       ).toBeVisible();
+    });
+
+    it("HTML matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchInnerHTML({
+        name: "profile-password-update",
+      });
+    });
+
+    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchScreenshot({
+        name: "profile-password-update",
+      });
     });
 
     it("shows error for wrong current password", async () => {
@@ -212,17 +224,6 @@ describe("profile route", () => {
         expect(
           await verifyPassword("newpassword456", updatedUser.passwordHash),
         ).toBe(true);
-      });
-    });
-    it("HTML matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
-        name: "profile-password-update",
-      });
-    });
-
-    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchScreenshot({
-        name: "profile-password-update",
       });
     });
   });
