@@ -61,4 +61,18 @@ describe("sign-in route", () => {
     const page = await goto("/sign-in");
     await expect(page).toMatchScreenshot();
   });
+
+  it("clicks the sign-up button and redirects to sign-up page", async () => {
+    const page = await goto("/sign-in");
+    await page.getByRole("link", { name: "Sign up" }).click();
+    await page.waitForURL("**/sign-up");
+    expect(new URL(page.url()).pathname).toBe("/sign-up");
+  });
+
+  it("clicks the forgot password button and redirects to password recovery page", async () => {
+    const page = await goto("/sign-in");
+    await page.getByRole("link", { name: "Forgot your password?" }).click();
+    await page.waitForURL("**/password-recovery");
+    expect(new URL(page.url()).pathname).toBe("/password-recovery");
+  });
 });

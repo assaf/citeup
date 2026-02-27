@@ -2,23 +2,27 @@ import { expect } from "@playwright/test";
 import { beforeAll, describe, it } from "vitest";
 import { hashPassword } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
-import { goto, port } from "../helpers/launchBrowser";
+import { goto } from "../helpers/launchBrowser";
 
 const EMAIL = "recovery-test@example.com";
 const PASSWORD = "test-password-123";
 
 describe("password recovery route", () => {
   beforeAll(async () => {
-    const passwordHash = await hashPassword(PASSWORD);
-    const account = await prisma.account.create({ data: {} });
     await prisma.user.create({
-      data: { email: EMAIL, passwordHash, accountId: account.id },
+      data: {
+        email: EMAIL,
+        passwordHash: await hashPassword(PASSWORD),
+        account: { create: {} },
+      },
     });
   });
 
   it("shows the recovery form", async () => {
     const page = await goto("/password-recovery");
-    await expect(page.getByLabel("Email")).toBeVisible();
+    await expect(
+      page.getByRole("textbox", { name: "Email", exact: true }),
+    ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Send recovery link" }),
     ).toBeVisible();
@@ -26,7 +30,9 @@ describe("password recovery route", () => {
 
   it("shows confirmation for unknown email without creating a token", async () => {
     const page = await goto("/password-recovery");
-    await page.getByLabel("Email").fill("nobody@example.com");
+    await page
+      .getByRole("textbox", { name: "Email", exact: true })
+      .fill("nobody@example.com");
     await page.getByRole("button", { name: "Send recovery link" }).click();
     await expect(page.getByText("Check your email")).toBeVisible();
     const count = await prisma.passwordRecoveryToken.count({
@@ -37,29 +43,29 @@ describe("password recovery route", () => {
 
   it("shows confirmation for known email and creates a recovery token", async () => {
     const page = await goto("/password-recovery");
-    await page.getByLabel("Email").fill(EMAIL);
+    await page.getByRole("textbox", { name: "Email", exact: true }).fill(EMAIL);
     await page.getByRole("button", { name: "Send recovery link" }).click();
     await expect(page.getByText("Check your email")).toBeVisible();
-    const token = await prisma.passwordRecoveryToken.findFirst({
+    const token = await prisma.passwordRecoveryToken.findFirstOrThrow({
       where: { user: { email: EMAIL } },
       orderBy: { createdAt: "desc" },
     });
-    expect(token).not.toBeNull();
-    expect(token?.usedAt).toBeNull();
+    expect(token.usedAt).toBeNull();
   });
 
   it("valid reset link signs user in and redirects to home", async () => {
-    const token = await prisma.passwordRecoveryToken.findFirst({
+    const token = await prisma.passwordRecoveryToken.findFirstOrThrow({
       where: { user: { email: EMAIL }, usedAt: null },
       orderBy: { createdAt: "desc" },
     });
-    expect(token).not.toBeNull();
-    const page = await goto(`/reset-password/${token!.token}`);
+    const page = await goto(`/reset-password/${token.token}`);
     expect(new URL(page.url()).pathname).toBe("/");
   });
 
   it("expired reset link shows link-expired card", async () => {
-    const user = await prisma.user.findUniqueOrThrow({ where: { email: EMAIL } });
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { email: EMAIL },
+    });
     const { token } = await prisma.passwordRecoveryToken.create({
       data: {
         token: crypto.randomUUID(),
@@ -69,5 +75,22 @@ describe("password recovery route", () => {
     });
     const page = await goto(`/reset-password/${token}`);
     await expect(page.getByText("Link expired")).toBeVisible();
+  });
+
+  it("HTML matches baseline", async () => {
+    const page = await goto("/password-recovery");
+    await expect(page).toMatchInnerHTML();
+  });
+
+  it("screenshot matches baseline", async () => {
+    const page = await goto("/password-recovery");
+    await expect(page).toMatchScreenshot();
+  });
+
+  it("clicks the sign-in button and redirects to sign-in page", async () => {
+    const page = await goto("/password-recovery");
+    await page.getByRole("link", { name: "Back to sign in" }).click();
+    await page.waitForURL("**/sign-in");
+    expect(new URL(page.url()).pathname).toBe("/sign-in");
   });
 });

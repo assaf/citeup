@@ -105,4 +105,11 @@ describe("sign-up route", () => {
     const page = await goto("/sign-up");
     await expect(page).toMatchScreenshot();
   });
+
+  it("clicks the sign-in button and redirects to sign-in page", async () => {
+    const page = await goto("/sign-up");
+    await page.getByRole("link", { name: "Sign in" }).click();
+    await page.waitForURL("**/sign-in");
+    expect(new URL(page.url()).pathname).toBe("/sign-in");
+  });
 });
