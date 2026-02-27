@@ -33,7 +33,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   // No valid session — capture UTM + referrer before redirecting
   const url = new URL(request.url);
-  if (url.pathname === "/sign-in") return { user: null };
+  const PUBLIC_PATHS = ["/sign-in", "/sign-up", "/password-recovery"];
+  if (PUBLIC_PATHS.some((p) => url.pathname === p) || url.pathname.startsWith("/reset-password/"))
+    return { user: null };
 
   const utmData: UtmCookieData = {
     referrer: request.headers.get("Referer") ?? null,
