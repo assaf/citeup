@@ -21,9 +21,9 @@ import type { Route } from "./+types/route";
 
 export async function action({ request }: Route.ActionArgs) {
   const form = await request.formData();
-  const email = String(form.get("email") ?? "");
-  const password = String(form.get("password") ?? "");
-  const confirm = String(form.get("confirm") ?? "");
+  const email = (form.get("email") ?? "").toString().trim();
+  const password = (form.get("password") ?? "").toString();
+  const confirm = (form.get("confirm") ?? "").toString();
 
   const errors: Record<string, string> = {};
 

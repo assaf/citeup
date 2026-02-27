@@ -16,7 +16,7 @@ import type { Route } from "./+types/route";
 
 export async function action({ request }: Route.ActionArgs) {
   const form = await request.formData();
-  const email = String(form.get("email") ?? "");
+  const email = (form.get("email") ?? "").toString().trim();
 
   const user = await prisma.user.findUnique({ where: { email } });
 
