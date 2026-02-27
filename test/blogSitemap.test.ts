@@ -41,7 +41,7 @@ describe("blog/sitemap.xml", () => {
       : [xml.urlset.url];
     expect(urls).toContainEqual(
       expect.objectContaining({
-        loc: "https://citeup.com/blog/2026-02-27-how-citeup-was-born",
+        loc: "https://citeup.com/blog/2026-02-26-how-citeup-was-born",
       }),
     );
   });

@@ -40,7 +40,7 @@ describe("blog/feed", () => {
   });
 
   it("should include the first blog post", () => {
-    expect(content).toContain("2026-02-27-how-citeup-was-born");
+    expect(content).toContain("2026-02-26-how-citeup-was-born");
     expect(content).toContain(
       "How CiteUp Was Born: From Rentail to LLM Citation Monitoring",
     );

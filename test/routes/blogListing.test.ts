@@ -61,13 +61,13 @@ describe("Blog Listing", () => {
   describe("navigates to first blog post", () => {
     beforeAll(async () => {
       await page
-        .locator('a[href^="/blog/2026-02-27-how-citeup-was-born"]')
+        .locator('a[href^="/blog/2026-02-26-how-citeup-was-born"]')
         .click();
       await page.waitForURL(/.*\/blog\/.*/);
     });
 
     it("should navigate to the blog post", async () => {
-      expect(page.url()).toContain("/blog/2026-02-27-how-citeup-was-born");
+      expect(page.url()).toContain("/blog/2026-02-26-how-citeup-was-born");
     });
 
     it("should display the blog post content", async () => {

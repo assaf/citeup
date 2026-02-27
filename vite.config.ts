@@ -24,10 +24,16 @@ export default defineConfig(async (config) =>
       ),
     ],
     optimizeDeps: {
-      include: ["react", "react-dom"],
+      include: ["react", "react-dom", "streamdown", "rehype-harden"],
     },
     ssr: {
-      noExternal: [],
+      noExternal: [
+        // NOTE: recommended by the Streamdown docs
+        // @see https://streamdown.ai/docs/faq#why-do-i-get-a-css-loading-error-when-using-streamdown-with-vite-ssr
+        "streamdown",
+        // NOTE: without rehype-harden here we get "Cannot require() ES Module in a cycle."
+        "rehype-harden",
+      ],
     },
     server: {
       allowedHosts: [".ngrok-free.app"],

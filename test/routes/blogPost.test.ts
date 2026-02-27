@@ -2,8 +2,9 @@ import { type Page, type Response, expect } from "playwright/test";
 import { afterAll, beforeAll, describe, it } from "vitest";
 import { goto } from "../helpers/launchBrowser";
 
-const POST_SLUG = "2026-02-27-how-citeup-was-born";
-const POST_TITLE = "How CiteUp Was Born: From Rentail to LLM Citation Monitoring";
+const POST_SLUG = "2026-02-26-how-citeup-was-born";
+const POST_TITLE =
+  "How CiteUp Was Born: From Rentail to LLM Citation Monitoring";
 
 describe("Blog Post Rendering", () => {
   let page: Page;
