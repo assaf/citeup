@@ -1,4 +1,5 @@
 import { invariant } from "es-toolkit";
+import { MailIcon } from "lucide-react";
 import { Form, redirect } from "react-router";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
@@ -58,9 +59,11 @@ export default function VerifyEmail({ actionData }: Route.ComponentProps) {
   if (actionData?.resent)
     return (
       <main className="flex min-h-screen items-center justify-center p-4">
-        <Card className="w-full max-w-md">
+        <Card className="fade-in-0 zoom-in-95 w-full max-w-md animate-in bg-secondary-background text-secondary-foreground duration-300">
           <CardHeader>
-            <CardTitle className="text-2xl">Check your email</CardTitle>
+            <CardTitle className="text-center text-2xl">
+              Check your email
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm">
@@ -74,9 +77,9 @@ export default function VerifyEmail({ actionData }: Route.ComponentProps) {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card className="fade-in-0 zoom-in-95 w-full max-w-md animate-in bg-secondary-background text-secondary-foreground duration-300">
         <CardHeader>
-          <CardTitle className="text-2xl">Link expired</CardTitle>
+          <CardTitle className="text-center text-2xl">Link expired</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
           <p className="text-sm">
@@ -89,6 +92,7 @@ export default function VerifyEmail({ actionData }: Route.ComponentProps) {
                 <Field>
                   <FieldLabel htmlFor="email">Email</FieldLabel>
                   <Input
+                    autoFocus
                     id="email"
                     name="email"
                     type="email"
@@ -98,6 +102,7 @@ export default function VerifyEmail({ actionData }: Route.ComponentProps) {
                 </Field>
               </FieldGroup>
               <Button type="submit" className="w-full">
+                <MailIcon className="size-4" />
                 Send new verification email
               </Button>
             </FieldSet>

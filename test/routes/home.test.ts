@@ -1,8 +1,10 @@
 import { expect } from "@playwright/test";
 import { beforeAll, describe, it } from "vitest";
 import prisma from "~/lib/prisma.server";
+import type { User } from "~/prisma";
 import { removeElements } from "../helpers/formatHTML";
 import { goto } from "../helpers/launchBrowser";
+import { signIn } from "../helpers/signIn";
 import "../helpers/toMatchInnerHTML";
 import "../helpers/toMatchScreenshot";
 
@@ -120,9 +122,18 @@ function daysAgo(n: number): Date {
 // ---------------------------------------------------------------------------
 
 describe("home route", () => {
+  let user: User;
+
   beforeAll(async () => {
+    user = await prisma.user.create({
+      data: {
+        account: { create: {} },
+        email: "test@test.com",
+        passwordHash: "test",
+      },
+    });
     const site = await prisma.site.create({
-      data: { domain: HOSTNAME, account: { create: {} } },
+      data: { domain: HOSTNAME, accountId: user.accountId },
     });
 
     // Three runs per platform (oldest → newest) so charts have ≥2 data points.
@@ -161,6 +172,7 @@ describe("home route", () => {
   });
 
   it("HTML matches baseline", { timeout: 30_000 }, async () => {
+    await signIn(user.id);
     const page = await goto("/");
     // Strip chart SVGs: Recharts computes floating-point coordinates from
     // ResizeObserver measurements that drift slightly between runs. The
