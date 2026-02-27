@@ -78,9 +78,9 @@ jobs:
           ANTHROPIC_API_KEY: "sk-ant-"
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/citeup"
           DEBUG: ""
+          GOOGLE_GENERATIVE_AI_API_KEY: "AIza"
           OPENAI_API_KEY: "sk-proj-"
           PERPLEXITY_API_KEY: "pk-prod-"
-          GOOGLE_GENERATIVE_AI_API_KEY: "AIza"
           SESSION_SECRET: "secret"
           RESEND_API_KEY: "preq_test_..."
 
