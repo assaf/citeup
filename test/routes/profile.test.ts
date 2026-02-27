@@ -1,6 +1,6 @@
-import { expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 import { beforeAll, describe, it } from "vitest";
-import { hashPassword } from "~/lib/auth.server";
+import { hashPassword, verifyPassword } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
 import type { User } from "~/prisma";
 import { goto, port } from "../helpers/launchBrowser";
@@ -32,63 +32,198 @@ describe("profile route", () => {
         account: { create: {} },
       },
     });
-  });
-
-  it("shows email tab with current email pre-filled", async () => {
     await signIn(user.id);
-    const page = await goto("/profile");
-    const emailInput = page.getByLabel("Email address");
-    await expect(emailInput).toBeVisible();
-    await expect(emailInput).toHaveValue(EMAIL);
-    await expect(page.getByRole("button", { name: "Update email" })).toBeVisible();
   });
 
-  it("shows password fields after switching to password tab", async () => {
-    const page = await goto("/profile");
-    await page.getByRole("tab", { name: "Password" }).click();
-    await expect(page.getByLabel("Current password")).toBeVisible();
-    await expect(page.getByLabel("New password")).toBeVisible();
-    await expect(page.getByLabel("Confirm new password")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Change password" })).toBeVisible();
+  describe("email update", () => {
+    let page: Page;
+
+    beforeAll(async () => {
+      page = await goto("/profile");
+    });
+
+    it("shows email tab with current email pre-filled", async () => {
+      await expect(page.getByRole("textbox", { name: "email" })).toBeVisible();
+      await expect(page.getByRole("textbox", { name: "email" })).toHaveValue(
+        EMAIL,
+      );
+      await expect(
+        page.getByRole("button", { name: "Update Email" }),
+      ).toBeVisible();
+    });
+
+    it("shows error for invalid email", async () => {
+      await page
+        .getByRole("textbox", { name: "email" })
+        .fill("invalid-email@here");
+      await page.getByRole("button", { name: "Update Email" }).click();
+      await expect(page.getByText("Enter a valid email address")).toBeVisible();
+    });
+
+    it("shows error for already-used email", async () => {
+      await prisma.user.create({
+        data: {
+          email: "existing-email@example.com",
+          passwordHash: await hashPassword(PASSWORD),
+          account: { create: {} },
+        },
+      });
+
+      await page
+        .getByRole("textbox", { name: "email" })
+        .fill("existing-email@example.com");
+      await page.getByRole("button", { name: "Update Email" }).click();
+      await expect(
+        page.getByText("Email address is already in use"),
+      ).toBeVisible();
+    });
+
+    describe("success", () => {
+      beforeAll(async () => {
+        await page
+          .getByRole("textbox", { name: "email" })
+          .fill("newemail@example.com");
+        await page.getByRole("button", { name: "Update Email" }).click();
+      });
+
+      it("shows success after correct email update", async () => {
+        await expect(
+          page.getByText("Email updated successfully"),
+        ).toBeVisible();
+      });
+
+      it("updates the user record with new email", async () => {
+        const updatedUser = await prisma.user.findUniqueOrThrow({
+          where: { id: user.id },
+        });
+        expect(updatedUser.email).toBe("newemail@example.com");
+      });
+    });
+
+    it("HTML matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchInnerHTML({
+        name: "profile-email-update",
+      });
+    });
+
+    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchScreenshot({
+        name: "profile-email-update",
+      });
+    });
   });
 
-  it("shows error for wrong current password", async () => {
-    const page = await goto("/profile");
-    await page.getByRole("tab", { name: "Password" }).click();
-    await page.getByLabel("Current password").fill("wrong-password");
-    await page.getByLabel("New password").fill("newpassword123");
-    await page.getByLabel("Confirm new password").fill("newpassword123");
-    await page.getByRole("button", { name: "Change password" }).click();
-    await expect(page.getByText("Current password is incorrect")).toBeVisible();
-  });
+  describe("password update", () => {
+    let page: Page;
 
-  it("shows error when passwords do not match", async () => {
-    const page = await goto("/profile");
-    await page.getByRole("tab", { name: "Password" }).click();
-    await page.getByLabel("Current password").fill(PASSWORD);
-    await page.getByLabel("New password").fill("newpassword123");
-    await page.getByLabel("Confirm new password").fill("different456");
-    await page.getByRole("button", { name: "Change password" }).click();
-    await expect(page.getByText("Passwords do not match")).toBeVisible();
-  });
+    beforeAll(async () => {
+      page = await goto("/profile");
+      await page.getByText("Password").click();
+    });
 
-  it("shows success after correct password change", async () => {
-    const page = await goto("/profile");
-    await page.getByRole("tab", { name: "Password" }).click();
-    await page.getByLabel("Current password").fill(PASSWORD);
-    await page.getByLabel("New password").fill("newpassword456");
-    await page.getByLabel("Confirm new password").fill("newpassword456");
-    await page.getByRole("button", { name: "Change password" }).click();
-    await expect(page.getByText("Password changed successfully")).toBeVisible();
-  });
+    it("shows password fields after switching to password tab", async () => {
+      await expect(
+        page.getByRole("textbox", { name: "Current password" }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("textbox", { name: "New password", exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("textbox", { name: "Confirm new password" }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Change password" }),
+      ).toBeVisible();
+    });
 
-  it("HTML matches baseline", { timeout: 30_000 }, async () => {
-    const page = await goto("/profile");
-    await expect(page.locator("main")).toMatchInnerHTML();
-  });
+    it("shows error for wrong current password", async () => {
+      await page
+        .getByRole("textbox", { name: "Current password" })
+        .fill("wrong-password");
+      await page
+        .getByRole("textbox", { name: "New password", exact: true })
+        .fill("newpassword123");
+      await page
+        .getByRole("textbox", { name: "Confirm new password" })
+        .fill("newpassword123");
+      await page.getByRole("button", { name: "Change password" }).click();
+      await expect(
+        page.getByText("Current password is incorrect"),
+      ).toBeVisible();
+    });
 
-  it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-    const page = await goto("/profile");
-    await expect(page.locator("main")).toMatchScreenshot();
+    it("shows error when passwords do not match", async () => {
+      await page
+        .getByRole("textbox", { name: "Current password" })
+        .fill(PASSWORD);
+      await page
+        .getByRole("textbox", { name: "New password", exact: true })
+        .fill("newpassword123");
+      await page
+        .getByRole("textbox", { name: "Confirm new password" })
+        .fill("different456");
+      await page.getByRole("button", { name: "Change password" }).click();
+      await expect(page.getByText("Passwords do not match")).toBeVisible();
+    });
+
+    it("shows success after correct password change", async () => {
+      await page
+        .getByRole("textbox", { name: "Current password" })
+        .fill(PASSWORD);
+      await page
+        .getByRole("textbox", { name: "New password", exact: true })
+        .fill("newpassword456");
+      await page
+        .getByRole("textbox", { name: "Confirm new password" })
+        .fill("newpassword456");
+      await page.getByRole("button", { name: "Change password" }).click();
+      await expect(
+        page.getByText("Password changed successfully"),
+      ).toBeVisible();
+    });
+
+    describe("password change", () => {
+      beforeAll(async () => {
+        await page
+          .getByRole("textbox", { name: "Current password" })
+          .fill(PASSWORD);
+        await page
+          .getByRole("textbox", { name: "New password", exact: true })
+          .fill("newpassword456");
+        await page
+          .getByRole("textbox", { name: "Confirm new password" })
+          .fill("newpassword456");
+        await page.getByRole("button", { name: "Change password" }).click();
+      });
+
+      it("shows success after correct password change", async () => {
+        await expect(
+          page.getByText("Password changed successfully"),
+        ).toBeVisible();
+      });
+
+      it("updates the user record with new password", async () => {
+        const updatedUser = await prisma.user.findUniqueOrThrow({
+          where: { id: user.id },
+        });
+        expect(await verifyPassword(PASSWORD, updatedUser.passwordHash)).toBe(
+          false,
+        );
+        expect(
+          await verifyPassword("newpassword456", updatedUser.passwordHash),
+        ).toBe(true);
+      });
+    });
+    it("HTML matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchInnerHTML({
+        name: "profile-password-update",
+      });
+    });
+
+    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchScreenshot({
+        name: "profile-password-update",
+      });
+    });
   });
 });

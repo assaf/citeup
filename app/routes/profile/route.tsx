@@ -1,5 +1,6 @@
 import { captureException } from "@sentry/react-router";
 import { useLoaderData } from "react-router";
+import * as zod from "zod";
 import AuthForm from "~/components/ui/AuthForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/Tabs";
 import { hashPassword, requireUser, verifyPassword } from "~/lib/auth.server";
@@ -49,15 +50,12 @@ async function updateEmail({
   email: string;
 }) {
   try {
+    const { error } = zod.email().safeParse(email);
+    if (error) return { error: "Enter a valid email address" };
+
     await prisma.user.update({ where: { id: userId }, data: { email } });
     return { success: "Email updated successfully" };
-  } catch (error) {
-    captureException(error);
-    console.error(
-      "[profile] failed to update email for user %s: %o",
-      userId,
-      error,
-    );
+  } catch {
     return { error: "That email address is already in use" };
   }
 }
