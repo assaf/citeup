@@ -13,6 +13,9 @@ const envVars = {
     .asString(),
   DATABASE_URL: env.get("DATABASE_URL").required().asUrlString(),
   SESSION_SECRET: env.get("SESSION_SECRET").required().asString(),
+  RESEND_API_KEY: env.get("RESEND_API_KEY").required().asString(),
+  APP_URL: env.get("APP_URL").required().asUrlString(),
+  EMAIL_FROM: env.get("EMAIL_FROM").required().asString(),
 };
 
 export default envVars;
