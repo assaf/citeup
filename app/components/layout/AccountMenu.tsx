@@ -101,7 +101,7 @@ function DropdownMenu({ user }: { user: User }) {
           <li>
             <Link
               to="/profile"
-              className="block w-full px-4 py-2 text-left font-medium text-black text-sm transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[hsl(37,92%,65%)]"
+              className="block w-full px-4 py-2 text-left font-medium text-black text-sm transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
               onClick={() => setIsOpen(false)}
             >
               <UserIcon className="mr-2 inline-block h-4 w-4" />
@@ -116,7 +116,7 @@ function DropdownMenu({ user }: { user: User }) {
                 setIsOpen(false);
                 window.location.href = "/auth/sign-out";
               }}
-              className="block w-full px-4 py-2 text-left font-medium text-black text-sm transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[hsl(37,92%,65%)]"
+              className="block w-full px-4 py-2 text-left font-medium text-black text-sm transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
             >
               <UnlockIcon className="mr-2 inline-block h-4 w-4" />
               Sign Out

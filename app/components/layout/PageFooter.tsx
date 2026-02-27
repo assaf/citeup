@@ -55,7 +55,7 @@ export default function PageFooter() {
             {column.links.map((link) => (
               <NavLink
                 aria-label={`Go to ${link.label} page`}
-                className="font-medium text-black text-sm transition-colors hover:text-[hsl(37,92%,65%)]"
+                className="font-medium text-black text-sm transition-colors hover:text-[#F59E0B]"
                 key={link.to}
                 to={link.to}
               >
@@ -73,7 +73,7 @@ function SocialLinks() {
   return (
     <div className="flex items-center gap-2">
       <Link
-        className="inline-flex items-center gap-1 font-medium text-black text-sm transition-colors hover:text-[hsl(37,92%,65%)]"
+        className="inline-flex items-center gap-1 font-medium text-black text-sm transition-colors hover:text-[#F59E0B]"
         rel="noopener noreferrer"
         target="_blank"
         to="https://github.com/assaf/citeup"

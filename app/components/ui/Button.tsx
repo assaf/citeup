@@ -9,7 +9,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "cursor-pointer rounded-base border-2 border-black bg-[hsl(37,92%,65%)] text-black shadow-[3px_3px_0px_0px_black] hover:shadow-[5px_5px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[1px_1px_0px_0px_black] active:translate-x-[2px] active:translate-y-[2px]",
+          "cursor-pointer rounded-base border-2 border-black bg-[#F59E0B] text-black shadow-[3px_3px_0px_0px_black] hover:shadow-[5px_5px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[1px_1px_0px_0px_black] active:translate-x-[2px] active:translate-y-[2px]",
         destructive:
           "rounded-base border-2 border-black bg-red-500 text-black shadow-[3px_3px_0px_0px_black] hover:shadow-[5px_5px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[1px_1px_0px_0px_black] active:translate-x-[2px] active:translate-y-[2px]",
         outline:
@@ -18,7 +18,7 @@ const buttonVariants = cva(
           "rounded-base border-2 border-black bg-[hsl(120,100%,97%)] text-black shadow-[3px_3px_0px_0px_black] hover:shadow-[5px_5px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px]",
         ghost:
           "rounded-base border-2 border-transparent text-black hover:border-black hover:bg-white",
-        link: "text-black underline underline-offset-4 hover:decoration-[hsl(37,92%,65%)]",
+        link: "text-black underline underline-offset-4 hover:decoration-[#F59E0B]",
         neubrutalism: twMerge(
           "border-[0.5px] duration-200 rounded-sm bg-transparent",
           // light mode

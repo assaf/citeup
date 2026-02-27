@@ -12,8 +12,7 @@ const activeLinkVariants = cva(
         silent: "hover:text-blue-500 hover:underline underline-offset-4 !p-0",
         button:
           "rounded-base border-2 border-black bg-[hsl(120,100%,97%)] text-black shadow-[3px_3px_0px_0px_black] hover:shadow-[5px_5px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_black] py-2 px-4",
-        highlight:
-          "font-medium text-black text-xl hover:text-[hsl(37,92%,65%)] !p-0",
+        highlight: "font-medium text-black text-xl hover:text-[#F59E0B] !p-0",
       },
       size: {
         default: "px-4 py-2",
@@ -26,7 +25,7 @@ const activeLinkVariants = cva(
         true: "pointer-events-none text-gray-400 opacity-50",
       },
       bg: {
-        yellow: "bg-[hsl(37,92%,65%)]",
+        yellow: "bg-[#F59E0B]",
         white: "bg-white",
       },
     },

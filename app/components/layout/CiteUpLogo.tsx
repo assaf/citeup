@@ -8,19 +8,13 @@ export default function CiteUpLogo({ className }: { className?: string }) {
       className={twMerge(
         "flex flex-nowrap items-center",
         "font-bold text-2xl leading-none",
-        "transition-colors hover:text-[hsl(37,92%,65%)]",
+        "transition-colors hover:text-[#F59E0B]",
         className,
       )}
       aria-label="Go to home page"
     >
-      <img
-        alt="CiteUp"
-        className="mt-1 mr-1"
-        height={24}
-        src="/images/logo.png"
-        width={24}
-      />
-      <span className="text-[hsl(37,92%,65%)]">CiteUp</span>
+      <img alt="CiteUp" height={42} src="/icon-192.png" width={42} />
+      <span className="text-[#F59E0B]">CiteUp</span>
     </Link>
   );
 }

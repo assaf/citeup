@@ -60,7 +60,7 @@ export default function PageLayout({
                 description: "Monitor AI citation visibility for your brand.",
                 email: "hello@citeup.com",
                 url: "https://citeup.com",
-                logo: "https://citeup.com/images/logo.png",
+                logo: "https://citeup.com/icon-192.png",
                 image: "https://citeup.com/images/og-image.png",
                 contactPoint: {
                   "@type": "ContactPoint",

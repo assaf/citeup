@@ -65,7 +65,8 @@ export const headers: HeadersFunction = () => ({
 });
 
 export const links: Route.LinksFunction = () => [
-  { rel: "icon", href: "/icon.svg", type: "image/svg+xml" },
+  { rel: "icon", href: "/icon-192.png", type: "image/png", sizes: "192x192" },
+  { rel: "icon", href: "/icon-512.png", type: "image/png", sizes: "512x512" },
   { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
   { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
