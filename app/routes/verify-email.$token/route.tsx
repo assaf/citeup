@@ -46,7 +46,11 @@ export async function action({ params }: Route.ActionArgs) {
 
   if (record?.user && !record.user.emailVerifiedAt) {
     const newToken = await createEmailVerificationToken(record.user.id);
-    await sendEmailVerificationEmail(record.user.email, newToken);
+    try {
+      await sendEmailVerificationEmail(record.user.email, newToken);
+    } catch (err) {
+      console.error("[verify-email] failed to send email: %o", err);
+    }
   }
 
   return { resent: true };

@@ -28,7 +28,11 @@ export async function action({ request }: Route.ActionArgs) {
       data: { token, userId: user.id, expiresAt },
     });
 
-    await sendPasswordRecoveryEmail(email, token);
+    try {
+      await sendPasswordRecoveryEmail(email, token);
+    } catch (err) {
+      console.error("[password-recovery] failed to send email: %o", err);
+    }
   }
 
   return { sent: true };
