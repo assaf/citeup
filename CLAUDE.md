@@ -2,21 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## What is CiteUp
+See @README.md for project overview.
+See @package.json for available scripts.
+See @docs/coding-conventions.md for coding style.
 
-SaaS tool that tracks whether a brand's domain gets cited when AI platforms (ChatGPT, Perplexity, Claude, Gemini) answer relevant queries. Runs predefined queries, records which URLs appear in responses, and plots visibility over time.
-
-## Commands
-
-```bash
-pnpm dev                  # dev server
-pnpm check                # lint + typecheck — run after every change
-pnpm test                 # full suite
-pnpm build                # production build
-pnpm prisma migrate dev   # apply DB migrations
-```
-
-Single file: `pnpm vitest run test/routes/home.test.ts`
+Single test file: `pnpm vitest run test/routes/home.test.ts`
 
 ## Key conventions
 
