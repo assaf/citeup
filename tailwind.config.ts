@@ -17,28 +17,6 @@ export default {
           },
         },
       },
-
-      fontFamily: {
-        sans: [
-          "Archivo",
-          "ui-sans-serif",
-          "system-ui",
-          "sans-serif",
-          "Apple Color Emoji",
-          "Segoe UI Emoji",
-          "Segoe UI Symbol",
-          "Noto Color Emoji",
-        ],
-        serif: ["Quando", "Times New Roman"],
-        mono: [
-          "Atkinson",
-          "Monaco",
-          "Consolas",
-          "Liberation Mono",
-          "Courier New",
-          "monospace",
-        ],
-      },
     },
   },
   plugins: [],

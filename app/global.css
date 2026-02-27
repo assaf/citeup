@@ -6,3 +6,8 @@
 @custom-variant dark (&:is(.dark *));
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
+
+@theme {
+  --color-destructive: #dc2626; /* bold red */
+  --color-success: #15c47a; /* pleasant green */
+}
