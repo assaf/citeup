@@ -38,3 +38,10 @@ export async function createSession(userId: string, request: Request) {
 
   return sessionCookie.serialize(token);
 }
+
+export async function createEmailVerificationToken(userId: string) {
+  const token = crypto.randomUUID();
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  await prisma.emailVerificationToken.create({ data: { token, userId, expiresAt } });
+  return token;
+}

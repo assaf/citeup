@@ -94,11 +94,25 @@ model User {
   email           String    @map("email")             @unique
   passwordHash    String    @map("password_hash")
   emailVerifiedAt          DateTime?               @map("email_verified_at")
-  sessions                 Session[]
-  passwordRecoveryTokens   PasswordRecoveryToken[]
+  sessions                  Session[]
+  passwordRecoveryTokens    PasswordRecoveryToken[]
+  emailVerificationTokens   EmailVerificationToken[]
 
   @@index([accountId])
   @@map("users")
+}
+
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @map("created_at") @default(now())
+  token     String    @unique @map("token")
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+
+  @@index([userId])
+  @@map("email_verification_tokens")
 }
 
 model PasswordRecoveryToken {
