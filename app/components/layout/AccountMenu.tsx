@@ -114,7 +114,7 @@ function DropdownMenu({ user }: { user: User }) {
               type="button"
               onClick={async () => {
                 setIsOpen(false);
-                window.location.href = "/auth/sign-out";
+                window.location.href = "/sign-out";
               }}
               className="block w-full px-4 py-2 text-left font-medium text-black text-sm transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
             >

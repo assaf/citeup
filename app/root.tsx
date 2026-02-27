@@ -40,9 +40,12 @@ export async function loader({ request }: Route.LoaderArgs) {
     "/about",
     "/pricing",
     "/faq",
+    "/blog",
   ];
   if (
-    PUBLIC_PATHS.some((p) => url.pathname === p) ||
+    PUBLIC_PATHS.some(
+      (p) => url.pathname === p || url.pathname.startsWith(`${p}/`),
+    ) ||
     url.pathname.startsWith("/reset-password/") ||
     url.pathname.startsWith("/verify-email/")
   )
@@ -137,12 +140,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       <h1 className="mx-auto flex flex-row justify-center gap-2 text-4xl">
         <span className="font-bold text-red-500">{message}</span>
         <span className="text-gray-500">{details}</span>
-        {import.meta.env.MODE === "development" && (
-          <pre className="w-full overflow-x-auto p-4">
-            <code>{stack}</code>
-          </pre>
-        )}
       </h1>
+      {import.meta.env.MODE === "development" && stack && (
+        <pre className="w-full overflow-x-auto p-4">
+          <code>{stack}</code>
+        </pre>
+      )}
     </main>
   );
 }
