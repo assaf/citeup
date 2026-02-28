@@ -200,6 +200,7 @@ describe("site page", () => {
 
   it("screenshot matches baseline", { timeout: 30_000 }, async () => {
     const page = await goto(`/site/${siteId}`);
+    await page.waitForTimeout(500);
     await expect(page).toMatchScreenshot();
   });
 });

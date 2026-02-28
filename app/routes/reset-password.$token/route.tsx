@@ -23,7 +23,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   invariant(record, "token not found after atomic update");
   const setCookie = await createSession(record.userId, request);
 
-  return redirect("/", { headers: { "Set-Cookie": setCookie } });
+  return redirect("/sites", { headers: { "Set-Cookie": setCookie } });
 }
 
 export default function ResetPassword() {
