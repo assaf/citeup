@@ -52,8 +52,8 @@ describe("sign-in route", () => {
       .getByRole("textbox", { name: "Password", exact: true })
       .fill(PASSWORD);
     await page.locator("main").getByRole("button", { name: "Sign in" }).click();
-    await page.waitForURL(`http://localhost:${port}/sites/new`);
-    expect(new URL(page.url()).pathname).toBe("/sites/new");
+    await page.waitForURL(`http://localhost:${port}/sites`);
+    expect(new URL(page.url()).pathname).toBe("/sites");
   });
 
   it("HTML matches baseline", async () => {

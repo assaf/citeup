@@ -59,7 +59,7 @@ describe("password recovery route", () => {
       orderBy: { createdAt: "desc" },
     });
     const page = await goto(`/reset-password/${token.token}`);
-    expect(new URL(page.url()).pathname).toBe("/sites/new");
+    expect(new URL(page.url()).pathname).toBe("/sites");
   });
 
   it("expired reset link shows link-expired card", async () => {

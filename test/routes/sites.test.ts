@@ -77,9 +77,9 @@ describe("sites route", () => {
     });
 
     it("shows a View link to the site", async () => {
-      const link = page.getByRole("link", { name: "View" });
+      const link = page.getByRole("link", { name: "View Site" });
       await expect(link).toBeVisible();
-      await expect(link).toHaveAttribute("href", /\/sites\//);
+      await expect(link).toHaveAttribute("href", /\/site\//);
     });
 
     it("shows Add Site button in list state", async () => {
@@ -94,7 +94,7 @@ describe("sites route", () => {
           removeElements(html, (node) => {
             if (node.tag !== "a") return false;
             const href = node.attributes.href ?? "";
-            return href.startsWith("/sites/") && href !== "/sites/new";
+            return href.startsWith("/site/") && href !== "/sites/new";
           }),
       });
     });
