@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/cron/citation-runs",
-      "schedule": "0 6 * * *"
-    }
-  ]
-}
