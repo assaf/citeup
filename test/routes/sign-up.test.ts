@@ -92,8 +92,8 @@ describe("sign-up route", () => {
       .getByRole("textbox", { name: "Confirm password", exact: true })
       .fill("password123");
     await page.getByRole("button", { name: "Create account" }).click();
-    await page.waitForURL(`http://localhost:${port}/`);
-    expect(new URL(page.url()).pathname).toBe("/");
+    await page.waitForURL(`http://localhost:${port}/sites`);
+    expect(new URL(page.url()).pathname).toBe("/sites");
   });
 
   it("HTML matches baseline", async () => {
