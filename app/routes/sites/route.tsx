@@ -11,6 +11,7 @@ import {
 } from "~/components/ui/Card";
 import { requireUser } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
+import { timeago } from "~/lib/relativeTime";
 import type { Route } from "./+types/route";
 
 export function meta(): Route.MetaDescriptors {
@@ -76,14 +77,7 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
                 </ActiveLink>
               </CardContent>
 
-              <CardFooter>
-                Added{" "}
-                {site.createdAt.toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </CardFooter>
+              <CardFooter>Added {timeago(site.createdAt)}</CardFooter>
             </Card>
           </li>
         ))}
