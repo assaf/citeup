@@ -77,13 +77,18 @@ describe("site bots page", () => {
   beforeAll(async () => {
     user = await prisma.user.create({
       data: {
-        account: { create: {} },
+        id: "user-1",
+        account: { create: { id: "account-1" } },
         email: "site-bots-test@test.com",
         passwordHash: "test",
       },
     });
     const site = await prisma.site.create({
-      data: { domain: "bots-test.example.com", accountId: user.accountId },
+      data: {
+        id: "site-1",
+        domain: "bots-test.example.com",
+        accountId: user.accountId,
+      },
     });
     siteId = site.id;
   });
@@ -97,9 +102,7 @@ describe("site bots page", () => {
     });
 
     it("shows empty state message", async () => {
-      await expect(
-        page.getByText("No bot traffic recorded"),
-      ).toBeVisible();
+      await expect(page.getByText("No bot traffic recorded")).toBeVisible();
     });
 
     it("shows site domain breadcrumb", async () => {
@@ -152,15 +155,27 @@ describe("site bots page", () => {
     });
 
     it("lists all bot types in the activity table", async () => {
-      await expect(page.getByRole("cell", { name: "Google", exact: true })).toBeVisible();
-      await expect(page.getByRole("cell", { name: "ChatGPT", exact: true })).toBeVisible();
-      await expect(page.getByRole("cell", { name: "Perplexity", exact: true })).toBeVisible();
+      await expect(
+        page.getByRole("cell", { name: "Google", exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("cell", { name: "ChatGPT", exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("cell", { name: "Perplexity", exact: true }),
+      ).toBeVisible();
     });
 
     it("lists crawled paths", async () => {
-      await expect(page.getByRole("cell", { name: "/", exact: true })).toBeVisible();
-      await expect(page.getByRole("cell", { name: "/blog", exact: true })).toBeVisible();
-      await expect(page.getByRole("cell", { name: "/about", exact: true })).toBeVisible();
+      await expect(
+        page.getByRole("cell", { name: "/", exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("cell", { name: "/blog", exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("cell", { name: "/about", exact: true }),
+      ).toBeVisible();
     });
 
     it("shows MIME types in Accept Types table", async () => {

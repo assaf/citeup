@@ -58,9 +58,10 @@ describe("sign-up route", () => {
   it("shows error for already-registered email", async () => {
     await prisma.user.create({
       data: {
+        id: "user-1",
         email: EXISTING_EMAIL,
         passwordHash: await hashPassword("password123"),
-        account: { create: {} },
+        account: { create: { id: "account-1" } },
       },
     });
 

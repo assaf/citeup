@@ -27,9 +27,10 @@ describe("add site form", () => {
   beforeAll(async () => {
     const user = await prisma.user.create({
       data: {
+        id: "user-1",
         email: EMAIL,
         passwordHash: await hashPassword(PASSWORD),
-        account: { create: {} },
+        account: { create: { id: "account-1" } },
       },
     });
     await signIn(user.id);
@@ -94,13 +95,22 @@ describe("add site — DNS failure", () => {
 
 describe("add site — duplicate domain", () => {
   it("shows error when domain already exists", async () => {
-    const user = await prisma.user.findUniqueOrThrow({ where: { email: EMAIL } });
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { email: EMAIL },
+    });
     const domain = "duplicate-test.com";
-    await prisma.site.create({ data: { domain, accountId: user.accountId } });
+    await prisma.site.create({
+      data: { id: "site-1", domain, accountId: user.accountId },
+    });
 
     const token = crypto.randomUUID();
     await prisma.session.create({
-      data: { token, userId: user.id, ipAddress: "127.0.0.1", userAgent: "test" },
+      data: {
+        token,
+        userId: user.id,
+        ipAddress: "127.0.0.1",
+        userAgent: "test",
+      },
     });
     const cookieHeader = await sessionCookie.serialize(token);
 

@@ -27,9 +27,10 @@ describe("profile route", () => {
   beforeAll(async () => {
     user = await prisma.user.create({
       data: {
+        id: "user-1",
         email: EMAIL,
         passwordHash: await hashPassword(PASSWORD),
-        account: { create: {} },
+        account: { create: { id: "account-1" } },
       },
     });
     await signIn(user.id);
@@ -75,9 +76,10 @@ describe("profile route", () => {
     it("shows error for already-used email", async () => {
       await prisma.user.create({
         data: {
+          id: "user-2",
           email: "existing-email@example.com",
           passwordHash: await hashPassword(PASSWORD),
-          account: { create: {} },
+          account: { create: { id: "account-2" } },
         },
       });
 

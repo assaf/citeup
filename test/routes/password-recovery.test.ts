@@ -11,9 +11,10 @@ describe("password recovery route", () => {
   beforeAll(async () => {
     await prisma.user.create({
       data: {
+        id: "user-1",
         email: EMAIL,
         passwordHash: await hashPassword(PASSWORD),
-        account: { create: {} },
+        account: { create: { id: "account-1" } },
       },
     });
   });

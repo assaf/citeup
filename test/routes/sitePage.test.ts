@@ -138,13 +138,14 @@ describe("site page", () => {
   beforeAll(async () => {
     user = await prisma.user.create({
       data: {
-        account: { create: {} },
+        id: "user-1",
+        account: { create: { id: "account-1" } },
         email: "site-page-test@test.com",
         passwordHash: "test",
       },
     });
     const site = await prisma.site.create({
-      data: { domain: HOSTNAME, accountId: user.accountId },
+      data: { id: "site-1", domain: HOSTNAME, accountId: user.accountId },
     });
     siteId = site.id;
 

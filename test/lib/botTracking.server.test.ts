@@ -14,10 +14,10 @@ function makeRequest(
 
 describe("trackBotVisit", () => {
   beforeEach(async () => {
-    await prisma.site.deleteMany();
+    await prisma.account.deleteMany();
     await prisma.site.create({
       data: {
-        account: { create: {} },
+        account: { create: { id: "account-1" } },
         domain: "citeup.vercel.app",
       },
     });

@@ -25,9 +25,10 @@ describe("sites route", () => {
   beforeAll(async () => {
     const user = await prisma.user.create({
       data: {
+        id: "user-1",
         email: EMAIL,
         passwordHash: await hashPassword(PASSWORD),
-        account: { create: {} },
+        account: { create: { id: "account-1" } },
       },
     });
     await signIn(user.id);
@@ -67,13 +68,19 @@ describe("sites route", () => {
         where: { email: EMAIL },
       });
       await prisma.site.create({
-        data: { domain: "example.com", accountId: user.accountId },
+        data: {
+          id: "site-1",
+          domain: "example.com",
+          accountId: user.accountId,
+        },
       });
       page = await goto("/sites");
     });
 
     it("shows the site domain", async () => {
-      await expect(page.getByText("example.com", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("example.com", { exact: true }),
+      ).toBeVisible();
     });
 
     it("shows a View link to the site", async () => {

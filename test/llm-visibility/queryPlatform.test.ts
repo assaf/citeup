@@ -64,7 +64,11 @@ describe("queryPlatform", () => {
 
   beforeAll(async () => {
     site = await prisma.site.create({
-      data: { domain: "rentail.space", account: { create: {} } },
+      data: {
+        id: "site-1",
+        domain: "rentail.space",
+        account: { create: { id: "account-1" } },
+      },
     });
   });
 
