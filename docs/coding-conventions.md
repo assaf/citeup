@@ -22,10 +22,22 @@ export default function queryClaude(query: string) { ... }
 export type QueryFn = (query: string) => Promise<...>;
 ```
 
+## Braces
+
+Omit braces when the body is a single statement — applies to `if`, `else`, `for`, `while`, and `else if`:
+
+```ts
+if (existing) return;
+if (!site) throw new Response("Not found", { status: 404 });
+for (const site of sites) await process(site);
+```
+
+Use braces for multi-line bodies.
+
 ## Functions
 
 - Named parameter objects for any function with more than one argument
-- Early returns over nested conditionals; no braces on single-line conditions
+- Early returns over nested conditionals
 
 ```ts
 async function queryPlatform({ site, platform, queries }: { ... }) {

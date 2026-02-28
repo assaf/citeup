@@ -5,6 +5,7 @@ dotenv.configDotenv({ quiet: true });
 
 const envVars = {
   ANTHROPIC_API_KEY: env.get("ANTHROPIC_API_KEY").required(false).asString(),
+  CRON_SECRET: env.get("CRON_SECRET").required(false).asString(),
   APP_URL: env
     .get("APP_URL")
     .default("https://citeup.vercel.app")
