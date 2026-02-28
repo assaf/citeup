@@ -81,6 +81,7 @@ model Site {
   domain       String             @map("domain")
   content      String?            @map("content")
   citationRuns CitationQueryRun[]
+  botVisits    BotVisit[]
 
   @@index([accountId])
   @@unique([accountId, domain])
@@ -128,4 +129,25 @@ model PasswordRecoveryToken {
 
   @@index([userId])
   @@map("password_recovery_tokens")
+}
+
+model BotVisit {
+  id        String                      @id @default(cuid())
+  createdAt DateTime @map("created_at") @default(now())
+  date      DateTime @map("date")
+  siteId    String   @map("site_id")
+  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  botType   String   @map("bot_type")
+  path      String   @map("path")
+  userAgent String   @map("user_agent")
+  accept    String[] @map("accept")
+  ip        String?  @map("ip")
+  referer   String?  @map("referer")
+  count     Int      @map("count")      @default(1)
+  firstSeen DateTime @map("first_seen") @default(now())
+  lastSeen  DateTime @map("last_seen")  @default(now())
+
+  @@unique([date, siteId, userAgent, path])
+  @@index([siteId])
+  @@map("bot_visits")
 }

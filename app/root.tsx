@@ -5,11 +5,13 @@ import {
 } from "react-router";
 import { WaveLoading } from "respinner";
 import { getCurrentUser } from "~/lib/auth.server";
+import { trackBotVisit } from "~/lib/botTracking.server";
 import type { Route } from "./+types/root";
 import PageLayout from "./components/layout/PageLayout";
 import "./global.css";
 
 export async function loader({ request }: Route.LoaderArgs) {
+  trackBotVisit(request);
   const baseUrl = new URL(request.url).origin;
   const user = await getCurrentUser(request);
   return { user, baseUrl };
