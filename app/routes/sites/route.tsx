@@ -45,7 +45,10 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-6 py-12">
-      <h1 className="font-heading text-3xl">Your Sites</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-heading text-3xl">Your Sites</h1>
+        <Button render={<Link to="/sites/new" />}>Add Site</Button>
+      </div>
       <ul className="space-y-4">
         {sites.map((site) => (
           <li key={site.id}>

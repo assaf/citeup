@@ -82,6 +82,11 @@ describe("sites route", () => {
       await expect(link).toHaveAttribute("href", /\/sites\//);
     });
 
+    it("shows Add Site button in list state", async () => {
+      const page = await goto("/sites");
+      await expect(page.getByRole("link", { name: "Add Site" })).toBeVisible();
+    });
+
     it("HTML matches baseline", { timeout: 30_000 }, async () => {
       await expect(page.locator("main")).toMatchInnerHTML({
         name: "sites-list",
