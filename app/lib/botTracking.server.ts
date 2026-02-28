@@ -58,13 +58,13 @@ const BOT_PATTERNS = [
   { pattern: /whatsapp/i, type: "WhatsApp" },
   { pattern: /yandexbot/i, type: "Yandex" },
   { pattern: /seranking/i, type: "SE Ranking" },
+  { pattern: /bot|crawl|spider|scrape/i, type: "Other Bot" },
 ] as const;
 
 function classifyBot(userAgent: string): string | null {
-  for (const { pattern, type } of BOT_PATTERNS)
-    if (pattern.test(userAgent)) return type;
-  if (/bot|crawl|spider|scrape/i.test(userAgent)) return "Other Bot";
-  return null;
+  return (
+    BOT_PATTERNS.find(({ pattern }) => pattern.test(userAgent))?.type ?? null
+  );
 }
 
 /**
