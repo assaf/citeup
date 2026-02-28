@@ -10,4 +10,15 @@
 @theme {
   --color-destructive: #dc2626; /* bold red */
   --color-success: #15c47a; /* pleasant green */
+
+  --animation-bg-shine: bg-shine 2.2s linear infinite;
+
+  @keyframes bg-shine {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
 }

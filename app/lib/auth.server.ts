@@ -1,16 +1,40 @@
 import bcrypt from "bcryptjs";
 import { redirect } from "react-router";
-import { type UtmCookieData, sessionCookie, utmCookie } from "~/lib/cookies.server";
+import {
+  type UtmCookieData,
+  sessionCookie,
+  utmCookie,
+} from "~/lib/cookies.server";
 import prisma from "~/lib/prisma.server";
 
+/**
+ * Hashes a password using bcrypt.
+ *
+ * @param password - The password to hash
+ * @returns The hashed password (string)
+ */
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, 10);
 }
 
+/**
+ * Verifies a password against a hash.
+ *
+ * @param password - The password to verify
+ * @param hash - The hash to verify against
+ * @returns True if the password matches the hash, otherwise false (boolean)
+ */
 export async function verifyPassword(password: string, hash: string) {
   return bcrypt.compare(password, hash);
 }
 
+/**
+ * Creates a session for the user.
+ *
+ * @param userId - The user ID
+ * @param request - The request object
+ * @returns The session cookie (string)
+ */
 export async function createSession(userId: string, request: Request) {
   const cookieHeader = request.headers.get("Cookie");
   const utm = await utmCookie.parse(cookieHeader);
@@ -40,6 +64,12 @@ export async function createSession(userId: string, request: Request) {
   return sessionCookie.serialize(token);
 }
 
+/**
+ * Creates a email verification token for the user.
+ *
+ * @param userId - The user ID
+ * @returns The token (string) and the expiration date (Date)
+ */
 export async function createEmailVerificationToken(userId: string) {
   const token = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
@@ -49,12 +79,23 @@ export async function createEmailVerificationToken(userId: string) {
   return token;
 }
 
+/**
+ * Signs out the user by clearing the session cookie.
+ *
+ * @returns The headers object with the session cookie cleared
+ */
 export async function signOut(): Promise<Headers> {
   return new Headers({
     "set-cookie": await sessionCookie.serialize("", { maxAge: 0 }),
   });
 }
 
+/**
+ * Gets the current user from the session cookie.
+ *
+ * @param request - The request object
+ * @returns The user object if found, otherwise null
+ */
 export async function getCurrentUser(request: Request) {
   const cookieHeader = request.headers.get("Cookie");
   const token = await sessionCookie.parse(cookieHeader);
@@ -66,6 +107,12 @@ export async function getCurrentUser(request: Request) {
   return session?.user ?? null;
 }
 
+/**
+ * Requires a user to be authenticated. If the user is not authenticated, it redirects to the sign-in page.
+ *
+ * @param request - The request object
+ * @returns The user object if found, otherwise redirects to the sign-in page
+ */
 export async function requireUser(request: Request) {
   const user = await getCurrentUser(request);
   if (user) return user;

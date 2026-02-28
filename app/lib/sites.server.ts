@@ -6,7 +6,7 @@ export function extractDomain(url: string): string | null {
     const { hostname } = new URL(href);
     if (!hostname || hostname === "localhost") return null;
     if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) return null;
-    return hostname;
+    return hostname.toLowerCase();
   } catch {
     return null;
   }
@@ -39,7 +39,10 @@ export async function fetchPageContent(domain: string): Promise<string | null> {
     clearTimeout(timeout);
     if (!response.ok) return null;
     const html = await response.text();
-    const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const text = html
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
     return text.slice(0, 5_000);
   } catch {
     return null;
