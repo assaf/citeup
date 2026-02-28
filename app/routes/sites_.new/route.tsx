@@ -5,7 +5,11 @@ import { Field, FieldError, FieldLabel } from "~/components/ui/FieldSet";
 import { Input } from "~/components/ui/Input";
 import { requireUser } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
-import { extractDomain, fetchPageContent, verifyDomain } from "~/lib/sites.server";
+import {
+  extractDomain,
+  fetchPageContent,
+  verifyDomain,
+} from "~/lib/sites.server";
 import type { Route } from "./+types/route";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -22,7 +26,9 @@ type ActionResult =
   | { step: 2; domain: string; error: string }
   | { step: 3; domain: string; content: string; error: string };
 
-export async function action({ request }: Route.ActionArgs): Promise<ActionResult> {
+export async function action({
+  request,
+}: Route.ActionArgs): Promise<ActionResult> {
   const user = await requireUser(request);
   const form = await request.formData();
   const step = Number(form.get("step") ?? 1);
@@ -33,7 +39,11 @@ export async function action({ request }: Route.ActionArgs): Promise<ActionResul
     if (!domain) return { step: 1, error: "Enter a valid website URL", url };
     const ok = await verifyDomain(domain);
     if (!ok)
-      return { step: 1, error: `No DNS records found for ${domain}. Is the domain live?`, url };
+      return {
+        step: 1,
+        error: `No DNS records found for ${domain}. Is the domain live?`,
+        url,
+      };
     return { step: 2, domain, error: "" };
   }
 
@@ -56,8 +66,15 @@ export async function action({ request }: Route.ActionArgs): Promise<ActionResul
       where: { accountId: user.accountId, domain },
     });
     if (existing)
-      return { step: 3, domain, content, error: "That domain is already added to your account" };
-    await prisma.site.create({ data: { domain, accountId: user.accountId, content } });
+      return {
+        step: 3,
+        domain,
+        content,
+        error: "That domain is already added to your account",
+      };
+    await prisma.site.create({
+      data: { domain, accountId: user.accountId, content },
+    });
     throw redirect("/sites");
   }
 
@@ -93,7 +110,11 @@ function StepIndicator({ current }: { current: number }) {
   );
 }
 
-function Step1Form({ actionData }: { actionData?: { step: 1; error: string; url?: string } }) {
+function Step1Form({
+  actionData,
+}: {
+  actionData?: { step: 1; error: string; url?: string };
+}) {
   const error = actionData?.error;
   const url = actionData?.url ?? "";
   return (
@@ -116,7 +137,11 @@ function Step1Form({ actionData }: { actionData?: { step: 1; error: string; url?
   );
 }
 
-function Step2Form({ actionData }: { actionData: { step: 2; domain: string; error: string } }) {
+function Step2Form({
+  actionData,
+}: {
+  actionData: { step: 2; domain: string; error: string };
+}) {
   const { domain, error } = actionData;
   return (
     <Form method="post" className="space-y-4">
@@ -133,7 +158,9 @@ function Step2Form({ actionData }: { actionData: { step: 2; domain: string; erro
 
 function Step3Form({
   actionData,
-}: { actionData: { step: 3; domain: string; content: string; error: string } }) {
+}: {
+  actionData: { step: 3; domain: string; content: string; error: string };
+}) {
   const { domain, content, error } = actionData;
   return (
     <Form method="post" className="space-y-4">
@@ -158,7 +185,7 @@ export default function AddSitePage({ actionData }: Route.ComponentProps) {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-lg space-y-2">
+      <Card className="w-full max-w-lg space-y-2 bg-secondary-background text-foreground">
         <CardHeader>
           <CardTitle className="text-2xl">Add a Site</CardTitle>
           <StepIndicator current={currentStep} />
@@ -167,8 +194,12 @@ export default function AddSitePage({ actionData }: Route.ComponentProps) {
           {currentStep <= 1 && (
             <Step1Form actionData={data?.step === 1 ? data : undefined} />
           )}
-          {currentStep === 2 && data?.step === 2 && <Step2Form actionData={data} />}
-          {currentStep === 3 && data?.step === 3 && <Step3Form actionData={data} />}
+          {currentStep === 2 && data?.step === 2 && (
+            <Step2Form actionData={data} />
+          )}
+          {currentStep === 3 && data?.step === 3 && (
+            <Step3Form actionData={data} />
+          )}
         </CardContent>
       </Card>
     </main>

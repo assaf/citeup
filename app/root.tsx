@@ -52,7 +52,11 @@ export const links: Route.LinksFunction = () => [
     title: "The CiteUp Blog",
     href: "https://citeup.com/blog/feed",
   },
-  { rel: "sitemap", type: "application/xml", href: "https://citeup.com/sitemap.xml" },
+  {
+    rel: "sitemap",
+    type: "application/xml",
+    href: "https://citeup.com/sitemap.xml",
+  },
   { rel: "icon", href: "/icon-192.png", type: "image/png", sizes: "192x192" },
   { rel: "icon", href: "/icon-512.png", type: "image/png", sizes: "512x512" },
   { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
