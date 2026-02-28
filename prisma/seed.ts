@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
-import prisma from "../app/lib/prisma.server";
+import type { CitationQueryRun, Site, User } from "prisma/generated/client";
+import rawQueries from "~/lib/llm-visibility/queries";
+import prisma from "~/lib/prisma.server";
 
 const HOSTNAME = "rentail.space";
 const REPETITIONS = 3;
@@ -60,7 +62,13 @@ function daysAgo(n: number): Date {
 
 async function main() {
   console.info("Seeding database…");
+  const user = await seedUser();
+  const site = await seedSite(user);
+  await seedCitationRuns(site);
+  console.info("✅ Done.");
+}
 
+async function seedUser(): Promise<User> {
   const user = await prisma.user.upsert({
     where: { email: "assaf@labnotes.org" },
     update: {},
@@ -69,10 +77,25 @@ async function main() {
       passwordHash: await bcrypt.hash("EhnGjs7JMsq3oKrkfwZk", 1),
       account: { create: {} },
     },
+    include: { account: true },
   });
   console.info("✅ User: %s (%s)", user.id, user.email);
+  return user;
+}
 
-  /*
+async function seedSite(user: User): Promise<Site> {
+  const site = await prisma.site.upsert({
+    where: {
+      accountId_domain: { accountId: user.accountId, domain: "rentail.space" },
+    },
+    update: {},
+    create: { domain: "rentail.space", accountId: user.accountId },
+  });
+  console.info("✅ Site: %s", site.id);
+  return site;
+}
+
+async function seedCitationRuns(site: Site): Promise<CitationQueryRun[]> {
   const runDates = [21, 14, 7, 0].map(daysAgo);
 
   for (const { platform, model, visibilityRate } of PLATFORMS) {
@@ -138,9 +161,11 @@ async function main() {
       );
     }
   }
-    */
-
-  console.info("✅ Done.");
+  return await prisma.citationQueryRun.findMany({
+    where: { siteId: site.id },
+    include: { queries: true },
+    orderBy: { createdAt: "asc" },
+  });
 }
 
 main()

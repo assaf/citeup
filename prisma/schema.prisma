@@ -15,7 +15,7 @@ datasource db {
 }
 
 model Account {
-  id        String   @id @default(cuid())
+  id        String                      @id @default(cuid())
   createdAt DateTime @map("created_at") @default(now())
   hostname  String?  @map("hostname")
   users     User[]
@@ -83,30 +83,31 @@ model Site {
   citationRuns CitationQueryRun[]
 
   @@index([accountId])
+  @@unique([accountId, domain])
   @@map("sites")
 }
 
 model User {
-  id              String                              @id @default(cuid())
-  createdAt       DateTime  @map("created_at")        @default(now())
-  updatedAt       DateTime  @map("updated_at")        @updatedAt
-  accountId       String    @map("account_id")
-  account         Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  email           String    @map("email")             @unique
-  passwordHash    String    @map("password_hash")
-  emailVerifiedAt          DateTime?               @map("email_verified_at")
-  sessions                  Session[]
-  passwordRecoveryTokens    PasswordRecoveryToken[]
-  emailVerificationTokens   EmailVerificationToken[]
+  id                      String                                             @id @default(cuid())
+  createdAt               DateTime                 @map("created_at")        @default(now())
+  updatedAt               DateTime                 @map("updated_at")        @updatedAt
+  accountId               String                   @map("account_id")
+  account                 Account                  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  email                   String                   @map("email")             @unique
+  passwordHash            String                   @map("password_hash")
+  emailVerifiedAt         DateTime?                @map("email_verified_at")
+  sessions                Session[]
+  passwordRecoveryTokens  PasswordRecoveryToken[]
+  emailVerificationTokens EmailVerificationToken[]
 
   @@index([accountId])
   @@map("users")
 }
 
 model EmailVerificationToken {
-  id        String    @id @default(cuid())
+  id        String                       @id @default(cuid())
   createdAt DateTime  @map("created_at") @default(now())
-  token     String    @unique @map("token")
+  token     String    @map("token")      @unique
   userId    String    @map("user_id")
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime  @map("expires_at")
@@ -117,9 +118,9 @@ model EmailVerificationToken {
 }
 
 model PasswordRecoveryToken {
-  id        String    @id @default(cuid())
+  id        String                       @id @default(cuid())
   createdAt DateTime  @map("created_at") @default(now())
-  token     String    @unique @map("token")
+  token     String    @map("token")      @unique
   userId    String    @map("user_id")
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime  @map("expires_at")

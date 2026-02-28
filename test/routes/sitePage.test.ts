@@ -123,7 +123,7 @@ function daysAgo(n: number): Date {
 
 describe("unauthenticated access", () => {
   it("redirects to /sign-in", async () => {
-    const response = await fetch(`http://localhost:${port}/`, {
+    const response = await fetch(`http://localhost:${port}/site/some-id`, {
       redirect: "manual",
     });
     expect(response.status).toBe(302);
@@ -131,35 +131,22 @@ describe("unauthenticated access", () => {
   });
 });
 
-describe("home route — no site", () => {
-  it("redirects to /sites when user has no sites", async () => {
-    const user = await prisma.user.create({
-      data: {
-        email: "home-nosite@example.com",
-        passwordHash: "test",
-        account: { create: {} },
-      },
-    });
-    await signIn(user.id);
-    const page = await goto("/");
-    expect(page.url()).toContain("/sites");
-  });
-});
-
-describe("home route", () => {
+describe("site page", () => {
   let user: User;
+  let siteId: string;
 
   beforeAll(async () => {
     user = await prisma.user.create({
       data: {
         account: { create: {} },
-        email: "test@test.com",
+        email: "site-page-test@test.com",
         passwordHash: "test",
       },
     });
     const site = await prisma.site.create({
       data: { domain: HOSTNAME, accountId: user.accountId },
     });
+    siteId = site.id;
 
     // Three runs per platform (oldest → newest) so charts have ≥2 data points.
     const runDays = [14, 7, 0];
@@ -198,7 +185,7 @@ describe("home route", () => {
 
   it("HTML matches baseline", { timeout: 30_000 }, async () => {
     await signIn(user.id);
-    const page = await goto("/");
+    const page = await goto(`/site/${siteId}`);
     // Strip chart SVGs: Recharts computes floating-point coordinates from
     // ResizeObserver measurements that drift slightly between runs. The
     // screenshot test covers visual regressions in charts.
@@ -212,7 +199,7 @@ describe("home route", () => {
   });
 
   it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-    const page = await goto("/");
+    const page = await goto(`/site/${siteId}`);
     await expect(page).toMatchScreenshot();
   });
 });

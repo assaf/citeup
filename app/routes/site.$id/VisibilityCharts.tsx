@@ -7,7 +7,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "~/components/ui/Chart";
-import type { Run } from "./RecentVisibility";
+import type { Run } from "../site.$id/RecentVisibility";
 
 const chartConfig = {
   visibilityPct: { label: "Visibility %", color: "var(--chart-1)" },
