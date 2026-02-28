@@ -1,0 +1,196 @@
+import { expect } from "@playwright/test";
+import { beforeAll, describe, it } from "vitest";
+import prisma from "~/lib/prisma.server";
+import type { User } from "~/prisma";
+import { removeElements } from "../helpers/formatHTML";
+import { goto, port } from "../helpers/launchBrowser";
+import { signIn } from "../helpers/signIn";
+import "../helpers/toMatchInnerHTML";
+import "../helpers/toMatchScreenshot";
+
+// ---------------------------------------------------------------------------
+// Fixed seed data — deterministic so baselines never drift
+// ---------------------------------------------------------------------------
+
+// Use a fixed "today" so the date range doesn't shift between test runs.
+// The default range is the last 30 days so visits within 30 days of this
+// date will appear; visits older than 30 days will not.
+const BASE_DATE = new Date("2026-02-26T00:00:00.000Z");
+
+const BOT_VISITS = [
+  {
+    botType: "Google",
+    userAgent: "Googlebot/2.1",
+    path: "/",
+    accept: ["text/html", "application/xhtml+xml"],
+    count: 12,
+    daysAgo: 0,
+  },
+  {
+    botType: "Google",
+    userAgent: "Googlebot/2.1",
+    path: "/blog",
+    accept: ["text/html"],
+    count: 5,
+    daysAgo: 3,
+  },
+  {
+    botType: "ChatGPT",
+    userAgent: "GPTBot/1.0",
+    path: "/",
+    accept: ["text/html", "text/plain"],
+    count: 8,
+    daysAgo: 1,
+  },
+  {
+    botType: "Perplexity",
+    userAgent: "PerplexityBot/1.0",
+    path: "/about",
+    accept: ["text/html"],
+    count: 3,
+    daysAgo: 2,
+  },
+] as const;
+
+function daysAgo(n: number): Date {
+  const d = new Date(BASE_DATE);
+  d.setDate(d.getDate() - n);
+  return d;
+}
+
+// ---------------------------------------------------------------------------
+
+describe("unauthenticated access", () => {
+  it("redirects to /sign-in", async () => {
+    const response = await fetch(`http://localhost:${port}/site/some-id/bots`, {
+      redirect: "manual",
+    });
+    expect(response.status).toBe(302);
+    expect(response.headers.get("location")).toContain("/sign-in");
+  });
+});
+
+describe("site bots page", () => {
+  let user: User;
+  let siteId: string;
+
+  beforeAll(async () => {
+    user = await prisma.user.create({
+      data: {
+        account: { create: {} },
+        email: "site-bots-test@test.com",
+        passwordHash: "test",
+      },
+    });
+    const site = await prisma.site.create({
+      data: { domain: "bots-test.example.com", accountId: user.accountId },
+    });
+    siteId = site.id;
+  });
+
+  describe("empty state", () => {
+    let page: Awaited<ReturnType<typeof goto>>;
+
+    beforeAll(async () => {
+      await signIn(user.id);
+      page = await goto(`/site/${siteId}/bots`);
+    });
+
+    it("shows empty state message", async () => {
+      await expect(
+        page.getByText("No bot traffic recorded"),
+      ).toBeVisible();
+    });
+
+    it("shows site domain breadcrumb", async () => {
+      await expect(
+        page.getByRole("link", { name: "bots-test.example.com" }),
+      ).toBeVisible();
+    });
+
+    it("HTML matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchInnerHTML({
+        name: "site-bots-empty",
+        strip: (html) =>
+          removeElements(html, (node) => {
+            const href = node.attributes.href ?? "";
+            return href.startsWith("/site/") && !href.endsWith("/bots");
+          }),
+      });
+    });
+
+    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchScreenshot({
+        name: "site-bots-empty",
+      });
+    });
+  });
+
+  describe("with bot visits", () => {
+    let page: Awaited<ReturnType<typeof goto>>;
+
+    beforeAll(async () => {
+      for (const v of BOT_VISITS) {
+        await prisma.botVisit.create({
+          data: {
+            siteId,
+            botType: v.botType,
+            userAgent: v.userAgent,
+            path: v.path,
+            accept: [...v.accept],
+            count: v.count,
+            date: daysAgo(v.daysAgo),
+            firstSeen: daysAgo(v.daysAgo),
+            lastSeen: daysAgo(v.daysAgo),
+          },
+        });
+      }
+      // Navigate with a fixed date range so the page content is deterministic
+      page = await goto(
+        `/site/${siteId}/bots?from=2026-01-27&until=2026-02-26`,
+      );
+    });
+
+    it("lists all bot types in the activity table", async () => {
+      await expect(page.getByRole("cell", { name: "Google", exact: true })).toBeVisible();
+      await expect(page.getByRole("cell", { name: "ChatGPT", exact: true })).toBeVisible();
+      await expect(page.getByRole("cell", { name: "Perplexity", exact: true })).toBeVisible();
+    });
+
+    it("lists crawled paths", async () => {
+      await expect(page.getByRole("cell", { name: "/", exact: true })).toBeVisible();
+      await expect(page.getByRole("cell", { name: "/blog", exact: true })).toBeVisible();
+      await expect(page.getByRole("cell", { name: "/about", exact: true })).toBeVisible();
+    });
+
+    it("shows MIME types in Accept Types table", async () => {
+      // Scope to the Accept Types table (column header "MIME Type") to avoid
+      // matching the "text/html" cell in the Bot Activity accepts column.
+      const mimeTable = page
+        .locator("table")
+        .filter({ has: page.locator("th", { hasText: "MIME Type" }) });
+      await expect(
+        mimeTable.getByRole("cell", { name: "text/html", exact: true }),
+      ).toBeVisible();
+    });
+
+    it("HTML matches baseline", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchInnerHTML({
+        name: "site-bots",
+        strip: (html) =>
+          removeElements(html, (node) => {
+            if (node.attributes["data-slot"] === "chart") return true;
+            const href = node.attributes.href ?? "";
+            return href.startsWith("/site/") && !href.endsWith("/bots");
+          }),
+      });
+    });
+
+    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
+      await page.waitForTimeout(500);
+      await expect(page.locator("main")).toMatchScreenshot({
+        name: "site-bots",
+      });
+    });
+  });
+});

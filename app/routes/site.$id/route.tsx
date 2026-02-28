@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/Tabs";
 import { requireUser } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
@@ -41,7 +41,15 @@ export default function SiteDetailPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-6 py-12">
-      <h1 className="font-heading text-3xl">{site.domain}</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="font-heading text-3xl">{site.domain}</h1>
+        <Link
+          className="text-foreground/60 text-sm hover:underline"
+          to={`/site/${site.id}/bots`}
+        >
+          Bot Traffic →
+        </Link>
+      </div>
 
       <Tabs
         defaultValue={platform}
