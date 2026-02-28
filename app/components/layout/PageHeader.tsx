@@ -12,10 +12,15 @@ export default function PageHeader() {
   const matches = useMatches() as UIMatch<
     unknown,
     {
+      hideHeader?: boolean;
       headerLinks?: { to: string; label: string }[];
       dropdownLinks?: { to: string; label: string }[];
     }
   >[];
+
+  const lastHandle = last(matches.filter((m) => m.handle))?.handle;
+  if (lastHandle?.hideHeader) return null;
+
   const { headerLinks, dropdownLinks } =
     last(
       matches.filter(
