@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router";
+import { redirect, useSearchParams } from "react-router";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/Tabs";
 import { requireUser } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
@@ -18,7 +18,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const site = await prisma.site.findFirst({
     where: { accountId: user.accountId },
   });
-  if (!site) throw new Response("No site found", { status: 404 });
+  if (!site) throw redirect("/sites");
 
   const runs = await prisma.citationQueryRun.findMany({
     include: { queries: true },

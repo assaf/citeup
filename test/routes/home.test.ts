@@ -131,6 +131,21 @@ describe("unauthenticated access", () => {
   });
 });
 
+describe("home route — no site", () => {
+  it("redirects to /sites when user has no sites", async () => {
+    const user = await prisma.user.create({
+      data: {
+        email: "home-nosite@example.com",
+        passwordHash: "test",
+        account: { create: {} },
+      },
+    });
+    await signIn(user.id);
+    const page = await goto("/");
+    expect(page.url()).toContain("/sites");
+  });
+});
+
 describe("home route", () => {
   let user: User;
 
