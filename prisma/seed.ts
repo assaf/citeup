@@ -1,4 +1,4 @@
-import rawQueries from "../app/lib/llm-visibility/queries";
+import bcrypt from "bcryptjs";
 import prisma from "../app/lib/prisma.server";
 
 const HOSTNAME = "rentail.space";
@@ -61,24 +61,18 @@ function daysAgo(n: number): Date {
 async function main() {
   console.info("Seeding database…");
 
-  const existing = await prisma.site.findFirst({ where: { domain: HOSTNAME } });
-  const site =
-    existing ??
-    (await prisma.site.create({
-      data: {
-        domain: HOSTNAME,
-        account: {
-          create: {
-            users: {
-              create: { email: "assaf@labnotes.org", passwordHash: "test" },
-            },
-          },
-        },
-      },
-    }));
+  const user = await prisma.user.upsert({
+    where: { email: "assaf@labnotes.org" },
+    update: {},
+    create: {
+      email: "assaf@labnotes.org",
+      passwordHash: await bcrypt.hash("EhnGjs7JMsq3oKrkfwZk", 1),
+      account: { create: {} },
+    },
+  });
+  console.info("✅ User: %s (%s)", user.id, user.email);
 
-  console.info("Site: %s (%s)", site.id, site.domain);
-
+  /*
   const runDates = [21, 14, 7, 0].map(daysAgo);
 
   for (const { platform, model, visibilityRate } of PLATFORMS) {
@@ -144,8 +138,9 @@ async function main() {
       );
     }
   }
+    */
 
-  console.info("Done.");
+  console.info("✅ Done.");
 }
 
 main()
