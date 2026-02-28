@@ -59,7 +59,7 @@ export async function action({ request }: Route.ActionArgs) {
     console.error("[sign-up] failed to send verification email: %o", err);
   }
 
-  return redirect("/", { headers: { "Set-Cookie": setCookie } });
+  return redirect("/sites", { headers: { "Set-Cookie": setCookie } });
 }
 
 export default function SignUp({ actionData }: Route.ComponentProps) {

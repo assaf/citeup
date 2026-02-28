@@ -1,54 +1,7 @@
-import { redirect, useSearchParams } from "react-router";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/Tabs";
-import { requireUser } from "~/lib/auth.server";
-import prisma from "~/lib/prisma.server";
-import type { Route } from "./+types/route";
-
-const PLATFORMS = [
-  { name: "chatgpt", label: "ChatGPT" },
-  { name: "perplexity", label: "Perplexity" },
-  { name: "claude", label: "Anthropic" },
-  { name: "gemini", label: "Gemini" },
-] as const;
-
-export async function loader({ request }: Route.LoaderArgs) {
-  const user = await requireUser(request);
-  const site = await prisma.site.findFirst({
-    where: { accountId: user.accountId },
-  });
-  if (!site) throw redirect("/sites");
-
-  const runs = await prisma.citationQueryRun.findMany({
-    include: { queries: true },
-    orderBy: { createdAt: "desc" },
-    where: { siteId: site.id },
-  });
-
-  return { site, runs };
-}
-
-export default function Home({ loaderData }: Route.ComponentProps) {
-  const { runs } = loaderData;
-  const [searchParams, setSearchParams] = useSearchParams();
-  const platform = searchParams.get("platform") ?? PLATFORMS[0].name;
-  const run = runs.find((r) => r.platform === platform);
-
+export default function Home() {
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-6 py-12">
       <h1 className="font-heading text-3xl">LLM Citation Visibility</h1>
-
-      <Tabs
-        defaultValue={platform}
-        onValueChange={(value) => setSearchParams({ platform: value })}
-      >
-        <TabsList>
-          {PLATFORMS.map((platform) => (
-            <TabsTrigger key={platform.name} value={platform.name}>
-              {platform.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
     </main>
   );
 }

@@ -26,7 +26,7 @@ export async function action({ request }: Route.ActionArgs) {
 
   const setCookie = await createSession(user.id, request);
 
-  return redirect("/", { headers: { "Set-Cookie": setCookie } });
+  return redirect("/sites", { headers: { "Set-Cookie": setCookie } });
 }
 
 export default function SignIn({ actionData }: Route.ComponentProps) {
