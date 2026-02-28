@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import type { CitationQueryRun, Site, User } from "prisma/generated/client";
+import envVars from "~/lib/envVars";
 import rawQueries from "~/lib/llm-visibility/queries";
 import prisma from "~/lib/prisma.server";
 
@@ -61,9 +62,9 @@ function daysAgo(n: number): Date {
 }
 
 async function main() {
-  console.info("Seeding database…");
+  console.info("Seeding database…", envVars.DATABASE_URL);
   const user = await seedUser();
-  const site = await seedSite(user);
+  const site = await seedSites(user);
   await seedCitationRuns(site);
   console.info("✅ Done.");
 }
@@ -83,16 +84,27 @@ async function seedUser(): Promise<User> {
   return user;
 }
 
-async function seedSite(user: User): Promise<Site> {
-  const site = await prisma.site.upsert({
+async function seedSites(user: User): Promise<Site> {
+  const rentail = await prisma.site.upsert({
     where: {
       accountId_domain: { accountId: user.accountId, domain: "rentail.space" },
     },
     update: {},
     create: { domain: "rentail.space", accountId: user.accountId },
   });
-  console.info("✅ Site: %s", site.id);
-  return site;
+
+  const citeUp = await prisma.site.upsert({
+    where: {
+      accountId_domain: {
+        accountId: user.accountId,
+        domain: "citeup.vercel.app",
+      },
+    },
+    update: {},
+    create: { domain: "citeup.vercel.app", accountId: user.accountId },
+  });
+  console.info("✅ Sites: %s, %s", rentail.id, citeUp.id);
+  return rentail;
 }
 
 async function seedCitationRuns(site: Site): Promise<CitationQueryRun[]> {
@@ -161,11 +173,14 @@ async function seedCitationRuns(site: Site): Promise<CitationQueryRun[]> {
       );
     }
   }
-  return await prisma.citationQueryRun.findMany({
+
+  const runs = await prisma.citationQueryRun.findMany({
     where: { siteId: site.id },
     include: { queries: true },
     orderBy: { createdAt: "asc" },
   });
+  console.info("✅ Citation runs: %s", runs.length);
+  return runs;
 }
 
 main()
