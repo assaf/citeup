@@ -22,7 +22,7 @@ type ActionResult =
   | { step: 2; domain: string; error: string }
   | { step: 3; domain: string; content: string; error: string };
 
-export async function action({ request }: Route.ActionArgs): Promise<ActionResult | Response> {
+export async function action({ request }: Route.ActionArgs): Promise<ActionResult> {
   const user = await requireUser(request);
   const form = await request.formData();
   const step = Number(form.get("step") ?? 1);
@@ -57,7 +57,7 @@ export async function action({ request }: Route.ActionArgs): Promise<ActionResul
     });
     if (existing)
       return { step: 3, domain, content, error: "That domain is already added to your account" };
-    await prisma.site.create({ data: { domain, accountId: user.accountId } });
+    await prisma.site.create({ data: { domain, accountId: user.accountId, content } });
     throw redirect("/sites");
   }
 
@@ -107,6 +107,7 @@ function Step1Form({ actionData }: { actionData?: { step: 1; error: string; url?
           type="url"
           placeholder="https://yoursite.com"
           defaultValue={url}
+          autoFocus
         />
         {error && <FieldError>{error}</FieldError>}
       </Field>

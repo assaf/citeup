@@ -79,6 +79,7 @@ model Site {
   accountId    String             @map("account_id")
   account      Account            @relation(fields: [accountId], references: [id], onDelete: Cascade)
   domain       String             @map("domain")
+  content      String?            @map("content")
   citationRuns CitationQueryRun[]
 
   @@index([accountId])
