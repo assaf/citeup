@@ -42,6 +42,14 @@ describe("verifyDomain", () => {
     expect(await verifyDomain("example.com")).toBe(true);
   });
 
+  it("returns true when only CNAME record resolves", async () => {
+    const { default: dns } = await import("node:dns");
+    vi.mocked(dns.promises.resolve)
+      .mockRejectedValueOnce(new Error("ENODATA"))
+      .mockResolvedValueOnce(["alias.example.com"] as never);
+    expect(await verifyDomain("example.com")).toBe(true);
+  });
+
   it("returns false when DNS lookup fails", async () => {
     const { default: dns } = await import("node:dns");
     vi.mocked(dns.promises.resolve).mockRejectedValue(new Error("ENOTFOUND"));
