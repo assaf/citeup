@@ -4,6 +4,7 @@
 
 - Use `import type` for type-only imports
 - Use `~/` for all internal imports; relative paths only for same-directory files
+- `~/` → `app/`; `~/prisma` → `prisma/generated/client`
 - Order: external packages → internal (`~/`) → relative (`./`)
 
 ```ts
@@ -88,6 +89,7 @@ console.error("[%s:%s] Failed: %o", site.id, platform, error);
 - Files: `kebab-case.ts`; React components: `PascalCase.tsx`
 - Variables and functions: `camelCase`; types and interfaces: `PascalCase`
 - Module-level constants: `SCREAMING_SNAKE_CASE`
+- Blog post dates come from filenames: `app/data/blog/YYYY-MM-DD-slug.md`
 
 ## Libraries
 
