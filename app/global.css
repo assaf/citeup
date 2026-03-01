@@ -12,13 +12,24 @@
   --color-success: #15c47a; /* pleasant green */
 
   --animation-bg-shine: bg-shine 2.2s linear infinite;
+}
 
-  @keyframes bg-shine {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: -200% 0;
-    }
+@keyframes bg-shine {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes brutalist-spin-16 {
+  0%,
+  40%,
+  100% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-15px);
   }
 }

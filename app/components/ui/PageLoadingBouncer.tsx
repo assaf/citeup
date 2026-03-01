@@ -15,53 +15,7 @@ export default function PageLoadingBouncer() {
 
   return (
     <div className="fixed top-10 right-10 z-50">
-      <div className="pointer-events-auto fixed top-0 left-0 z-40 h-full w-full bg-white opacity-60" />
-      <style>
-        {`
-@keyframes brutalist-spin-16 {
-  0%, 40%, 100% { transform: translateY(0); }
-  20% { transform: translateY(-15px); }
-}
-
-.spinner-container {
-  width: 80px;
-  height: 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.spinner {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #FFD93D;
-  border: 3px solid #000;
-  box-shadow: 3px 3px 0 #000;
-  animation: brutalist-spin-16 1s ease-in-out infinite;
-}
-
-.spinner-element-2 {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #6BCB77;
-  border: 3px solid #000;
-  box-shadow: 3px 3px 0 #000;
-  animation: brutalist-spin-16 1s ease-in-out 0.2s infinite;
-}
-
-.spinner-element-3 {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #4D96FF;
-  border: 3px solid #000;
-  box-shadow: 3px 3px 0 #000;
-  animation: brutalist-spin-16 1s ease-in-out 0.4s infinite;
-}
-  `}
-      </style>
+      <div className="pointer-events-auto fixed top-0 left-0 z-40 h-full w-full bg-white opacity-20" />
       <div
         style={{
           width: "80px",

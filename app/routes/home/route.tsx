@@ -7,11 +7,11 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Link } from "react-router";
-import BlogPostsGrid from "~/components/ui/BlogPostsGrid";
 import CiteUpLogo from "~/components/layout/CiteUpLogo";
 import { ActiveLink } from "~/components/ui/ActiveLink";
+import BlogPostsGrid from "~/components/ui/BlogPostsGrid";
 import { getCurrentUser } from "~/lib/auth.server";
-import { recentBlogPosts, type BlogPost } from "~/lib/blogPosts.server";
+import { type BlogPost, recentBlogPosts } from "~/lib/blogPosts.server";
 import type { Route } from "./+types/route";
 
 export const handle = { hideHeader: true };

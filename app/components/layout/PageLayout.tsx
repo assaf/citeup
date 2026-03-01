@@ -4,6 +4,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Links, Meta, Scripts, ScrollRestoration } from "react-router";
 import "~/global.css";
 import { useGoogleAnalytics } from "~/lib/useAnalytics";
+import PageLoadingBouncer from "../ui/PageLoadingBouncer";
 import PageFooter from "./PageFooter";
 import PageHeader from "./PageHeader";
 
@@ -53,7 +54,6 @@ export default function PageLayout({
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </head>
       <body className="relative">
-        <DevTag />
         <QueryClientProvider client={new QueryClient()}>
           {hideLayout ? (
             children
@@ -65,6 +65,8 @@ export default function PageLayout({
             </div>
           )}
         </QueryClientProvider>
+        <DevTag />
+        <PageLoadingBouncer />
         <ScrollRestoration />
         <Scripts />
         <Analytics />
