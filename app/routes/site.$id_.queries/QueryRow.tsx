@@ -1,7 +1,7 @@
-import { TrashIcon } from "lucide-react";
+import { AlertCircleIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { useFetcher } from "react-router";
-import { Alert, AlertTitle } from "~/components/ui/alert";
+import { Alert, AlertTitle } from "~/components/ui/Alert";
 import { Button } from "~/components/ui/Button";
 import { Input } from "~/components/ui/Input";
 import type { action } from "./route";
@@ -90,14 +90,16 @@ export default function QueryRow({ query }: { query: SiteQueryRow }) {
         </Button>
       </div>
       {updateFetcher.data?.ok === false && (
-        <Alert variant="destructive">
+        <Alert variant="outline">
+          <AlertCircleIcon className="h-4 w-4" />
           <AlertTitle>
             {updateFetcher.data.error ?? "Failed to save. Please try again."}
           </AlertTitle>
         </Alert>
       )}
       {deleteFetcher.data?.ok === false && (
-        <Alert variant="destructive">
+        <Alert variant="outline">
+          <AlertCircleIcon className="h-4 w-4" />
           <AlertTitle>
             {deleteFetcher.data.error ?? "Failed to delete. Please try again."}
           </AlertTitle>

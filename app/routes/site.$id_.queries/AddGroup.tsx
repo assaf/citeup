@@ -1,7 +1,7 @@
-import { PlusIcon } from "lucide-react";
+import { AlertCircleIcon, PlusIcon, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
-import { Alert, AlertTitle } from "~/components/ui/alert";
+import { Alert, AlertTitle } from "~/components/ui/Alert";
 import { Button } from "~/components/ui/Button";
 import { Input } from "~/components/ui/Input";
 import type { action } from "./route";
@@ -27,6 +27,12 @@ export default function AddGroup() {
     setNewGroupName("");
   }
 
+  function cancelAddingGroup() {
+    setIsAddingGroup(false);
+    setNewGroupName("");
+    addGroupFetcher.reset();
+  }
+
   return (
     <>
       {isAddingGroup ? (
@@ -38,39 +44,36 @@ export default function AddGroup() {
             onChange={(e) => setNewGroupName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") submitNewGroup();
-              if (e.key === "Escape") {
-                setIsAddingGroup(false);
-                setNewGroupName("");
-              }
+              if (e.key === "Escape") cancelAddingGroup();
             }}
             onBlur={submitNewGroup}
           />
           <Button
-            variant="ghost"
-            size="sm"
+            onClick={cancelAddingGroup}
+            title="Cancel"
             type="button"
-            onClick={() => {
-              setIsAddingGroup(false);
-              setNewGroupName("");
-            }}
+            variant="ghost"
           >
-            Cancel
+            <XIcon className="h-4 w-4" />
           </Button>
         </div>
       ) : (
-        <Button
-          variant="outline"
-          size="sm"
-          type="button"
-          onClick={() => setIsAddingGroup(true)}
-        >
-          <PlusIcon className="h-4 w-4" />
-          Add group
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            onClick={() => setIsAddingGroup(true)}
+          >
+            <PlusIcon className="h-4 w-4" />
+            Add group
+          </Button>
+        </div>
       )}
 
       {addGroupFetcher.data?.ok === false && (
-        <Alert variant="destructive">
+        <Alert variant="outline">
+          <AlertCircleIcon className="h-4 w-4" />
           <AlertTitle>
             {addGroupFetcher.data.error ??
               "Failed to add group. Please try again."}

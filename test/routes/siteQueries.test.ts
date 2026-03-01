@@ -62,7 +62,7 @@ describe("site queries page", () => {
 
     it("shows Add group button", async () => {
       await expect(
-        page.getByRole("button", { name: "+ Add group" }),
+        page.getByRole("button", { name: "Add group" }),
       ).toBeVisible();
     });
 
@@ -111,9 +111,7 @@ describe("site queries page", () => {
     });
 
     it("shows group names", async () => {
-      await expect(
-        page.locator('input[value="1.discovery"]'),
-      ).toBeVisible();
+      await expect(page.locator('input[value="1.discovery"]')).toBeVisible();
       await expect(
         page.locator('input[value="2.active_search"]'),
       ).toBeVisible();
@@ -129,7 +127,7 @@ describe("site queries page", () => {
     });
 
     it("shows Add query button for each group", async () => {
-      const addQueryButtons = page.getByRole("button", { name: "+ Add query" });
+      const addQueryButtons = page.getByRole("button", { name: "Add query" });
       await expect(addQueryButtons).toHaveCount(2);
     });
 

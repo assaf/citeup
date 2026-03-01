@@ -1,7 +1,7 @@
-import { PlusIcon, TrashIcon } from "lucide-react";
+import { AlertCircleIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { useFetcher } from "react-router";
-import { Alert, AlertTitle } from "~/components/ui/alert";
+import { Alert, AlertTitle } from "~/components/ui/Alert";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardFooter } from "~/components/ui/Card";
 import { Input } from "~/components/ui/Input";
@@ -28,7 +28,8 @@ export default function GroupSection({
     <Card className="bg-secondary-background text-foreground">
       <CardContent>
         {renameFetcher.data?.ok === false && (
-          <Alert variant="destructive">
+          <Alert variant="outline">
+            <AlertCircleIcon className="h-4 w-4" />
             <AlertTitle>
               {renameFetcher.data.error ??
                 "Failed to rename. Please try again."}
@@ -36,7 +37,8 @@ export default function GroupSection({
           </Alert>
         )}
         {deleteFetcher.data?.ok === false && (
-          <Alert variant="destructive">
+          <Alert variant="outline">
+            <AlertCircleIcon className="h-4 w-4" />
             <AlertTitle>
               {deleteFetcher.data.error ??
                 "Failed to delete group. Please try again."}
@@ -44,7 +46,8 @@ export default function GroupSection({
           </Alert>
         )}
         {addFetcher.data?.ok === false && (
-          <Alert variant="destructive">
+          <Alert variant="outline">
+            <AlertCircleIcon className="h-4 w-4" />
             <AlertTitle>
               {addFetcher.data.error ??
                 "Failed to add query. Please try again."}
@@ -104,7 +107,6 @@ export default function GroupSection({
           variant="outline"
           size="sm"
           type="button"
-          className="text-foreground/50 hover:text-foreground"
           onClick={() => {
             addFetcher.submit(
               { _intent: "add-query", group },
