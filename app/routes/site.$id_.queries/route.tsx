@@ -1,3 +1,5 @@
+export const handle = { siteNav: true };
+
 import { requireUser } from "~/lib/auth.server";
 import SitePageHeader from "~/components/ui/SitePageHeader";
 import prisma from "~/lib/prisma.server";

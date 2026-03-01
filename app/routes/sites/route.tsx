@@ -70,7 +70,7 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
                 <ActiveLink
                   className="w-full max-w-xs"
                   size="lg"
-                  to={`/site/${site.id}`}
+                  to={`/site/${site.id}/citations`}
                   variant="button"
                 >
                   View Site

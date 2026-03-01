@@ -13,6 +13,7 @@ export default function PageHeader() {
     unknown,
     {
       hideHeader?: boolean;
+      siteNav?: boolean;
       headerLinks?: { to: string; label: string }[];
       dropdownLinks?: { to: string; label: string }[];
     }
@@ -20,6 +21,18 @@ export default function PageHeader() {
 
   const lastHandle = last(matches.filter((m) => m.handle))?.handle;
   if (lastHandle?.hideHeader) return null;
+
+  // Build site nav links when on a /site/:id/* page
+  const siteMatch = matches.find((m) => m.handle?.siteNav);
+  const siteId = siteMatch?.params.id as string | undefined;
+  const siteLinks = siteId
+    ? [
+        { to: "/sites", label: "Dashboard" },
+        { to: `/site/${siteId}/citations`, label: "Citations" },
+        { to: `/site/${siteId}/bots`, label: "Bot Traffic" },
+        { to: `/site/${siteId}/queries`, label: "Queries" },
+      ]
+    : null;
 
   const { headerLinks, dropdownLinks } =
     last(
@@ -30,11 +43,13 @@ export default function PageHeader() {
       ),
     )?.handle || {};
 
+  const navLinks = siteLinks ?? headerLinks;
+
   return (
     <header className="z-10 flex min-h-16 w-full items-center border-black border-b-2 bg-[hsl(60,100%,99%)] p-2 print:hidden">
       <CiteUpIcon className="w-1/2" />
 
-      {headerLinks && <HeaderLinks links={headerLinks} />}
+      {navLinks && <HeaderLinks links={navLinks} />}
       {dropdownLinks && <DropdownMenu links={dropdownLinks} />}
 
       <AccountMenu className="w-1/2 justify-end" />

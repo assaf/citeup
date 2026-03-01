@@ -1,3 +1,5 @@
+export const handle = { siteNav: true };
+
 import { sumBy } from "es-toolkit";
 import {
   CartesianGrid,
