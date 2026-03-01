@@ -68,32 +68,36 @@ function classifyBot(userAgent: string): string | null {
 }
 
 /**
- * Track a bot visit.
- *
- * @param request - The request to track.
- * @returns The bot type if it is a bot, otherwise null.
+ * Record a bot visit given explicit parameters.
+ * Used by both the middleware tracker and the external API endpoint.
  */
-export async function trackBotVisit(request: Request): Promise<void> {
-  const userAgent = request.headers.get("user-agent");
-  if (!userAgent) return;
-
+export async function recordBotVisit({
+  url,
+  userAgent,
+  accept,
+  ip,
+  referer,
+}: {
+  url: URL;
+  userAgent: string;
+  accept: string[];
+  ip?: string;
+  referer?: string;
+}): Promise<{ tracked: boolean; reason?: string }> {
   const botType = classifyBot(userAgent);
-  if (!botType) return;
-  if (/Better Stack/i.test(userAgent)) return;
+  if (!botType) return { tracked: false, reason: "not a bot" };
+  if (/Better Stack/i.test(userAgent))
+    return { tracked: false, reason: "excluded" };
 
-  const url = new URL(request.url);
   const domain = url.hostname.toLowerCase();
   const path = url.pathname;
 
   const site = await prisma.site.findFirst({ where: { domain } });
-  if (!site) return;
+  if (!site) return { tracked: false, reason: "site not found" };
 
   const date = new Date(
     Temporal.Now.zonedDateTimeISO("UTC").startOfDay().epochMilliseconds,
   );
-  const accept = getAccept(request);
-  const ip = request.headers.get("x-real-ip") ?? undefined;
-  const referer = getReferer(request);
 
   try {
     await prisma.botVisit.upsert({
@@ -113,31 +117,43 @@ export async function trackBotVisit(request: Request): Promise<void> {
         userAgent,
       },
     });
+    return { tracked: true };
   } catch (error) {
     captureException(error, { extra: { botType, domain, path, userAgent } });
+    return { tracked: false, reason: "db error" };
   }
 }
 
-function getAccept(request: Request): string[] {
-  return (request.headers.get("accept") ?? "")
+/**
+ * Track a bot visit from an incoming request (middleware usage).
+ */
+export async function trackBotVisit(request: Request): Promise<void> {
+  const userAgent = request.headers.get("user-agent");
+  if (!userAgent) return;
+
+  const url = new URL(request.url);
+  const accept = parseAccept(request.headers.get("accept") ?? "");
+  const ip = request.headers.get("x-real-ip") ?? undefined;
+  const referer = parseReferer(request.headers.get("referer"), url);
+
+  await recordBotVisit({ url, userAgent, accept, ip, referer });
+}
+
+function parseAccept(acceptHeader: string): string[] {
+  return acceptHeader
     .split(",")
     .map((t) => t.split(";")[0].trim())
     .filter(Boolean);
 }
 
-function getReferer(request: Request): string | undefined {
-  let referer: string | undefined = request.headers.get("referer") ?? undefined;
-  if (referer) {
-    try {
-      const requestURL = new URL(request.url);
-      const refererURL = new URL(referer);
-      if (
-        refererURL.hostname.toLowerCase() === requestURL.hostname.toLowerCase()
-      )
-        referer = undefined;
-    } catch {
-      // ignore parse errors, keep referer as is
-    }
+function parseReferer(referer: string | null, requestURL: URL): string | undefined {
+  if (!referer) return undefined;
+  try {
+    const refererURL = new URL(referer);
+    if (refererURL.hostname.toLowerCase() === requestURL.hostname.toLowerCase())
+      return undefined;
+  } catch {
+    // ignore parse errors, keep referer as is
   }
   return referer;
 }
