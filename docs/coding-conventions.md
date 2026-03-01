@@ -4,7 +4,6 @@
 
 - Use `import type` for type-only imports
 - Use `~/` for all internal imports; relative paths only for same-directory files
-- `~/` → `app/`; `~/prisma` → `prisma/generated/client`
 - Order: external packages → internal (`~/`) → relative (`./`)
 
 ```ts
@@ -92,7 +91,6 @@ console.error("[%s:%s] Failed: %o", site.id, platform, error);
 - Files: `kebab-case.ts`; React components: `PascalCase.tsx`
 - Variables and functions: `camelCase`; types and interfaces: `PascalCase`
 - Module-level constants: `SCREAMING_SNAKE_CASE`
-- Blog post dates come from filenames: `app/data/blog/YYYY-MM-DD-slug.md`
 
 ## Libraries
 
@@ -105,6 +103,7 @@ console.error("[%s:%s] Failed: %o", site.id, platform, error);
 - Prefer components from `app/components/ui/` when available (Button, Input, Card, Table, Tabs, etc.)
 - If a new UI component is needed, ask the user before creating it
 - Override component styles via `className` — `twMerge` handles conflicts, so e.g. `bg-transparent shadow-none` correctly wins over defaults
+- `PageLoadingBouncer`: add to any page with date-range tabs or other navigation triggers — shows bouncing-dot overlay while `useNavigation()` is not idle
 
 ## Prisma / schema
 
@@ -114,6 +113,15 @@ console.error("[%s:%s] Failed: %o", site.id, platform, error);
 
 ## Testing
 
+- Single test file: `pnpm vitest run test/routes/home.test.ts`
+- `test/routes/` = Playwright browser tests; files with only `fetch` calls = HTTP tests; `test/llm-visibility/` = LLM integration (needs real API keys in `.env`)
 - Prefer integration tests against a real DB over mocked unit tests
 - Use fixed IDs in test seed data to avoid conflicts across test files (`id: "user-bots-1"`, etc.)
 - Playwright strict mode: `getByRole` / `getByText` throw when multiple elements match — use `{ exact: true }` or scope the locator to a parent element
+
+## Project structure
+
+- `~/` → `app/`; `~/prisma` → `prisma/generated/client`
+- Auth: `getCurrentUser(request)` (root loader, nullable) and `requireUser(request)` (protected routes, throws redirect) — see `app/lib/auth.server.ts`
+- Blog post dates come from filenames: `app/data/blog/YYYY-MM-DD-slug.md`
+- Do NOT add `react`/`react-dom` to `optimizeDeps.include` in `vite.config.ts` — creates duplicate React instances that break all hooks
