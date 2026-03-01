@@ -91,12 +91,9 @@ export async function trackBotVisit(request: Request): Promise<void> {
   const date = new Date(
     Temporal.Now.zonedDateTimeISO("UTC").startOfDay().epochMilliseconds,
   );
-  const accept = (request.headers.get("accept") ?? "")
-    .split(",")
-    .map((t) => t.split(";")[0].trim())
-    .filter(Boolean);
+  const accept = getAccept(request);
   const ip = request.headers.get("x-real-ip") ?? undefined;
-  const referer = request.headers.get("referer") ?? undefined;
+  const referer = getReferer(request);
 
   try {
     await prisma.botVisit.upsert({
@@ -119,4 +116,28 @@ export async function trackBotVisit(request: Request): Promise<void> {
   } catch (error) {
     captureException(error, { extra: { botType, domain, path, userAgent } });
   }
+}
+
+function getAccept(request: Request): string[] {
+  return (request.headers.get("accept") ?? "")
+    .split(",")
+    .map((t) => t.split(";")[0].trim())
+    .filter(Boolean);
+}
+
+function getReferer(request: Request): string | undefined {
+  let referer: string | undefined = request.headers.get("referer") ?? undefined;
+  if (referer) {
+    try {
+      const requestURL = new URL(request.url);
+      const refererURL = new URL(referer);
+      if (
+        refererURL.hostname.toLowerCase() === requestURL.hostname.toLowerCase()
+      )
+        referer = undefined;
+    } catch {
+      // ignore parse errors, keep referer as is
+    }
+  }
+  return referer;
 }
