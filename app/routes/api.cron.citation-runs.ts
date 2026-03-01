@@ -1,6 +1,5 @@
 import { captureException } from "@sentry/react-router";
 import envVars from "~/lib/envVars";
-import defaultQueries from "~/lib/llm-visibility/queries";
 import queryAccount from "~/lib/llm-visibility/queryAccount";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/api.cron.citation-runs";
@@ -28,12 +27,9 @@ export async function loader({ request }: Route.LoaderArgs) {
         where: { siteId: site.id },
         orderBy: [{ group: "asc" }, { query: "asc" }],
       });
-      const effectiveQueries =
-        siteQueryRows.length > 0
-          ? siteQueryRows
-              .filter((q) => q.query.trim())
-              .map((q) => ({ query: q.query, category: q.group }))
-          : defaultQueries;
+      const effectiveQueries = siteQueryRows
+        .filter((q) => q.query.trim())
+        .map((q) => ({ query: q.query, category: q.group }));
       await queryAccount({ site, queries: effectiveQueries, repetitions: 3 });
       console.info("[cron:citation-runs] Done — %s (%s)", site.id, site.domain);
       results.push({ siteId: site.id, ok: true });

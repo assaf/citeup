@@ -1,0 +1,121 @@
+import { PlusIcon, TrashIcon } from "lucide-react";
+import { useState } from "react";
+import { useFetcher } from "react-router";
+import { Alert, AlertTitle } from "~/components/ui/alert";
+import { Button } from "~/components/ui/Button";
+import { Card, CardContent, CardFooter } from "~/components/ui/Card";
+import { Input } from "~/components/ui/Input";
+import QueryRow from "./QueryRow";
+import type { action } from "./route";
+
+export default function GroupSection({
+  group,
+  queries,
+}: {
+  group: string;
+  queries: {
+    id: string;
+    group: string;
+    query: string;
+  }[];
+}) {
+  const renameFetcher = useFetcher<typeof action>();
+  const deleteFetcher = useFetcher<typeof action>();
+  const addFetcher = useFetcher<typeof action>();
+  const [groupName, setGroupName] = useState(group);
+
+  return (
+    <Card className="bg-secondary-background text-foreground">
+      <CardContent>
+        {renameFetcher.data?.ok === false && (
+          <Alert variant="destructive">
+            <AlertTitle>
+              {renameFetcher.data.error ??
+                "Failed to rename. Please try again."}
+            </AlertTitle>
+          </Alert>
+        )}
+        {deleteFetcher.data?.ok === false && (
+          <Alert variant="destructive">
+            <AlertTitle>
+              {deleteFetcher.data.error ??
+                "Failed to delete group. Please try again."}
+            </AlertTitle>
+          </Alert>
+        )}
+        {addFetcher.data?.ok === false && (
+          <Alert variant="destructive">
+            <AlertTitle>
+              {addFetcher.data.error ??
+                "Failed to add query. Please try again."}
+            </AlertTitle>
+          </Alert>
+        )}
+
+        <div className="flex items-center gap-2">
+          <Input
+            aria-label="Group name"
+            className="h-auto flex-1 rounded-none border-x-0 border-t-0 border-b-2 bg-transparent px-1 py-0.5 font-heading text-lg shadow-none hover:border-border focus-visible:translate-x-0 focus-visible:translate-y-0 focus-visible:border-border focus-visible:shadow-none"
+            value={groupName}
+            onChange={(e) => setGroupName(e.target.value)}
+            onBlur={() => {
+              if (!groupName.trim() || groupName === group) return;
+              renameFetcher.submit(
+                {
+                  _intent: "rename-group",
+                  oldGroup: group,
+                  newGroup: groupName.trim(),
+                },
+                { method: "post" },
+              );
+            }}
+          />
+          <Button
+            variant="ghost"
+            className="transition-all hover:border-red-600 hover:shadow-[3px_3px_0px_0px_red] focus-visible:border-red-600 focus-visible:shadow-[3px_3px_0px_0px_red]"
+            size="sm"
+            type="button"
+            aria-label="Delete group"
+            onClick={() => {
+              if (
+                confirm(
+                  `Delete group "${group}" and all its queries? This cannot be undone.`,
+                )
+              )
+                deleteFetcher.submit(
+                  { _intent: "delete-group", group },
+                  { method: "post" },
+                );
+            }}
+          >
+            <TrashIcon className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <ul className="space-y-0.5">
+          {queries.map((q) => (
+            <QueryRow key={q.id} query={q} />
+          ))}
+        </ul>
+      </CardContent>
+
+      <CardFooter>
+        <Button
+          variant="outline"
+          size="sm"
+          type="button"
+          className="text-foreground/50 hover:text-foreground"
+          onClick={() => {
+            addFetcher.submit(
+              { _intent: "add-query", group },
+              { method: "post" },
+            );
+          }}
+        >
+          <PlusIcon className="h-4 w-4" />
+          Add query
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}

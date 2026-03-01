@@ -36,6 +36,9 @@
       "~/prisma": [
         "./prisma/generated/client"
       ],
+      "~/prisma/seed": [
+        "./prisma/seed/*"
+      ],
       "~/test/*": [
         "./test/*"
       ]
