@@ -1,5 +1,5 @@
-import { Link } from "react-router";
 import { requireUser } from "~/lib/auth.server";
+import SitePageHeader from "~/components/ui/SitePageHeader";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/route";
 import AddGroup from "./AddGroup";
@@ -102,16 +102,7 @@ export default function SiteQueriesPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-6 py-12">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-foreground/60 text-sm">
-            <Link className="hover:underline" to={`/site/${site.id}`}>
-              {site.domain}
-            </Link>
-          </p>
-          <h1 className="font-heading text-3xl">Citation Queries</h1>
-        </div>
-      </div>
+      <SitePageHeader site={site} title="Citation Queries" />
 
       <p className="text-foreground/60 text-sm">
         These queries are run against AI platforms to check where your site is

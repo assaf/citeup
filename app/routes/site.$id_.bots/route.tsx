@@ -1,5 +1,4 @@
 import { sumBy } from "es-toolkit";
-import { Link } from "react-router";
 import {
   CartesianGrid,
   Legend,
@@ -10,6 +9,7 @@ import {
   YAxis,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
+import SitePageHeader from "~/components/ui/SitePageHeader";
 import { ChartContainer } from "~/components/ui/Chart";
 import DateRangeSelector, {
   parseDateRange,
@@ -191,17 +191,9 @@ export default function SiteBotsPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-6 py-12">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-foreground/60 text-sm">
-            <Link className="hover:underline" to={`/site/${site.id}`}>
-              {site.domain}
-            </Link>
-          </p>
-          <h1 className="font-heading text-3xl">Bot Traffic</h1>
-        </div>
+      <SitePageHeader site={site} title="Bot Traffic">
         <DateRangeSelector />
-      </div>
+      </SitePageHeader>
 
       {isEmpty ? (
         <div className="rounded-base border-2 border-black bg-secondary-background p-12 text-center shadow-shadow">
