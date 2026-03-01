@@ -1,14 +1,29 @@
+import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
 import { twMerge } from "tailwind-merge";
 
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+const cardVariants = cva(
+  "flex flex-col gap-6 rounded-base border-2 border-border py-6 font-base shadow-shadow",
+  {
+    variants: {
+      variant: {
+        default: "bg-secondary-background text-foreground",
+        ghost: "bg-transparent border-transparent shadow-none text-foreground",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  },
+);
+
+type CardProps = React.ComponentProps<"div"> & VariantProps<typeof cardVariants>;
+
+function Card({ className, variant, ...props }: CardProps) {
   return (
     <div
       data-slot="card"
-      className={twMerge(
-        "flex flex-col gap-6 rounded-base border-2 border-border bg-background py-6 font-base text-foreground shadow-shadow",
-        className,
-      )}
+      className={twMerge(cardVariants({ variant }), className)}
       {...props}
     />
   );

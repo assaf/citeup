@@ -25,7 +25,7 @@ export default function GroupSection({
   const [groupName, setGroupName] = useState(group);
 
   return (
-    <Card className="bg-secondary-background text-foreground">
+    <Card>
       <CardContent>
         {renameFetcher.data?.ok === false && (
           <Alert variant="outline">

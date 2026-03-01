@@ -217,7 +217,6 @@ export default function SiteBotsPage({ loaderData }: Route.ComponentProps) {
               },
             ].map(({ label, value }) => (
               <Card
-                className="bg-secondary-background text-foreground"
                 key={label}
               >
                 <CardContent className="pt-6">
@@ -228,7 +227,7 @@ export default function SiteBotsPage({ loaderData }: Route.ComponentProps) {
             ))}
           </div>
 
-          <Card className="bg-secondary-background text-foreground">
+          <Card>
             <CardHeader>
               <CardTitle>Traffic Trend</CardTitle>
             </CardHeader>
@@ -280,7 +279,7 @@ export default function SiteBotsPage({ loaderData }: Route.ComponentProps) {
             </CardContent>
           </Card>
 
-          <Card className="bg-secondary-background text-foreground">
+          <Card>
             <CardHeader>
               <CardTitle>Bot Activity</CardTitle>
             </CardHeader>
@@ -317,7 +316,7 @@ export default function SiteBotsPage({ loaderData }: Route.ComponentProps) {
           </Card>
 
           <div className="grid grid-cols-2 gap-6">
-            <Card className="bg-secondary-background text-foreground">
+            <Card>
               <CardHeader>
                 <CardTitle>Top Paths</CardTitle>
               </CardHeader>
@@ -349,7 +348,7 @@ export default function SiteBotsPage({ loaderData }: Route.ComponentProps) {
               </CardContent>
             </Card>
 
-            <Card className="bg-secondary-background text-foreground">
+            <Card>
               <CardHeader>
                 <CardTitle>Accept Types</CardTitle>
               </CardHeader>

@@ -78,7 +78,7 @@ export default function RecentVisibility({ run }: { run: Run }) {
   };
 
   return (
-    <Card className="bg-secondary-background text-foreground">
+    <Card>
       <CardHeader>
         <CardTitle>Most Recent Run</CardTitle>
         <CardDescription>

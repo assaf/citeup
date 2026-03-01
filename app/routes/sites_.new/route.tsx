@@ -67,7 +67,7 @@ export default function AddSitePage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-lg bg-secondary-background text-foreground">
+      <Card className="w-full max-w-lg">
         <CardHeader>
           <CardTitle className="text-2xl">Add a Site</CardTitle>
         </CardHeader>

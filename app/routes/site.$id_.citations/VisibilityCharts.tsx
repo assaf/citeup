@@ -65,7 +65,7 @@ export default function VisibilityCharts({ runs }: { runs: Run[] }) {
   return (
     <div className="grid gap-4 md:grid-cols-3">
       {CHART_KEYS.map((key) => (
-        <Card key={key} className="bg-secondary-background text-foreground">
+        <Card key={key}>
           <CardHeader>
             <CardTitle className="text-sm">{chartConfig[key].label}</CardTitle>
           </CardHeader>

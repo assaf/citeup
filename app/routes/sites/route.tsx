@@ -56,7 +56,7 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
       <ul className="space-y-4">
         {sites.map((site) => (
           <li key={site.id}>
-            <Card className="bg-secondary-background text-foreground">
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between font-heading text-xl">
                   <span>{site.domain}</span>
