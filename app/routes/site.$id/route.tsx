@@ -43,12 +43,20 @@ export default function SiteDetailPage({ loaderData }: Route.ComponentProps) {
     <main className="mx-auto max-w-5xl space-y-6 px-6 py-12">
       <div className="flex items-center justify-between gap-4">
         <h1 className="font-heading text-3xl">{site.domain}</h1>
-        <Link
-          className="text-foreground/60 text-sm hover:underline"
-          to={`/site/${site.id}/bots`}
-        >
-          Bot Traffic →
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            className="text-foreground/60 text-sm hover:underline"
+            to={`/site/${site.id}/queries`}
+          >
+            Queries →
+          </Link>
+          <Link
+            className="text-foreground/60 text-sm hover:underline"
+            to={`/site/${site.id}/bots`}
+          >
+            Bot Traffic →
+          </Link>
+        </div>
       </div>
 
       <Tabs

@@ -1,0 +1,82 @@
+<div class="flex items-center justify-between gap-4">
+  <div>
+    <p class="text-foreground/60 text-sm"></p>
+    <h1 class="font-heading text-3xl">
+      Citation Queries
+    </h1>
+  </div>
+</div>
+<p class="text-foreground/60 text-sm">
+  These queries are run against AI platforms to check where your site is cited. Organize them into groups by topic or intent (e.g.
+  <code class="font-mono">
+    1.discovery
+  </code>
+  ,
+  <code class="font-mono">
+    2.active_search
+  </code>
+  ).
+</p>
+<div class="space-y-4">
+  <div class="space-y-3 rounded-base border-2 border-border p-4 shadow-shadow">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2">
+        <input aria-label="Group name" class="flex w-full rounded-base border-2 border-black font-medium text-black transition-all duration-100 file:border-0 file:bg-transparent file:font-medium file:text-black placeholder:text-gray-600 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50 h-auto flex-1 rounded-none border-x-0 border-t-0 border-b-2 bg-transparent px-1 py-0.5 font-heading text-lg shadow-none hover:border-border focus-visible:translate-x-0 focus-visible:translate-y-0 focus-visible:border-border focus-visible:shadow-none" value="1.discovery" />
+        <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-bold transition-all duration-100 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 rounded-base border-2 border-transparent hover:border-black hover:bg-white h-10 rounded-sm px-4 text-xs text-foreground/40 hover:text-red-600" type="button">
+          Delete group
+        </button>
+      </div>
+    </div>
+    <ul class="space-y-0.5">
+      <li class="group/row space-y-0.5">
+        <div class="flex items-center gap-1">
+          <input aria-label="Query text" class="flex w-full rounded-base border-2 font-medium text-black transition-all duration-100 file:border-0 file:bg-transparent file:font-medium file:text-black placeholder:text-gray-600 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50 h-auto flex-1 border-transparent bg-transparent px-2 py-1 text-sm shadow-none hover:border-border focus-visible:translate-x-0 focus-visible:translate-y-0 focus-visible:border-border focus-visible:shadow-none" placeholder="Enter query…" value="How do I find short-term retail space?" />
+          <button aria-label="Delete query" class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-bold duration-100 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 rounded-base border-2 border-transparent text-black hover:border-black hover:bg-white h-10 rounded-sm px-4 text-xs opacity-0 transition-opacity group-hover/row:opacity-100" type="button">
+            ×
+          </button>
+        </div>
+      </li>
+      <li class="group/row space-y-0.5">
+        <div class="flex items-center gap-1">
+          <input aria-label="Query text" class="flex w-full rounded-base border-2 font-medium text-black transition-all duration-100 file:border-0 file:bg-transparent file:font-medium file:text-black placeholder:text-gray-600 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50 h-auto flex-1 border-transparent bg-transparent px-2 py-1 text-sm shadow-none hover:border-border focus-visible:translate-x-0 focus-visible:translate-y-0 focus-visible:border-border focus-visible:shadow-none" placeholder="Enter query…" value="What are the best platforms for pop-up shops?" />
+          <button aria-label="Delete query" class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-bold duration-100 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 rounded-base border-2 border-transparent text-black hover:border-black hover:bg-white h-10 rounded-sm px-4 text-xs opacity-0 transition-opacity group-hover/row:opacity-100" type="button">
+            ×
+          </button>
+        </div>
+      </li>
+    </ul>
+    <div class="space-y-1">
+      <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-bold transition-all duration-100 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 rounded-base border-2 border-transparent hover:border-black hover:bg-white h-10 rounded-sm px-4 text-xs text-foreground/50 hover:text-foreground" type="button">
+        + Add query
+      </button>
+    </div>
+  </div>
+  <div class="space-y-3 rounded-base border-2 border-border p-4 shadow-shadow">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2">
+        <input aria-label="Group name" class="flex w-full rounded-base border-2 border-black font-medium text-black transition-all duration-100 file:border-0 file:bg-transparent file:font-medium file:text-black placeholder:text-gray-600 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50 h-auto flex-1 rounded-none border-x-0 border-t-0 border-b-2 bg-transparent px-1 py-0.5 font-heading text-lg shadow-none hover:border-border focus-visible:translate-x-0 focus-visible:translate-y-0 focus-visible:border-border focus-visible:shadow-none" value="2.active_search" />
+        <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-bold transition-all duration-100 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 rounded-base border-2 border-transparent hover:border-black hover:bg-white h-10 rounded-sm px-4 text-xs text-foreground/40 hover:text-red-600" type="button">
+          Delete group
+        </button>
+      </div>
+    </div>
+    <ul class="space-y-0.5">
+      <li class="group/row space-y-0.5">
+        <div class="flex items-center gap-1">
+          <input aria-label="Query text" class="flex w-full rounded-base border-2 font-medium text-black transition-all duration-100 file:border-0 file:bg-transparent file:font-medium file:text-black placeholder:text-gray-600 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-50 h-auto flex-1 border-transparent bg-transparent px-2 py-1 text-sm shadow-none hover:border-border focus-visible:translate-x-0 focus-visible:translate-y-0 focus-visible:border-border focus-visible:shadow-none" placeholder="Enter query…" value="Where can I lease a kiosk in a mall?" />
+          <button aria-label="Delete query" class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-bold duration-100 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 rounded-base border-2 border-transparent text-black hover:border-black hover:bg-white h-10 rounded-sm px-4 text-xs opacity-0 transition-opacity group-hover/row:opacity-100" type="button">
+            ×
+          </button>
+        </div>
+      </li>
+    </ul>
+    <div class="space-y-1">
+      <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-bold transition-all duration-100 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 rounded-base border-2 border-transparent hover:border-black hover:bg-white h-10 rounded-sm px-4 text-xs text-foreground/50 hover:text-foreground" type="button">
+        + Add query
+      </button>
+    </div>
+  </div>
+  <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-bold transition-all duration-100 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 rounded-base border-2 border-black bg-white text-black shadow-[3px_3px_0px_0px_black] hover:bg-[hsl(60,100%,99%)] hover:shadow-[5px_5px_0px_0px_black] hover:translate-x-[-2px] hover:translate-y-[-2px] h-10 rounded-sm px-4 text-xs" type="button">
+    + Add group
+  </button>
+</div>

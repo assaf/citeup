@@ -24,7 +24,17 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   for (const site of sites) {
     try {
-      await queryAccount({ site, queries: defaultQueries, repetitions: 3 });
+      const siteQueryRows = await prisma.siteQuery.findMany({
+        where: { siteId: site.id },
+        orderBy: [{ group: "asc" }, { query: "asc" }],
+      });
+      const effectiveQueries =
+        siteQueryRows.length > 0
+          ? siteQueryRows
+              .filter((q) => q.query.trim())
+              .map((q) => ({ query: q.query, category: q.group }))
+          : defaultQueries;
+      await queryAccount({ site, queries: effectiveQueries, repetitions: 3 });
       console.info("[cron:citation-runs] Done — %s (%s)", site.id, site.domain);
       results.push({ siteId: site.id, ok: true });
     } catch (error) {

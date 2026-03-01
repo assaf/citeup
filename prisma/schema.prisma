@@ -82,10 +82,24 @@ model Site {
   content      String?            @map("content")
   citationRuns CitationQueryRun[]
   botVisits    BotVisit[]
+  siteQueries  SiteQuery[]
 
   @@index([accountId])
   @@unique([accountId, domain])
   @@map("sites")
+}
+
+model SiteQuery {
+  id        String   @id @default(cuid())
+  createdAt DateTime @map("created_at") @default(now())
+  updatedAt DateTime @map("updated_at") @updatedAt
+  siteId    String   @map("site_id")
+  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  group     String   @map("group")
+  query     String   @map("query")
+
+  @@index([siteId])
+  @@map("site_queries")
 }
 
 model User {

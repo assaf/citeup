@@ -83,6 +83,9 @@ console.error("[%s:%s] Failed: %o", site.id, platform, error);
 - Loaders return plain data objects; actions return `{ error }` / `{ success }` or redirect
 - Destructure `loaderData` / `actionData` in component props
 - Use `useFetcher` for sub-forms that shouldn't navigate on submit
+- Type fetchers as `useFetcher<typeof action>()` to get typed `.data`
+- Actions return `{ ok: true as const }` / `{ ok: false as const, error: string }` — never throw for user-facing errors
+- Flat route `foo.$id_.bar` (underscore after param) avoids nesting inside the `foo.$id` layout
 
 ## Naming
 
@@ -96,3 +99,21 @@ console.error("[%s:%s] Failed: %o", site.id, platform, error);
 - `es-toolkit` for array/object utilities (not lodash)
 - `@js-temporal/polyfill` for date/time (not `Date`)
 - `twMerge` + `cva` for conditional class names on UI components
+
+## UI components
+
+- Prefer components from `app/components/ui/` when available (Button, Input, Card, Table, Tabs, etc.)
+- If a new UI component is needed, ask the user before creating it
+- Override component styles via `className` — `twMerge` handles conflicts, so e.g. `bg-transparent shadow-none` correctly wins over defaults
+
+## Prisma / schema
+
+- All child relations use `onDelete: Cascade`
+- Add `updatedAt DateTime @map("updated_at") @updatedAt` to every mutable model
+- After schema changes: `pnpm prisma db push` then `pnpm prisma generate`
+
+## Testing
+
+- Prefer integration tests against a real DB over mocked unit tests
+- Use fixed IDs in test seed data to avoid conflicts across test files (`id: "user-bots-1"`, etc.)
+- Playwright strict mode: `getByRole` / `getByText` throw when multiple elements match — use `{ exact: true }` or scope the locator to a parent element

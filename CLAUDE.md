@@ -6,4 +6,4 @@ See @README.md for project overview.
 See @package.json for available scripts.
 See @docs/coding-conventions.md for coding style.
 
-Single test file: `vitest run test/routes/home.test.ts`
+Single test file: `pnpm vitest run test/routes/home.test.ts`
