@@ -2,7 +2,7 @@ import { captureException } from "@sentry/react-router";
 import envVars from "~/lib/envVars";
 import queryAccount from "~/lib/llm-visibility/queryAccount";
 import prisma from "~/lib/prisma.server";
-import type { Route } from "./+types/api.cron.citation-runs";
+import type { Route } from "./+types/cron.citation-runs";
 
 // Vercel Cron fires a GET with Authorization: Bearer <CRON_SECRET>.
 export async function loader({ request }: Route.LoaderArgs) {
@@ -16,8 +16,10 @@ export async function loader({ request }: Route.LoaderArgs) {
   const sites = await prisma.site.findMany({
     where: { account: { users: { some: {} } } },
   });
-
-  console.info("[cron:citation-runs] Starting — %d site(s)", sites.length);
+  console.info(
+    "[cron:citation-runs] Updating sites: %s",
+    sites.map(({ domain }) => domain).join(", "),
+  );
 
   const results: { siteId: string; ok: boolean; error?: string }[] = [];
 
