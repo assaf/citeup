@@ -71,7 +71,7 @@ function classifyBot(userAgent: string): string | null {
  * Record a bot visit given explicit parameters.
  * Used by both the middleware tracker and the external API endpoint.
  */
-export async function recordBotVisit({
+export default async function recordBotVisit({
   url,
   userAgent,
   accept,
@@ -79,11 +79,13 @@ export async function recordBotVisit({
   referer,
 }: {
   url: string;
-  userAgent: string;
+  userAgent: string | null;
   accept: string | null;
   ip: string | null;
   referer: string | null;
 }): Promise<{ tracked: boolean; reason?: string }> {
+  if (!userAgent) return { tracked: false, reason: "no user agent" };
+
   const botType = classifyBot(userAgent);
   if (!botType) return { tracked: false, reason: "not a bot" };
   if (/Better Stack/i.test(userAgent))
@@ -128,21 +130,6 @@ export async function recordBotVisit({
     });
     return { tracked: false, reason: "db error" };
   }
-}
-
-/**
- * Track a bot visit from an incoming request (middleware usage).
- */
-export async function trackBotVisit(request: Request): Promise<void> {
-  const userAgent = request.headers.get("user-agent");
-  if (!userAgent) return;
-
-  const url = request.url;
-  const accept = request.headers.get("accept");
-  const ip = request.headers.get("x-real-ip");
-  const referer = request.headers.get("referer");
-
-  await recordBotVisit({ url, userAgent, accept, ip, referer });
 }
 
 function parseAccept(acceptHeader?: string | null): string[] {

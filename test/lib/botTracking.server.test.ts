@@ -1,15 +1,22 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { trackBotVisit } from "~/lib/botTracking.server";
+import recordBotVisit from "~/lib/botTracking.server";
 import prisma from "~/lib/prisma.server";
 
 function makeRequest(
   userAgent: string,
   url = "https://citeup.vercel.app/",
   accept?: string,
+  referer?: string,
 ) {
   const headers: Record<string, string> = { "user-agent": userAgent };
   if (accept) headers.accept = accept;
-  return new Request(url, { headers });
+  return {
+    url,
+    userAgent,
+    accept: accept || null,
+    ip: "127.0.0.1",
+    referer: referer || null,
+  };
 }
 
 describe("trackBotVisit", () => {
@@ -24,7 +31,7 @@ describe("trackBotVisit", () => {
   });
 
   it("ignores regular browser user agents", async () => {
-    await trackBotVisit(
+    await recordBotVisit(
       makeRequest(
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
       ),
@@ -34,7 +41,7 @@ describe("trackBotVisit", () => {
   });
 
   it("tracks a known bot by type", async () => {
-    await trackBotVisit(
+    await recordBotVisit(
       makeRequest(
         "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
       ),
@@ -44,25 +51,25 @@ describe("trackBotVisit", () => {
   });
 
   it("skips upsert when no site matches the domain", async () => {
-    await trackBotVisit(makeRequest("Googlebot/2.1", "https://example.com/"));
+    await recordBotVisit(makeRequest("Googlebot/2.1", "https://example.com/"));
     const last = await prisma.botVisit.findFirst();
     expect(last).toBeNull();
   });
 
   it("tracks an unknown bot as 'Other Bot'", async () => {
-    await trackBotVisit(makeRequest("custom-spider/1.0"));
+    await recordBotVisit(makeRequest("custom-spider/1.0"));
     const last = await prisma.botVisit.findFirstOrThrow();
     expect(last.botType).toBe("Other Bot");
   });
 
   it("ignores Better Stack uptime checks", async () => {
-    await trackBotVisit(makeRequest("Better Stack Uptime Monitor/1.0 bot"));
+    await recordBotVisit(makeRequest("Better Stack Uptime Monitor/1.0 bot"));
     const last = await prisma.botVisit.findFirst();
     expect(last).toBeNull();
   });
 
   it("records domain and path from request URL", async () => {
-    await trackBotVisit(
+    await recordBotVisit(
       makeRequest("Googlebot/2.1", "https://citeup.vercel.app/blog/post"),
     );
     const last = await prisma.botVisit.findFirstOrThrow();
@@ -70,7 +77,7 @@ describe("trackBotVisit", () => {
   });
 
   it("parses Accept header into MIME type array, stripping quality values", async () => {
-    await trackBotVisit(
+    await recordBotVisit(
       makeRequest(
         "Googlebot/2.1",
         "https://citeup.vercel.app/",
@@ -79,5 +86,31 @@ describe("trackBotVisit", () => {
     );
     const last = await prisma.botVisit.findFirstOrThrow();
     expect(last.accept).toEqual(["text/html", "application/xhtml+xml", "*/*"]);
+  });
+
+  it("records referer if present", async () => {
+    await recordBotVisit(
+      makeRequest(
+        "Googlebot/2.1",
+        "https://citeup.vercel.app/",
+        "text/html",
+        "https://google.com",
+      ),
+    );
+    const last = await prisma.botVisit.findFirstOrThrow();
+    expect(last.referer).toBe("https://google.com");
+  });
+
+  it("does not record referer if it is the same as the request URL", async () => {
+    await recordBotVisit(
+      makeRequest(
+        "Googlebot/2.1",
+        "https://citeup.vercel.app/",
+        "text/html",
+        "https://citeup.vercel.app/",
+      ),
+    );
+    const last = await prisma.botVisit.findFirst();
+    expect(last).toBeNull();
   });
 });

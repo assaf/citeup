@@ -1,6 +1,6 @@
 import { captureException } from "@sentry/react-router";
 import { z } from "zod";
-import { recordBotVisit } from "~/lib/botTracking.server";
+import recordBotVisit from "~/lib/botTracking.server";
 import type { Route } from "./+types/api.track";
 
 const BotTrackSchema = z.object({
