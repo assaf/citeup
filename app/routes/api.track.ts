@@ -1,3 +1,4 @@
+import { captureException } from "@sentry/react-router";
 import { z } from "zod";
 import { recordBotVisit } from "~/lib/botTracking.server";
 import type { Route } from "./+types/api.track";
@@ -31,9 +32,11 @@ export async function action({ request }: Route.ActionArgs) {
   try {
     body = await request.json();
     const parsed = BotTrackSchema.safeParse(body);
-    if (!parsed.success) throw new Error(parsed.error.message);
+    if (parsed.error) throw new Error(parsed.error.message);
     data = parsed.data;
   } catch {
+    console.error("Invalid JSON", body);
+    captureException(new Error("Invalid JSON"), { extra: { body } });
     return Response.json(
       { tracked: false, reason: "Invalid JSON" },
       { status: 400, headers: CORS_HEADERS },
