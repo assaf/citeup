@@ -1,11 +1,14 @@
 export const handle = { siteNav: true };
 
+import { captureException } from "@sentry/react-router";
 import { requireUser } from "~/lib/auth.server";
+import generateSiteQueries from "~/lib/llm-visibility/generateSiteQueries";
 import SitePageHeader from "~/components/ui/SitePageHeader";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/route";
 import AddGroup from "./AddGroup";
 import GroupSection from "./GroupSection";
+import SuggestedQueries from "./SuggestedQueries";
 
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: `Citation Queries — ${data?.site.domain} | CiteUp` }];
@@ -70,8 +73,9 @@ export async function action({ request, params }: Route.ActionArgs) {
     }
     case "add-query": {
       const group = String(data.get("group"));
+      const query = String(data.get("query") ?? "");
       await prisma.siteQuery.create({
-        data: { siteId: site.id, group, query: "" },
+        data: { siteId: site.id, group, query },
       });
       return { ok: true as const };
     }
@@ -94,6 +98,23 @@ export async function action({ request, params }: Route.ActionArgs) {
       await prisma.siteQuery.delete({ where: { id } });
       return { ok: true as const };
     }
+    case "suggest": {
+      if (!site.content)
+        return {
+          ok: false as const,
+          error: "No site content available to generate suggestions from.",
+        };
+      try {
+        const suggestions = await generateSiteQueries(site.content);
+        return { ok: true as const, suggestions };
+      } catch (error) {
+        captureException(error, { extra: { siteId: site.id } });
+        return {
+          ok: false as const,
+          error: "Couldn't generate suggestions. Please try again.",
+        };
+      }
+    }
   }
 
   return { ok: false as const, error: "Unknown action" };
@@ -112,6 +133,8 @@ export default function SiteQueriesPage({ loaderData }: Route.ComponentProps) {
         <code className="font-mono">1.discovery</code>,{" "}
         <code className="font-mono">2.active_search</code>).
       </p>
+
+      <SuggestedQueries hasContent={!!site.content} />
 
       <div className="space-y-4">
         {groups.length === 0 ? (
