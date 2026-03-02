@@ -1,9 +1,9 @@
 export const handle = { siteNav: true };
 
 import { captureException } from "@sentry/react-router";
+import SitePageHeader from "~/components/ui/SitePageHeader";
 import { requireUser } from "~/lib/auth.server";
 import generateSiteQueries from "~/lib/llm-visibility/generateSiteQueries";
-import SitePageHeader from "~/components/ui/SitePageHeader";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/route";
 import AddGroup from "./AddGroup";
@@ -130,8 +130,8 @@ export default function SiteQueriesPage({ loaderData }: Route.ComponentProps) {
       <p className="text-foreground/60 text-sm">
         These queries are run against AI platforms to check where your site is
         cited. Organize them into groups by topic or intent (e.g.{" "}
-        <code className="font-mono">1.discovery</code>,{" "}
-        <code className="font-mono">2.active_search</code>).
+        <code className="font-mono">1. discovery</code>,{" "}
+        <code className="font-mono">2. active_search</code>).
       </p>
 
       <SuggestedQueries hasContent={!!site.content} />

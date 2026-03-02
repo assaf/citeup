@@ -93,17 +93,17 @@ describe("site queries page", () => {
         data: [
           {
             siteId,
-            group: "1.discovery",
+            group: "1. discovery",
             query: "How do I find short-term retail space?",
           },
           {
             siteId,
-            group: "1.discovery",
+            group: "2. active_search",
             query: "What are the best platforms for pop-up shops?",
           },
           {
             siteId,
-            group: "2.active_search",
+            group: "2. active_search",
             query: "Where can I lease a kiosk in a mall?",
           },
         ],
@@ -112,9 +112,9 @@ describe("site queries page", () => {
     });
 
     it("shows group names", async () => {
-      await expect(page.locator('input[value="1.discovery"]')).toBeVisible();
+      await expect(page.locator('input[value="1. discovery"]')).toBeVisible();
       await expect(
-        page.locator('input[value="2.active_search"]'),
+        page.locator('input[value="2. active_search"]'),
       ).toBeVisible();
     });
 
@@ -154,7 +154,12 @@ describe("site queries page", () => {
     it("returns error when site has no content", async () => {
       const token = crypto.randomUUID();
       await prisma.session.create({
-        data: { token, userId: user.id, ipAddress: "127.0.0.1", userAgent: "test" },
+        data: {
+          token,
+          userId: user.id,
+          ipAddress: "127.0.0.1",
+          userAgent: "test",
+        },
       });
       const cookieHeader = await sessionCookie.serialize(token);
 
@@ -182,7 +187,12 @@ describe("site queries page", () => {
 
       const token = crypto.randomUUID();
       await prisma.session.create({
-        data: { token, userId: user.id, ipAddress: "127.0.0.1", userAgent: "test" },
+        data: {
+          token,
+          userId: user.id,
+          ipAddress: "127.0.0.1",
+          userAgent: "test",
+        },
       });
       const cookieHeader = await sessionCookie.serialize(token);
 

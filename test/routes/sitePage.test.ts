@@ -17,16 +17,16 @@ const HOSTNAME = "rentail.space";
 const QUERIES = [
   {
     query: "How do I find short-term retail space in shopping malls?",
-    category: "1.discovery",
+    category: "1. discovery",
   },
   {
     query:
       "What are the best platforms for finding pop-up shops in shopping centers?",
-    category: "1.discovery",
+    category: "1. discovery",
   },
   {
     query: "Where can I lease a kiosk in a mall for 3-6 months?",
-    category: "2.active_search",
+    category: "2. active_search",
   },
 ] as const;
 

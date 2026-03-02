@@ -1,20 +1,19 @@
-import { PlusIcon, SparklesIcon, XIcon } from "lucide-react";
+import { AlertCircleIcon, PlusIcon, SparklesIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { useFetcher } from "react-router";
 import { Alert, AlertTitle } from "~/components/ui/Alert";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent } from "~/components/ui/Card";
+import defaultQueryCategories from "~/lib/defaultQueryCategories";
 import type { action } from "./route";
 
-const CATEGORY_LABELS: Record<string, string> = {
-  "1.discovery": "Discovery",
-  "2.active_search": "Active search",
-  "3.comparison": "Comparison",
-};
+const GROUPS = Object.keys(defaultQueryCategories);
 
-const GROUPS = ["1.discovery", "2.active_search", "3.comparison"];
-
-export default function SuggestedQueries({ hasContent }: { hasContent: boolean }) {
+export default function SuggestedQueries({
+  hasContent,
+}: {
+  hasContent: boolean;
+}) {
   const fetcher = useFetcher<typeof action>();
   const [dismissed, setDismissed] = useState(false);
 
@@ -22,8 +21,10 @@ export default function SuggestedQueries({ hasContent }: { hasContent: boolean }
 
   const isLoading = fetcher.state !== "idle";
   const data = fetcher.data;
-  const suggestions = !dismissed && data && "suggestions" in data ? data.suggestions : undefined;
-  const error = fetcher.state === "idle" && data && !data.ok ? data.error : undefined;
+  const suggestions =
+    !dismissed && data && "suggestions" in data ? data.suggestions : undefined;
+  const error =
+    fetcher.state === "idle" && data && !data.ok ? data.error : undefined;
 
   return (
     <div className="space-y-3">
@@ -47,6 +48,7 @@ export default function SuggestedQueries({ hasContent }: { hasContent: boolean }
 
       {error && (
         <Alert variant="outline">
+          <AlertCircleIcon className="h-4 w-4" />
           <AlertTitle>{error}</AlertTitle>
         </Alert>
       )}
@@ -55,7 +57,7 @@ export default function SuggestedQueries({ hasContent }: { hasContent: boolean }
         <Card>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="font-heading text-sm font-semibold">Suggested queries</p>
+              <p className="font-semibold text-sm">Suggested queries</p>
               <Button
                 variant="ghost"
                 size="sm"
@@ -73,7 +75,8 @@ export default function SuggestedQueries({ hasContent }: { hasContent: boolean }
               return (
                 <div key={group} className="space-y-1">
                   <p className="text-foreground/50 text-xs uppercase tracking-wide">
-                    {CATEGORY_LABELS[group] ?? group}
+                    {defaultQueryCategories.find((c) => c.group === group)
+                      ?.intent ?? group}
                   </p>
                   <ul className="space-y-1">
                     {items.map((s) => (

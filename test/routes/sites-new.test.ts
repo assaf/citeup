@@ -171,13 +171,18 @@ describe("add site — save-queries phase 2", () => {
 
     const token = crypto.randomUUID();
     await prisma.session.create({
-      data: { token, userId: user.id, ipAddress: "127.0.0.1", userAgent: "test" },
+      data: {
+        token,
+        userId: user.id,
+        ipAddress: "127.0.0.1",
+        userAgent: "test",
+      },
     });
     const cookieHeader = await sessionCookie.serialize(token);
 
     const queries = [
-      { group: "1.discovery", query: "How do I find pop-up retail space?" },
-      { group: "2.active_search", query: "Short-term kiosk rental" },
+      { group: "1. discovery", query: "How do I find pop-up retail space?" },
+      { group: "2. active_search", query: "Short-term kiosk rental" },
     ];
 
     const form = new FormData();
@@ -195,9 +200,13 @@ describe("add site — save-queries phase 2", () => {
     expect(response.status).toBe(302);
     expect(response.headers.get("location")).toContain(`/site/${site.id}`);
 
-    const rows = await prisma.siteQuery.findMany({ where: { siteId: site.id } });
+    const rows = await prisma.siteQuery.findMany({
+      where: { siteId: site.id },
+    });
     expect(rows).toHaveLength(2);
-    expect(rows.map((r) => r.query)).toContain("How do I find pop-up retail space?");
+    expect(rows.map((r) => r.query)).toContain(
+      "How do I find pop-up retail space?",
+    );
   });
 
   it("skips empty queries", async () => {
@@ -214,14 +223,22 @@ describe("add site — save-queries phase 2", () => {
 
     const token = crypto.randomUUID();
     await prisma.session.create({
-      data: { token, userId: user.id, ipAddress: "127.0.0.1", userAgent: "test" },
+      data: {
+        token,
+        userId: user.id,
+        ipAddress: "127.0.0.1",
+        userAgent: "test",
+      },
     });
     const cookieHeader = await sessionCookie.serialize(token);
 
     const form = new FormData();
     form.append("_intent", "save-queries");
     form.append("siteId", site.id);
-    form.append("queries", JSON.stringify([{ group: "1.discovery", query: "  " }]));
+    form.append(
+      "queries",
+      JSON.stringify([{ group: "1. discovery", query: "  " }]),
+    );
 
     const response = await fetch(`http://localhost:${port}/sites/new`, {
       method: "POST",
@@ -231,7 +248,9 @@ describe("add site — save-queries phase 2", () => {
     });
 
     expect(response.status).toBe(302);
-    const rows = await prisma.siteQuery.findMany({ where: { siteId: site.id } });
+    const rows = await prisma.siteQuery.findMany({
+      where: { siteId: site.id },
+    });
     expect(rows).toHaveLength(0);
   });
 });

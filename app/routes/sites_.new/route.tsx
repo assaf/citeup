@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 import { Field, FieldError, FieldLabel } from "~/components/ui/FieldSet";
 import { Input } from "~/components/ui/Input";
 import { requireUser } from "~/lib/auth.server";
+import defaultQueryCategories from "~/lib/defaultQueryCategories";
 import generateSiteQueries from "~/lib/llm-visibility/generateSiteQueries";
 import prisma from "~/lib/prisma.server";
 import {
@@ -32,13 +33,7 @@ type ActionResult =
   | { siteId: string }
   | { siteId: string; suggestions: Suggestion[] };
 
-const CATEGORY_LABELS: Record<string, string> = {
-  "1.discovery": "Discovery — user is looking for solutions",
-  "2.active_search": "Active search — user wants what you offer",
-  "3.comparison": "Comparison — user is evaluating options",
-};
-
-const GROUPS = ["1.discovery", "2.active_search", "3.comparison"] as const;
+const GROUPS = defaultQueryCategories.map((c) => c.group);
 
 export async function action({
   request,
@@ -84,7 +79,8 @@ export async function action({
   const existing = await prisma.site.findFirst({
     where: { accountId: user.accountId, domain },
   });
-  if (existing) return { error: "That domain is already added to your account" };
+  if (existing)
+    return { error: "That domain is already added to your account" };
 
   const dnsOk = await verifyDomain(domain);
   if (!dnsOk)
@@ -189,7 +185,9 @@ function ReviewScreen({
   const nonEmpty = suggestions.filter((q) => q.query.trim());
 
   function updateQuery(id: number, query: string) {
-    setSuggestions((prev) => prev.map((q) => (q.id === id ? { ...q, query } : q)));
+    setSuggestions((prev) =>
+      prev.map((q) => (q.id === id ? { ...q, query } : q)),
+    );
   }
 
   function removeQuery(id: number) {
@@ -197,7 +195,10 @@ function ReviewScreen({
   }
 
   function addQuery(group: string) {
-    setSuggestions((prev) => [...prev, { group, query: "", id: nextId.current++ }]);
+    setSuggestions((prev) => [
+      ...prev,
+      { group, query: "", id: nextId.current++ },
+    ]);
   }
 
   function handleSave() {
@@ -205,7 +206,9 @@ function ReviewScreen({
       {
         _intent: "save-queries",
         siteId,
-        queries: JSON.stringify(nonEmpty.map(({ group, query }) => ({ group, query }))),
+        queries: JSON.stringify(
+          nonEmpty.map(({ group, query }) => ({ group, query })),
+        ),
       },
       { method: "post" },
     );
@@ -214,7 +217,7 @@ function ReviewScreen({
   return (
     <main className="mx-auto max-w-2xl space-y-6 px-6 py-12">
       <div>
-        <h1 className="font-heading text-2xl font-bold">Review suggested queries</h1>
+        <h1 className="font-heading text-2xl">Review suggested queries</h1>
         <p className="mt-1 text-foreground/60 text-sm">
           Edit, remove, or add queries before saving. These will be used to
           track your citation visibility across AI platforms.
@@ -227,14 +230,16 @@ function ReviewScreen({
           return (
             <Card key={group}>
               <CardContent className="space-y-2">
-                <p className="font-heading text-sm font-semibold">
-                  {CATEGORY_LABELS[group] ?? group}
+                <p className="font-heading text-sm">
+                  {defaultQueryCategories.find(
+                    (c: { group: string }) => c.group === group,
+                  )?.intent ?? group}
                 </p>
                 <ul className="space-y-1">
                   {items.map(({ query, id }, pos) => (
                     <li key={id} className="flex items-center gap-2">
                       <Input
-                        aria-label={`${CATEGORY_LABELS[group] ?? group} — query ${pos + 1}`}
+                        aria-label={`${group} — query ${pos + 1}`}
                         className="flex-1 text-sm"
                         value={query}
                         onChange={(e) => updateQuery(id, e.target.value)}
@@ -273,7 +278,10 @@ function ReviewScreen({
         >
           {isProcessing ? "Saving…" : "Save queries"}
         </Button>
-        <Link to={`/site/${siteId}`} className="text-foreground/60 text-sm underline">
+        <Link
+          to={`/site/${siteId}`}
+          className="text-foreground/60 text-sm underline"
+        >
           Skip
         </Link>
       </div>

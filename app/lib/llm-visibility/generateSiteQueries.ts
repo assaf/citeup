@@ -4,22 +4,7 @@ import { invariant } from "es-toolkit";
 import { z } from "zod";
 import envVars from "~/lib/envVars";
 import prisma from "~/lib/prisma.server";
-
-export const CATEGORIES = [
-  {
-    group: "1.discovery",
-    intent: "User doesn't know your brand; looking for solutions in your space",
-  },
-  {
-    group: "2.active_search",
-    intent: "User is actively looking for a specific product/service you offer",
-  },
-  {
-    group: "3.comparison",
-    intent:
-      "User is comparing options; your site should appear as a credible choice",
-  },
-] as const;
+import defaultQueryCategories from "../defaultQueryCategories";
 
 export default async function generateSiteQueries(
   content: string,
@@ -29,7 +14,7 @@ export default async function generateSiteQueries(
     model: anthropic("claude-haiku-4-5-20251001"),
     output: Output.array({
       element: z.object({
-        group: z.enum(["1.discovery", "2.active_search", "3.comparison"]),
+        group: z.enum(defaultQueryCategories.map((c) => c.group)),
         query: z.string().min(10).max(200),
       }),
     }),
@@ -41,7 +26,7 @@ export default async function generateSiteQueries(
 Return exactly 9 queries: 3 per category.
 
 Categories:
-${CATEGORIES.map((c) => `- ${c.group}: ${c.intent}`).join("\n")}
+${defaultQueryCategories.map((c) => `- ${c.group}: ${c.intent}`).join("\n")}
 
 Rules:
 - Queries must sound like real user questions, not marketing copy.

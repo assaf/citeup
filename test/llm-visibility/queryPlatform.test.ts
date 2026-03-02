@@ -37,11 +37,11 @@ const CITATION_SETS = [
 const QUERIES = [
   {
     query: "How do I find short-term retail space in shopping malls?",
-    category: "1.discovery",
+    category: "1. discovery",
   },
   {
     query: "Find available temporary retail space in shopping centers",
-    category: "2.active_search",
+    category: "2. active_search",
   },
 ];
 
@@ -102,12 +102,12 @@ describe("queryPlatform", () => {
       // "Find..." reps 1-3 map to citationSets 3,4,5 (indices 0,1,2)
       const [find1, find2, find3, how1, how2, how3] = run.queries;
 
-      expect(find1.category).toBe("2.active_search");
+      expect(find1.category).toBe("2. active_search");
       expect(find1.position).toBe(0); // rentail.space at index 0
       expect(find2.position).toBe(2); // rentail.space at index 2
       expect(find3.position).toBeNull(); // not present
 
-      expect(how1.category).toBe("1.discovery");
+      expect(how1.category).toBe("1. discovery");
       expect(how1.position).toBe(0);
       expect(how2.position).toBe(2);
       expect(how3.position).toBeNull();
@@ -155,7 +155,7 @@ describe("queryPlatform", () => {
 
       expect(find1).toMatchObject({
         query: "Find available temporary retail space in shopping centers",
-        category: "2.active_search",
+        category: "2. active_search",
         repetition: 1,
         citations: ["https://rentail.space/listings", "https://other.com"],
         text: "You can find short-term retail space on rentail.space.",
@@ -183,7 +183,7 @@ describe("queryPlatform", () => {
 
       expect(how1).toMatchObject({
         query: "How do I find short-term retail space in shopping malls?",
-        category: "1.discovery",
+        category: "1. discovery",
         repetition: 1,
         citations: ["https://rentail.space/listings", "https://other.com"],
         text: "You can find short-term retail space on rentail.space.",

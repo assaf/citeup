@@ -39,7 +39,7 @@ export default function AddGroup() {
         <div className="flex items-center gap-2">
           <Input
             ref={newGroupInputRef}
-            placeholder="Group name, e.g. 1.discovery"
+            placeholder="Group name, e.g. 1. discovery"
             value={newGroupName}
             onChange={(e) => setNewGroupName(e.target.value)}
             onKeyDown={(e) => {
