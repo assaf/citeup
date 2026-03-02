@@ -69,20 +69,27 @@ function classifyBot(userAgent: string): string | null {
 
 /**
  * Record a bot visit given explicit parameters.
- * Used by both the middleware tracker and the external API endpoint.
+ *
+ * @param params - The parameters to record a bot visit.
+ * @param params.accept - The accept header.
+ * @param params.ip - The IP address.
+ * @param params.referer - The referer header.
+ * @param params.url - The URL of the request.
+ * @param params.userAgent - The user agent.
+ * @returns A promise that resolves to the result of the bot visit.
  */
 export default async function recordBotVisit({
-  url,
-  userAgent,
   accept,
   ip,
   referer,
+  url,
+  userAgent,
 }: {
-  url: string;
-  userAgent: string | null;
   accept: string | null;
   ip: string | null;
   referer: string | null;
+  url: string;
+  userAgent: string | null;
 }): Promise<{ tracked: boolean; reason?: string }> {
   if (!userAgent) return { tracked: false, reason: "no user agent" };
 
