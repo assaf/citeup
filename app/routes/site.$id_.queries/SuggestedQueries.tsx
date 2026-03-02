@@ -12,19 +12,18 @@ const CATEGORY_LABELS: Record<string, string> = {
   "3.comparison": "Comparison",
 };
 
+const GROUPS = ["1.discovery", "2.active_search", "3.comparison"];
+
 export default function SuggestedQueries({ hasContent }: { hasContent: boolean }) {
   const fetcher = useFetcher<typeof action>();
   const [dismissed, setDismissed] = useState(false);
 
+  if (!hasContent) return null;
+
   const isLoading = fetcher.state !== "idle";
   const data = fetcher.data;
-  const suggestions =
-    data && "suggestions" in data ? data.suggestions : undefined;
-  const error = data && !data.ok ? data.error : undefined;
-
-  if (!hasContent || dismissed) return null;
-
-  const groups = ["1.discovery", "2.active_search", "3.comparison"];
+  const suggestions = !dismissed && data && "suggestions" in data ? data.suggestions : undefined;
+  const error = fetcher.state === "idle" && data && !data.ok ? data.error : undefined;
 
   return (
     <div className="space-y-3">
@@ -35,9 +34,10 @@ export default function SuggestedQueries({ hasContent }: { hasContent: boolean }
             size="sm"
             type="button"
             disabled={isLoading}
-            onClick={() =>
-              fetcher.submit({ _intent: "suggest" }, { method: "post" })
-            }
+            onClick={() => {
+              setDismissed(false);
+              fetcher.submit({ _intent: "suggest" }, { method: "post" });
+            }}
           >
             <SparklesIcon className="h-4 w-4" />
             {isLoading ? "Generating…" : "Suggest queries"}
@@ -67,7 +67,7 @@ export default function SuggestedQueries({ hasContent }: { hasContent: boolean }
               </Button>
             </div>
 
-            {groups.map((group) => {
+            {GROUPS.map((group) => {
               const items = suggestions.filter((s) => s.group === group);
               if (items.length === 0) return null;
               return (
@@ -76,8 +76,8 @@ export default function SuggestedQueries({ hasContent }: { hasContent: boolean }
                     {CATEGORY_LABELS[group] ?? group}
                   </p>
                   <ul className="space-y-1">
-                    {items.map((s, i) => (
-                      <SuggestionRow key={i} suggestion={s} />
+                    {items.map((s) => (
+                      <SuggestionRow key={s.query} suggestion={s} />
                     ))}
                   </ul>
                 </div>
