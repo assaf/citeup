@@ -1,3 +1,4 @@
+import { captureException } from "@sentry/react-router";
 import { Feed } from "feed";
 import { marked } from "marked";
 import { recentBlogPosts } from "~/lib/blogPosts.server";
@@ -55,8 +56,8 @@ export async function loader() {
         "Cache-Control": "public, max-age=3600",
       },
     });
-  } catch (error) {
-    console.error("Error generating Atom feed:", error);
+  } catch {
+    captureException(new Error("Error generating Atom feed"));
     throw new Response("Internal Server Error", { status: 500 });
   }
 }

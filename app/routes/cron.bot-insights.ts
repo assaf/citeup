@@ -1,9 +1,12 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { captureException } from "@sentry/react-router";
+import debug from "debug";
 import envVars from "~/lib/envVars";
 import generateBotInsight from "~/lib/llm-visibility/generateBotInsight";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/cron.bot-insights";
+
+const logger = debug("server");
 
 // Vercel Cron fires a GET with Authorization: Bearer <CRON_SECRET>.
 export async function loader({ request }: Route.LoaderArgs) {
@@ -23,7 +26,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     select: { id: true, domain: true },
   });
 
-  console.info(
+  logger(
     "[cron:bot-insights] Sites with recent visits: %s",
     sites.map((s) => s.domain).join(", "),
   );
@@ -46,8 +49,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         { total: number; pathCounts: Record<string, number> }
       > = {};
       for (const v of visits) {
-        if (!byBot[v.botType])
-          byBot[v.botType] = { total: 0, pathCounts: {} };
+        if (!byBot[v.botType]) byBot[v.botType] = { total: 0, pathCounts: {} };
         byBot[v.botType].total += v.count;
         byBot[v.botType].pathCounts[v.path] =
           (byBot[v.botType].pathCounts[v.path] ?? 0) + v.count;
@@ -73,11 +75,11 @@ export async function loader({ request }: Route.LoaderArgs) {
         update: { content, generatedAt: now },
       });
 
-      console.info("[cron:bot-insights] Done — %s (%s)", site.id, site.domain);
+      logger("[cron:bot-insights] Done — %s (%s)", site.id, site.domain);
       results.push({ siteId: site.id, ok: true });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(
+      logger(
         "[cron:bot-insights] Failed — %s (%s): %s",
         site.id,
         site.domain,

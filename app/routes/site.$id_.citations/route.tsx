@@ -57,7 +57,7 @@ export default function SiteCitationsPage({
 
       <Tabs
         defaultValue={platform}
-        onValueChange={(value) => setSearchParams({ platform: value })}
+        onValueChange={(platform) => setSearchParams({ platform })}
       >
         <TabsList>
           {PLATFORMS.map((platform) => (

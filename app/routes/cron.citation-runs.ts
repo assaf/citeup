@@ -1,8 +1,11 @@
 import { captureException } from "@sentry/react-router";
+import debug from "debug";
 import envVars from "~/lib/envVars";
 import queryAccount from "~/lib/llm-visibility/queryAccount";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/cron.citation-runs";
+
+const logger = debug("server");
 
 // Vercel Cron fires a GET with Authorization: Bearer <CRON_SECRET>.
 export async function loader({ request }: Route.LoaderArgs) {
@@ -16,7 +19,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const sites = await prisma.site.findMany({
     where: { account: { users: { some: {} } } },
   });
-  console.info(
+  logger(
     "[cron:citation-runs] Updating sites: %s",
     sites.map(({ domain }) => domain).join(", "),
   );
@@ -33,11 +36,11 @@ export async function loader({ request }: Route.LoaderArgs) {
         .filter((q) => q.query.trim())
         .map((q) => ({ query: q.query, category: q.group }));
       await queryAccount({ site, queries: effectiveQueries, repetitions: 3 });
-      console.info("[cron:citation-runs] Done — %s (%s)", site.id, site.domain);
+      logger("[cron:citation-runs] Done — %s (%s)", site.id, site.domain);
       results.push({ siteId: site.id, ok: true });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(
+      logger(
         "[cron:citation-runs] Failed — %s (%s): %s",
         site.id,
         site.domain,

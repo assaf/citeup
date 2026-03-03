@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/react-router";
 import { handleRequest } from "@vercel/react-router/entry.server";
+import debug from "debug";
 import type {
   ActionFunctionArgs,
   EntryContext,
@@ -29,6 +30,8 @@ if (import.meta.env.PROD) {
 // Initialize MSW in test mode (on the server side)
 if (import.meta.env.TEST) msw();
 
+const logger = debug("server");
+
 export function getLoadContext() {
   return {};
 }
@@ -43,7 +46,7 @@ export default Sentry.wrapSentryHandleRequest(
     loadContext?: any,
   ) => {
     const start = Date.now();
-    console.info("%s %s", request.method, request.url);
+    logger("%s %s", request.method, request.url);
 
     const response = await handleRequest(
       request,
@@ -54,7 +57,7 @@ export default Sentry.wrapSentryHandleRequest(
       { nonce: crypto.randomUUID() },
     );
     waitForResponse(response, start).then((duration) => {
-      console.info(
+      logger(
         "%s %s => %d (%dms)",
         request.method,
         request.url,
@@ -82,9 +85,9 @@ export function handleDataRequest(
   { request }: LoaderFunctionArgs | ActionFunctionArgs,
 ) {
   const start = Date.now();
-  console.info("%s %s", request.method, request.url);
+  logger("%s %s", request.method, request.url);
   waitForResponse(response, start).then((duration) => {
-    console.info(
+    logger(
       "%s %s => %d (%dms)",
       request.method,
       request.url,
@@ -101,6 +104,6 @@ export function handleError(
 ) {
   if (!request.signal.aborted) {
     Sentry.captureException(error, { extra: { request } });
-    console.error(error);
+    logger("error: %s", error);
   }
 }

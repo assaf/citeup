@@ -19,11 +19,15 @@
     </div>
   </div>
 </div>
-<div class="rounded-base border-2 border-black bg-secondary-background p-12 text-center shadow-shadow">
-  <p class="mb-2 font-bold text-xl">
-    No bot traffic recorded
-  </p>
-  <p class="text-base text-foreground/60">
-    Bot visits are tracked automatically. Check back once bots have crawled bots-test.example.com.
-  </p>
+<div class="flex flex-col gap-6 rounded-base border-2 border-border py-6 font-base shadow-shadow bg-secondary-background text-foreground" data-slot="card">
+  <div class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-[data-slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6" data-slot="card-header">
+    <div class="font-heading text-2xl leading-none" data-slot="card-title">
+      No bot traffic recorded
+    </div>
+  </div>
+  <div class="px-6" data-slot="card-content">
+    <p class="text-base text-foreground/60">
+      Bot visits are tracked automatically. Check back once bots have crawled bots-test.example.com.
+    </p>
+  </div>
 </div>

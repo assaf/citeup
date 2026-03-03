@@ -1,9 +1,12 @@
 import type { Temporal } from "@js-temporal/polyfill";
 import { captureException } from "@sentry/react-router";
 import { ms } from "convert";
+import debug from "debug";
 import { delay } from "es-toolkit";
 import prisma from "~/lib/prisma.server";
 import type { QueryFn } from "./llmVisibility";
+
+const logger = debug("server");
 
 /**
  * Query a given platform for a given account and queries.
@@ -45,7 +48,7 @@ export default async function queryPlatform({
       orderBy: { createdAt: "desc" },
     });
     if (existing) {
-      console.info(
+      logger(
         "[%s:%s] Skipping — citation query run already exists: %s",
         site.id,
         platform,
@@ -57,12 +60,7 @@ export default async function queryPlatform({
     const run = await prisma.citationQueryRun.create({
       data: { platform, model: modelId, siteId: site.id },
     });
-    console.info(
-      "[%s:%s] Created citation query run %s",
-      site.id,
-      platform,
-      run.id,
-    );
+    logger("[%s:%s] Created citation query run %s", site.id, platform, run.id);
 
     for (let qi = 0; qi < queries.length; qi++) {
       const query = queries[qi];
@@ -80,7 +78,7 @@ export default async function queryPlatform({
       }
     }
   } catch (error) {
-    console.error("[%s:%s] Error: %s", site.id, platform, error);
+    logger("[%s:%s] Error: %s", site.id, platform, error);
     captureException(error, {
       extra: { siteId: site.id, platform },
     });
@@ -108,7 +106,7 @@ async function singleQueryRepetition({
     where: { query, repetition, runId },
   });
   if (existing) {
-    console.info(
+    logger(
       "[%s:%s] Repetition %d: %s (category: %s) — already exists",
       site.id,
       platform,
@@ -121,7 +119,7 @@ async function singleQueryRepetition({
 
   try {
     const { citations, extraQueries, text } = await queryFn(query);
-    console.info(
+    logger(
       "[%s:%s] Repetition %d: %s (category: %s)",
       site.id,
       platform,
@@ -146,7 +144,7 @@ async function singleQueryRepetition({
       },
     });
   } catch (error) {
-    console.error(
+    logger(
       "[%s:%s] Repetition %d: %s (category: %s) — error: %s",
       site.id,
       platform,

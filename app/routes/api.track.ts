@@ -35,7 +35,6 @@ export async function action({ request }: Route.ActionArgs) {
     if (parsed.error) throw new Error(parsed.error.message);
     data = parsed.data;
   } catch {
-    console.error("Invalid JSON", body);
     captureException(new Error("Invalid JSON"), { extra: { body } });
     return Response.json(
       { tracked: false, reason: "Invalid JSON" },

@@ -23,6 +23,9 @@ export default defineConfig(async (config) =>
         config,
       ),
     ],
+    resolve: {
+      dedupe: ["react", "react-dom"],
+    },
     optimizeDeps: {
       include: ["streamdown", "rehype-harden"],
     },

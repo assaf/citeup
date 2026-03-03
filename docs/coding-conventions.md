@@ -73,8 +73,10 @@ try {
 Printf-style with a `[context:subcontext]` prefix — no template literals:
 
 ```ts
-console.info("[%s:%s] Created run %s", site.id, platform, run.id);
-console.error("[%s:%s] Failed: %o", site.id, platform, error);
+const logger = deubg('server');
+
+logger("[%s:%s] Created run %s", site.id, platform, run.id);
+logger("[%s:%s] Failed: %o", site.id, platform, error);
 ```
 
 ## React Router

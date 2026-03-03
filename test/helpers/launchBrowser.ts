@@ -63,6 +63,7 @@ export async function newContext(): Promise<BrowserContext> {
   context
     .on("console", (msg) => {
       if (msg.text().includes("Download the React DevTools")) return;
+      if (msg.text().includes("Failed to load resource")) return;
       else if (msg.type() === "error") console.error(msg.text());
       else logger("%s: %s", msg.type(), msg.text());
     })

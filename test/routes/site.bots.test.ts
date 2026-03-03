@@ -113,7 +113,7 @@ describe("site bots page", () => {
 
     it("HTML matches baseline", { timeout: 30_000 }, async () => {
       await expect(page.locator("main")).toMatchInnerHTML({
-        name: "site-bots-empty",
+        name: "site.bots.empty",
         strip: (html) =>
           removeElements(html, (node) => {
             const href = node.attributes.href ?? "";
@@ -124,7 +124,7 @@ describe("site bots page", () => {
 
     it("screenshot matches baseline", { timeout: 30_000 }, async () => {
       await expect(page.locator("main")).toMatchScreenshot({
-        name: "site-bots-empty",
+        name: "site.bots.empty",
       });
     });
   });
@@ -191,7 +191,7 @@ describe("site bots page", () => {
 
     it("HTML matches baseline", { timeout: 30_000 }, async () => {
       await expect(page.locator("main")).toMatchInnerHTML({
-        name: "site-bots",
+        name: "site.bots",
         strip: (html) =>
           removeElements(html, (node) => {
             if (node.attributes["data-slot"] === "chart") return true;
@@ -204,7 +204,7 @@ describe("site bots page", () => {
     it("screenshot matches baseline", { timeout: 30_000 }, async () => {
       await page.waitForTimeout(500);
       await expect(page.locator("main")).toMatchScreenshot({
-        name: "site-bots",
+        name: "site.bots",
       });
     });
   });
@@ -220,7 +220,9 @@ describe("site bots page", () => {
           generatedAt: new Date("2026-02-26T12:00:00Z"),
         },
       });
-      page = await goto(`/site/${siteId}/bots?from=2026-01-27&until=2026-02-26`);
+      page = await goto(
+        `/site/${siteId}/bots?from=2026-01-27&until=2026-02-26`,
+      );
     });
 
     afterAll(async () => {

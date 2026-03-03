@@ -1,3 +1,4 @@
+import { captureException } from "@sentry/react-router";
 import { Form, redirect } from "react-router";
 import { ActiveLink } from "~/components/ui/ActiveLink";
 import AuthForm from "~/components/ui/AuthForm";
@@ -55,8 +56,8 @@ export async function action({ request }: Route.ActionArgs) {
   try {
     const verifyToken = await createEmailVerificationToken(user.id);
     await sendEmailVerificationEmail(user.email, verifyToken);
-  } catch (err) {
-    console.error("[sign-up] failed to send verification email: %o", err);
+  } catch {
+    captureException(new Error("Failed to send verification email"));
   }
 
   return redirect("/sites", { headers: { "Set-Cookie": setCookie } });

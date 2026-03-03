@@ -1,3 +1,4 @@
+import { captureException } from "@sentry/react-router";
 import { invariant } from "es-toolkit";
 import { MailIcon } from "lucide-react";
 import { Form, redirect } from "react-router";
@@ -49,8 +50,8 @@ export async function action({ params }: Route.ActionArgs) {
     const newToken = await createEmailVerificationToken(record.user.id);
     try {
       await sendEmailVerificationEmail(record.user.email, newToken);
-    } catch (err) {
-      console.error("[verify-email] failed to send email: %o", err);
+    } catch {
+      captureException(new Error("Failed to send verification email"));
     }
   }
 

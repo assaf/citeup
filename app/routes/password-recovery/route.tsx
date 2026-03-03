@@ -1,3 +1,4 @@
+import { captureException } from "@sentry/react-router";
 import { MailIcon } from "lucide-react";
 import { Form } from "react-router";
 import { ActiveLink } from "~/components/ui/ActiveLink";
@@ -30,8 +31,8 @@ export async function action({ request }: Route.ActionArgs) {
 
     try {
       await sendPasswordRecoveryEmail(email, token);
-    } catch (err) {
-      console.error("[password-recovery] failed to send email: %o", err);
+    } catch {
+      captureException(new Error("Failed to send password recovery email"));
     }
   }
 

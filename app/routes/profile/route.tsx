@@ -86,11 +86,6 @@ async function updatePassword({
     return { success: "Password changed successfully" };
   } catch (error) {
     captureException(error);
-    console.error(
-      "[profile] failed to update password for user %s: %o",
-      user.id,
-      error,
-    );
     return { error: "Failed to change password, please try again" };
   }
 }

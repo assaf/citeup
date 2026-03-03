@@ -1,7 +1,5 @@
 import { Output, generateText } from "ai";
-import { invariant } from "es-toolkit";
 import { z } from "zod";
-import prisma from "~/lib/prisma.server";
 import { haiku } from "./anthropic";
 import defaultQueryCategories from "./defaultQueryCategories";
 
@@ -38,13 +36,4 @@ Rules:
     ],
   });
   return output;
-}
-
-if (import.meta.main) {
-  const site = await prisma.site.findFirstOrThrow({
-    where: { domain: "rentail.space" },
-  });
-  invariant(site.content, "Site content is not set");
-  const queries = await generateSiteQueries(site.content);
-  console.log(JSON.stringify(queries, null, 2));
 }
