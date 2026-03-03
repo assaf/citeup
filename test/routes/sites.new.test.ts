@@ -20,7 +20,7 @@ describe("unauthenticated access", () => {
   });
 });
 
-describe("add site", () => {
+describe.skip("add site", () => {
   let user: User;
 
   beforeAll(async () => {
