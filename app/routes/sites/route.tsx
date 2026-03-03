@@ -1,4 +1,5 @@
-import { Link } from "react-router";
+import { useState, useEffect } from "react";
+import { Link, useFetcher } from "react-router";
 import { Temporal } from "@js-temporal/polyfill";
 import { ActiveLink } from "~/components/ui/ActiveLink";
 import { Button } from "~/components/ui/Button";
@@ -12,6 +13,7 @@ import { requireUser } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/route";
 import type { Site } from "~/prisma";
+import DeleteSiteDialog from "./DeleteSiteDialog";
 
 export interface SiteWithMetrics {
   site: Site;
@@ -71,8 +73,54 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { sites: sitesWithMetrics };
 }
 
+export async function action({ request }: Route.ActionArgs) {
+  if (request.method !== "POST") {
+    return { ok: false, error: "Method not allowed" } as const;
+  }
+
+  const user = await requireUser(request);
+  const formData = await request.formData();
+  const siteId = formData.get("siteId") as string;
+  const confirmDomain = formData.get("confirmDomain") as string;
+
+  // Verify site exists and belongs to user
+  const site = await prisma.site.findFirst({
+    where: { id: siteId, accountId: user.accountId },
+  });
+
+  if (!site) {
+    return { ok: false, error: "Site not found" } as const;
+  }
+
+  // Verify domain matches
+  if (confirmDomain !== site.domain) {
+    return { ok: false, error: "Domain doesn't match" } as const;
+  }
+
+  // Delete the site (cascades delete all related data)
+  await prisma.site.delete({ where: { id: siteId } });
+
+  return { ok: true } as const;
+}
+
 export default function SitesPage({ loaderData }: Route.ComponentProps) {
   const { sites } = loaderData;
+
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    siteId: string;
+    domain: string;
+  }>({ open: false, siteId: "", domain: "" });
+
+  const deleteFetcher = useFetcher<typeof action>();
+  const isSubmitting = deleteFetcher.state === "submitting";
+
+  // Close dialog on successful delete
+  useEffect(() => {
+    if (deleteFetcher.data?.ok) {
+      setDeleteDialog({ open: false, siteId: "", domain: "" });
+    }
+  }, [deleteFetcher.data]);
 
   if (sites.length === 0) {
     return (
@@ -97,6 +145,11 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
         <h1 className="font-heading text-3xl">Your Sites</h1>
         <Button render={<Link to="/sites/new" />}>Add Site</Button>
       </div>
+      {deleteFetcher.data?.ok === false && (
+        <div className="bg-red-100 border-2 border-red-500 text-red-700 px-4 py-3 rounded-base">
+          {deleteFetcher.data.error}
+        </div>
+      )}
       <Card>
         <CardContent className="p-0">
           <table className="w-full">
@@ -142,10 +195,15 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
                       </ActiveLink>
                       <button
                         type="button"
+                        onClick={() =>
+                          setDeleteDialog({
+                            open: true,
+                            siteId: item.site.id,
+                            domain: item.site.domain,
+                          })
+                        }
                         className="text-sm text-red-600 hover:underline"
-                        onClick={() => {
-                          // Will implement delete in Task 5
-                        }}
+                        disabled={isSubmitting}
                       >
                         Delete
                       </button>
@@ -157,6 +215,22 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
           </table>
         </CardContent>
       </Card>
+      <DeleteSiteDialog
+        isOpen={deleteDialog.open}
+        domain={deleteDialog.domain}
+        siteId={deleteDialog.siteId}
+        onClose={() => setDeleteDialog({ open: false, siteId: "", domain: "" })}
+        onConfirm={(siteId) => {
+          deleteFetcher.submit(
+            {
+              siteId,
+              confirmDomain: deleteDialog.domain,
+            },
+            { method: "POST" },
+          );
+        }}
+        isSubmitting={isSubmitting}
+      />
     </main>
   );
 }
