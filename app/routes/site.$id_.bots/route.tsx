@@ -1,32 +1,21 @@
 export const handle = { siteNav: true };
 
+import type { Temporal } from "@js-temporal/polyfill";
 import { sumBy } from "es-toolkit";
-import {
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
-import { ChartContainer } from "~/components/ui/Chart";
 import DateRangeSelector, {
   parseDateRange,
 } from "~/components/ui/DateRangeSelector";
 import SitePageHeader from "~/components/ui/SitePageHeader";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/Table";
 import { requireUser } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/route";
+import BotAcceptTypes from "./BotAcceptTypes";
+import BotActivity from "./BotActivity";
+import BotInsights from "./BotInsights";
+import BotKeyMetrics from "./BotKeyMetrics";
+import BotTopPaths from "./BotTopPaths";
+import BotTrafficTrend from "./BotTrafficTrend";
+import NoTraffic from "./NoTraffic";
 
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: `Bot Traffic — ${data?.site.domain} | CiteUp` }];
@@ -42,10 +31,27 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const { from, until, period } = parseDateRange(
     new URL(request.url).searchParams,
   );
+  const [insight, data] = await Promise.all([
+    getBotInsight(site.id),
+    getBotTotals(site.id, from, until),
+  ]);
 
+  return {
+    ...data,
+    site,
+    insight,
+    period,
+  };
+}
+
+async function getBotTotals(
+  siteId: string,
+  from: Temporal.PlainDate,
+  until: Temporal.PlainDate,
+) {
   const visits = await prisma.botVisit.findMany({
     where: {
-      siteId: site.id,
+      siteId,
       date: {
         gte: new Date(from.toZonedDateTime("UTC").epochMilliseconds),
         lte: new Date(until.toZonedDateTime("UTC").epochMilliseconds),
@@ -145,13 +151,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 
   const totalVisits = sumBy(Object.values(botTotals), (c) => c);
 
-  const insight = await prisma.botInsight.findUnique({
-    where: { siteId: site.id },
-  });
-
   return {
-    site,
-    insight,
     chartData,
     topBots,
     botActivity,
@@ -159,27 +159,14 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     mimeTypes,
     totalVisits,
     uniqueBots: Object.keys(botTotals).length,
-    period,
   };
 }
 
-const BOT_COLORS = [
-  "#111111",
-  "#e63946",
-  "#457b9d",
-  "#2a9d8f",
-  "#e9c46a",
-  "#f4a261",
-  "#264653",
-  "#a8dadc",
-  "#6a4c93",
-  "#c77dff",
-] as const;
-
-const fmt = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-});
+async function getBotInsight(siteId: string) {
+  return await prisma.botInsight.findUnique({
+    where: { siteId },
+  });
+}
 
 export default function SiteBotsPage({ loaderData }: Route.ComponentProps) {
   const {
@@ -203,191 +190,22 @@ export default function SiteBotsPage({ loaderData }: Route.ComponentProps) {
         <DateRangeSelector />
       </SitePageHeader>
 
-      {insight && (
-        <div className="rounded-base border-2 border-black bg-[hsl(47,100%,95%)] p-6 shadow-shadow">
-          <p className="font-medium leading-relaxed">{insight.content}</p>
-          <p className="mt-2 text-foreground/50 text-xs">
-            Updated {fmt.format(new Date(insight.generatedAt))}
-          </p>
-        </div>
-      )}
-
       {isEmpty ? (
-        <div className="rounded-base border-2 border-black bg-secondary-background p-12 text-center shadow-shadow">
-          <p className="mb-2 font-bold text-xl">No bot traffic recorded</p>
-          <p className="text-base text-foreground/60">
-            Bot visits are tracked automatically. Check back once bots have
-            crawled {site.domain}.
-          </p>
-        </div>
+        <NoTraffic domain={site.domain} />
       ) : (
         <section className="space-y-6">
-          <div className="grid grid-cols-3 gap-4">
-            {[
-              { label: "Total Visits", value: totalVisits.toLocaleString() },
-              { label: "Unique Bots", value: uniqueBots },
-              {
-                label: "Avg Daily Visits",
-                value: Math.round(totalVisits / period).toLocaleString(),
-              },
-            ].map(({ label, value }) => (
-              <Card key={label}>
-                <CardContent className="pt-6">
-                  <p className="text-base text-foreground/60">{label}</p>
-                  <p className="font-bold text-2xl">{value}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Traffic Trend</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer
-                config={Object.fromEntries(
-                  topBots.map((bot, i) => [
-                    bot,
-                    { label: bot, color: BOT_COLORS[i % BOT_COLORS.length] },
-                  ]),
-                )}
-                className="h-48 w-full"
-              >
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={(v) => fmt.format(new Date(v))}
-                  />
-                  <YAxis />
-                  <Tooltip
-                    labelFormatter={(v) =>
-                      new Intl.DateTimeFormat("en-US", {
-                        dateStyle: "long",
-                      }).format(new Date(v as string))
-                    }
-                  />
-                  <Legend />
-                  <Line
-                    dataKey="total"
-                    name="Total"
-                    stroke="#111111"
-                    strokeWidth={2}
-                    type="monotone"
-                  />
-                  {topBots.slice(0, 5).map((bot, i) => (
-                    <Line
-                      dataKey={bot}
-                      key={bot}
-                      name={bot}
-                      stroke={BOT_COLORS[(i + 1) % BOT_COLORS.length]}
-                      strokeDasharray="4 2"
-                      strokeWidth={1.5}
-                      type="monotone"
-                    />
-                  ))}
-                </LineChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Bot Activity</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Bot</TableHead>
-                    <TableHead className="text-right">Visits</TableHead>
-                    <TableHead className="text-right">Paths</TableHead>
-                    <TableHead>Accept Types</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {botActivity.map((row) => (
-                    <TableRow key={row.botType}>
-                      <TableCell className="font-medium">
-                        {row.botType}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {row.total.toLocaleString()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {row.uniquePaths}
-                      </TableCell>
-                      <TableCell className="text-foreground/60 text-xs">
-                        {row.accepts.length > 0 ? row.accepts.join(", ") : "—"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          <BotKeyMetrics
+            totalVisits={totalVisits}
+            uniqueBots={uniqueBots}
+            period={period}
+          />
+          {insight && <BotInsights insight={insight} />}
+          <BotTrafficTrend topBots={topBots} chartData={chartData} />
+          <BotActivity botActivity={botActivity} />
 
           <div className="grid grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Top Paths</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Path</TableHead>
-                      <TableHead className="text-right">Visits</TableHead>
-                      <TableHead className="text-right">Bots</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {topPaths.map((row) => (
-                      <TableRow key={row.path}>
-                        <TableCell className="font-mono text-base">
-                          {row.path}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {row.count.toLocaleString()}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {row.uniqueBots}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Accept Types</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>MIME Type</TableHead>
-                      <TableHead className="text-right">Visits</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {mimeTypes.map((row) => (
-                      <TableRow key={row.mime}>
-                        <TableCell className="font-mono text-base">
-                          {row.mime}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {row.count.toLocaleString()}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+            <BotTopPaths topPaths={topPaths} />
+            <BotAcceptTypes mimeTypes={mimeTypes} />
           </div>
         </section>
       )}

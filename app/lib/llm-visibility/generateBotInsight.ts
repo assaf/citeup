@@ -1,15 +1,13 @@
 import { generateText } from "ai";
 import { haiku } from "./anthropic";
 
-type BotStat = {
-  botType: string;
-  total: number;
-  topPaths: string[];
-};
-
 export default async function generateBotInsight(
   domain: string,
-  botStats: BotStat[],
+  botStats: {
+    botType: string;
+    total: number;
+    topPaths: string[];
+  }[],
 ): Promise<string> {
   const statLines = botStats
     .map(
@@ -24,7 +22,7 @@ export default async function generateBotInsight(
       {
         role: "system" as const,
         content:
-          "You are a concise analytics assistant. Write 3–5 plain-English sentences summarizing which AI bots are crawling a website. Focus on the most active bots and which pages they visit most. Be direct — no preamble, no 'In summary'. One observation per sentence.",
+          "You are a concise analytics assistant. Write 3-5 plain-English sentences summarizing which AI bots are crawling a website. Focus on the most active bots and which pages they visit most. Be direct — no preamble, no 'In summary'. One observation per sentence.",
       },
       {
         role: "user" as const,

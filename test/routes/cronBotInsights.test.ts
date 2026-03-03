@@ -1,3 +1,4 @@
+import type { Route } from ".react-router/types/app/routes/+types/cron.bot-insights";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import prisma from "~/lib/prisma.server";
 import { loader } from "~/routes/cron.bot-insights";
@@ -20,9 +21,8 @@ function makeRequest(auth?: string) {
   return new Request("http://localhost/cron/bot-insights", { headers });
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: loader args in test context
 function callLoader(req: Request) {
-  return loader({ request: req, params: {}, context: {} } as any);
+  return loader({ request: req, params: {}, context: {} } as Route.LoaderArgs);
 }
 
 describe("cron.bot-insights", () => {

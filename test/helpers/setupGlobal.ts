@@ -4,7 +4,6 @@
 
 import { exec, execFile } from "node:child_process";
 import { promisify } from "node:util";
-import prisma from "~/lib/prisma.server";
 import { port } from "./launchBrowser";
 import { closeServer, launchServer } from "./launchServer";
 import { removeNewHTML } from "./toMatchInnerHTML";
@@ -16,9 +15,6 @@ export default async function setup() {
     const pid = stdout.trim().match(/^\s*(\d+)/m)?.[1];
     if (pid) await promisify(exec)(`kill -9 ${pid}`);
   } catch {}
-
-  // Clean up database
-  await prisma.account.deleteMany();
 
   // Remove regression testing diff images
   await removeDiffImages();
