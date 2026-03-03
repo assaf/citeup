@@ -9,7 +9,8 @@ backup.sql
 /build/
 
 # Vercel
-.vercel
+.vercel/*
+!.vercel/vercel.json
 .env*.local
 
 # Ignore test results

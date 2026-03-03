@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/cron/bot-insights",
+      "schedule": "0 12 * * *"
+    }
+  ],
+  "github": {
+    "enabled": false
+  },
+  "public": false
+}
