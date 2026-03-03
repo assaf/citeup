@@ -1,4 +1,9 @@
-import { LayoutDashboardIcon, UnlockIcon, UserIcon } from "lucide-react";
+import {
+  CornerDownRightIcon,
+  LayoutDashboardIcon,
+  UnlockIcon,
+  UserIcon,
+} from "lucide-react";
 import type { User } from "prisma/generated/client";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useRouteLoaderData } from "react-router";
@@ -9,32 +14,14 @@ import type { loader as rootLoader } from "~/root";
 export default function AccountMenu({ className }: { className?: string }) {
   const data = useRouteLoaderData<typeof rootLoader>("root");
   const user = data?.user;
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      )
-        setIsOpen(false);
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [isOpen]);
+  const sites = data?.sites ?? [];
 
   // Show sign-in link for non-authenticated users
   return (
     <div
       className={twMerge("inline-flex items-center justify-center", className)}
     >
-      {user ? <DropdownMenu user={user} /> : <SignInButton />}
+      {user ? <DropdownMenu user={user} sites={sites} /> : <SignInButton />}
     </div>
   );
 }
@@ -56,7 +43,13 @@ function SignInButton() {
   );
 }
 
-function DropdownMenu({ user }: { user: User }) {
+function DropdownMenu({
+  user,
+  sites,
+}: {
+  user: User;
+  sites: { id: string; domain: string }[];
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +72,7 @@ function DropdownMenu({ user }: { user: User }) {
   }, [isOpen]);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative text-base" ref={dropdownRef}>
       <Button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -94,14 +87,14 @@ function DropdownMenu({ user }: { user: User }) {
 
       {isOpen && (
         <menu className="absolute top-10 right-0 z-50 mt-2 w-48 rounded-base border-2 border-black bg-white py-1 shadow-[4px_4px_0px_0px_black]">
-          <li className="border-black border-b-2 px-4 py-2 text-gray-600 text-sm">
+          <li className="border-black border-b-2 px-4 py-2 text-gray-600">
             <p className="truncate font-bold">{user.email}</p>
           </li>
 
           <li>
             <Link
               to="/sites"
-              className="block w-full px-4 py-2 text-left font-medium text-black text-sm transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
+              className="block w-full px-4 py-2 text-left font-medium text-black transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
               onClick={() => setIsOpen(false)}
             >
               <LayoutDashboardIcon className="mr-2 inline-block h-4 w-4" />
@@ -109,10 +102,24 @@ function DropdownMenu({ user }: { user: User }) {
             </Link>
           </li>
 
+          {sites.map((site) => (
+            <li key={site.id}>
+              <Link
+                to={`/site/${site.id}`}
+                className="block w-full truncate py-1.5 pr-4 pl-8 text-left text-foreground/60 transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
+                onClick={() => setIsOpen(false)}
+                title={site.domain}
+              >
+                <CornerDownRightIcon className="mr-2 inline-block h-4 w-4" />
+                {site.domain}
+              </Link>
+            </li>
+          ))}
+
           <li>
             <Link
               to="/profile"
-              className="block w-full px-4 py-2 text-left font-medium text-black text-sm transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
+              className="block w-full px-4 py-2 text-left font-medium text-black transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
               onClick={() => setIsOpen(false)}
             >
               <UserIcon className="mr-2 inline-block h-4 w-4" />
@@ -127,7 +134,7 @@ function DropdownMenu({ user }: { user: User }) {
                 setIsOpen(false);
                 window.location.href = "/sign-out";
               }}
-              className="block w-full px-4 py-2 text-left font-medium text-black text-sm transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
+              className="block w-full px-4 py-2 text-left font-medium text-black transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
             >
               <UnlockIcon className="mr-2 inline-block h-4 w-4" />
               Sign Out

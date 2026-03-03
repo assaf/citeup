@@ -6,8 +6,9 @@ import {
 import { WaveLoading } from "respinner";
 import { getCurrentUser } from "~/lib/auth.server";
 import recordBotVisit from "~/lib/botTracking.server";
-import type { Route } from "./+types/root";
+import prisma from "~/lib/prisma.server";
 import PageLayout from "./components/layout/PageLayout";
+import type { Route } from "./+types/root";
 import "./global.css";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -20,7 +21,14 @@ export async function loader({ request }: Route.LoaderArgs) {
   });
   const baseUrl = new URL(request.url).origin;
   const user = await getCurrentUser(request);
-  return { user, baseUrl };
+  const sites = user
+    ? await prisma.site.findMany({
+        where: { accountId: user.accountId },
+        select: { id: true, domain: true },
+        orderBy: { createdAt: "desc" },
+      })
+    : [];
+  return { user, baseUrl, sites };
 }
 
 export function meta({ data }: Route.MetaArgs): Route.MetaDescriptors {
