@@ -24,6 +24,27 @@ model Account {
   @@map("accounts")
 }
 
+model BotVisit {
+  id        String                      @id @default(cuid())
+  createdAt DateTime @map("created_at") @default(now())
+  date      DateTime @map("date")
+  siteId    String   @map("site_id")
+  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  botType   String   @map("bot_type")
+  path      String   @map("path")
+  userAgent String   @map("user_agent")
+  accept    String[] @map("accept")
+  ip        String?  @map("ip")
+  referer   String?  @map("referer")
+  count     Int      @map("count")      @default(1)
+  firstSeen DateTime @map("first_seen") @default(now())
+  lastSeen  DateTime @map("last_seen")  @default(now())
+
+  @@unique([date, siteId, userAgent, path])
+  @@index([siteId])
+  @@map("bot_visits")
+}
+
 model CitationQuery {
   id           String                                 @id @default(cuid())
   createdAt    DateTime         @map("created_at")    @default(now())
@@ -51,6 +72,32 @@ model CitationQueryRun {
   site      Site            @relation(fields: [siteId], references: [id], onDelete: Cascade)
 
   @@map("citation_query_runs")
+}
+
+model EmailVerificationToken {
+  id        String                       @id @default(cuid())
+  createdAt DateTime  @map("created_at") @default(now())
+  token     String    @map("token")      @unique
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+
+  @@index([userId])
+  @@map("email_verification_tokens")
+}
+
+model PasswordRecoveryToken {
+  id        String                       @id @default(cuid())
+  createdAt DateTime  @map("created_at") @default(now())
+  token     String    @map("token")      @unique
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+
+  @@index([userId])
+  @@map("password_recovery_tokens")
 }
 
 model Session {
@@ -119,49 +166,3 @@ model User {
   @@map("users")
 }
 
-model EmailVerificationToken {
-  id        String                       @id @default(cuid())
-  createdAt DateTime  @map("created_at") @default(now())
-  token     String    @map("token")      @unique
-  userId    String    @map("user_id")
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt DateTime  @map("expires_at")
-  usedAt    DateTime? @map("used_at")
-
-  @@index([userId])
-  @@map("email_verification_tokens")
-}
-
-model PasswordRecoveryToken {
-  id        String                       @id @default(cuid())
-  createdAt DateTime  @map("created_at") @default(now())
-  token     String    @map("token")      @unique
-  userId    String    @map("user_id")
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt DateTime  @map("expires_at")
-  usedAt    DateTime? @map("used_at")
-
-  @@index([userId])
-  @@map("password_recovery_tokens")
-}
-
-model BotVisit {
-  id        String                      @id @default(cuid())
-  createdAt DateTime @map("created_at") @default(now())
-  date      DateTime @map("date")
-  siteId    String   @map("site_id")
-  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  botType   String   @map("bot_type")
-  path      String   @map("path")
-  userAgent String   @map("user_agent")
-  accept    String[] @map("accept")
-  ip        String?  @map("ip")
-  referer   String?  @map("referer")
-  count     Int      @map("count")      @default(1)
-  firstSeen DateTime @map("first_seen") @default(now())
-  lastSeen  DateTime @map("last_seen")  @default(now())
-
-  @@unique([date, siteId, userAgent, path])
-  @@index([siteId])
-  @@map("bot_visits")
-}
