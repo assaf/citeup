@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 import { Field, FieldError, FieldLabel } from "~/components/ui/FieldSet";
 import { Input } from "~/components/ui/Input";
 import { requireUser } from "~/lib/auth.server";
-import defaultQueryCategories from "~/lib/defaultQueryCategories";
+import defaultQueryCategories from "~/lib/llm-visibility/defaultQueryCategories";
 import generateSiteQueries from "~/lib/llm-visibility/generateSiteQueries";
 import prisma from "~/lib/prisma.server";
 import {

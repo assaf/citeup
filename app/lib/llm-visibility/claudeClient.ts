@@ -1,21 +1,11 @@
 import { anthropic } from "@ai-sdk/anthropic";
 import { generateText } from "ai";
-import { invariant } from "es-toolkit";
-import envVars from "~/lib/envVars";
+import { haiku } from "./anthropic";
 import type { QueryFn } from "./llmVisibility";
 
-const MODEL_ID = "claude-haiku-4-5-20251001";
-
 export default async function queryClaude(query: string): ReturnType<QueryFn> {
-  invariant(envVars.ANTHROPIC_API_KEY, "ANTHROPIC_API_KEY is not set");
-
   const { sources, text } = await generateText({
-    model: anthropic(MODEL_ID),
-    providerOptions: {
-      anthropic: {
-        apiKey: envVars.ANTHROPIC_API_KEY,
-      },
-    },
+    model: haiku,
     prompt: [
       {
         role: "system",

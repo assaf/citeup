@@ -1,21 +1,19 @@
-import { anthropic } from "@ai-sdk/anthropic";
 import { Output, generateText } from "ai";
 import { invariant } from "es-toolkit";
 import { z } from "zod";
-import envVars from "~/lib/envVars";
 import prisma from "~/lib/prisma.server";
-import defaultQueryCategories from "../defaultQueryCategories";
+import { haiku } from "./anthropic";
+import defaultQueryCategories from "./defaultQueryCategories";
 
 export default async function generateSiteQueries(
   content: string,
 ): Promise<{ group: string; query: string }[]> {
-  invariant(envVars.ANTHROPIC_API_KEY, "ANTHROPIC_API_KEY is not set");
   const { output } = await generateText({
-    model: anthropic("claude-haiku-4-5-20251001"),
+    model: haiku,
     output: Output.array({
       element: z.object({
-        group: z.enum(defaultQueryCategories.map((c) => c.group)),
-        query: z.string().min(10).max(200),
+        group: z.string(),
+        query: z.string(),
       }),
     }),
     messages: [
