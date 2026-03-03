@@ -127,3 +127,9 @@ logger("[%s:%s] Failed: %o", site.id, platform, error);
 - Auth: `getCurrentUser(request)` (root loader, nullable) and `requireUser(request)` (protected routes, throws redirect) — see `app/lib/auth.server.ts`
 - Blog post dates come from filenames: `app/data/blog/YYYY-MM-DD-slug.md`
 - Do NOT add `react`/`react-dom` to `optimizeDeps.include` in `vite.config.ts` — creates duplicate React instances that break all hooks
+
+## Model selection
+
+Use model "haiku" for trivial lookup (single file search, simple questions)
+Use model "sonnet" for more complex tasks (research, exploration, architecture, writing code)
+DO NOT USE MODEL "OPUS"
