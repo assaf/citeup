@@ -84,13 +84,13 @@ model Site {
   botVisits    BotVisit[]
   siteQueries  SiteQuery[]
 
-  @@index([accountId])
+  @@index([domain])
   @@unique([accountId, domain])
   @@map("sites")
 }
 
 model SiteQuery {
-  id        String   @id @default(cuid())
+  id        String                      @id @default(cuid())
   createdAt DateTime @map("created_at") @default(now())
   updatedAt DateTime @map("updated_at") @updatedAt
   siteId    String   @map("site_id")

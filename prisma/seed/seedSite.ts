@@ -28,7 +28,12 @@ async function seedSites(user: User): Promise<Site> {
       accountId_domain: { accountId: user.accountId, domain: "rentail.space" },
     },
     update: {},
-    create: { domain: "rentail.space", accountId: user.accountId },
+    create: {
+      accountId: user.accountId,
+      content:
+        "rentail .space  Sign In  🎉 Rent for days, weeks, or months Find Your Next Mall Space in Under 2 Minutes Find short-term retail spaces in shopping centers—without the broker meetings or endless phone calls. Built for small businesses and seasonal sellers. Just instant matches with spaces ready for your products. Find My Match Why Choose rentail .space? Short-term retail spaces in shopping centers near you.",
+      domain: "rentail.space",
+    },
   });
 
   const citeUp = await prisma.site.upsert({
@@ -39,7 +44,12 @@ async function seedSites(user: User): Promise<Site> {
       },
     },
     update: {},
-    create: { domain: "citeup.vercel.app", accountId: user.accountId },
+    create: {
+      accountId: user.accountId,
+      content:
+        "CiteUp Sign in Get started The Search Console for AI Does ChatGPT mention  your brand? CiteUp runs your queries across ChatGPT, Claude, Gemini, and Perplexity — and records every time they cite your website.",
+      domain: "citeup.vercel.app",
+    },
   });
   console.info("✅ Sites: %s, %s", rentail.id, citeUp.id);
   return rentail;

@@ -1,4 +1,5 @@
 import dns from "node:dns";
+import parseHTMLTree, { getBodyContent } from "~/lib/html/parseHTML";
 
 export function extractDomain(url: string): string | null {
   try {
@@ -39,11 +40,8 @@ export async function fetchPageContent(domain: string): Promise<string | null> {
     clearTimeout(timeout);
     if (!response.ok) return null;
     const html = await response.text();
-    const text = html
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-    return text.slice(0, 5_000);
+    const tree = parseHTMLTree(html);
+    return getBodyContent(tree).slice(0, 5_000);
   } catch {
     return null;
   }

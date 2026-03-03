@@ -1,8 +1,8 @@
 import { expect } from "@playwright/test";
 import { beforeAll, describe, it } from "vitest";
+import { removeElements } from "~/lib/html/parseHTML";
 import prisma from "~/lib/prisma.server";
 import type { User } from "~/prisma";
-import { removeElements } from "../helpers/formatHTML";
 import { goto, port } from "../helpers/launchBrowser";
 import { signIn } from "../helpers/signIn";
 import "../helpers/toMatchInnerHTML";
