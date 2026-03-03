@@ -129,7 +129,7 @@ export default function AddSitePage() {
     <main className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-lg">
         <CardHeader>
-          <CardTitle className="text-2xl">Add a Site</CardTitle>
+          <CardTitle>Add a Site</CardTitle>
         </CardHeader>
         <CardContent>
           {isProcessing ? (

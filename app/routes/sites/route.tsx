@@ -58,7 +58,7 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
           <li key={site.id}>
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center justify-between font-heading text-xl">
+                <CardTitle>
                   <span>{site.domain}</span>
                   <Link target="_blank" to={`https://${site.domain}`}>
                     <ExternalLinkIcon className="size-4" />

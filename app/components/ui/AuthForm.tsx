@@ -25,7 +25,7 @@ export default function AuthForm({
         )}
       >
         <CardHeader>
-          <CardTitle className="text-center text-2xl">{title}</CardTitle>
+          <CardTitle>{title}</CardTitle>
         </CardHeader>
 
         <CardContent>{form}</CardContent>

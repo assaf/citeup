@@ -47,7 +47,10 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-title"
-      className={twMerge("font-heading text-2xl leading-none", className)}
+      className={twMerge(
+        "flex items-center justify-center gap-2 font-heading text-2xl leading-none",
+        className,
+      )}
       {...props}
     />
   );

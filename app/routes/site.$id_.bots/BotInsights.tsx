@@ -1,4 +1,4 @@
-import { InfoIcon } from "lucide-react";
+import { BrainIcon } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -23,8 +23,8 @@ export default function BotInsights({
   return (
     <Card className="bg-[hsl(47,100%,95%)]">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <InfoIcon className="size-6" />
+        <CardTitle>
+          <BrainIcon className="size-6" />
           Bot Insights
         </CardTitle>
       </CardHeader>
