@@ -11,10 +11,10 @@ const handlers = [
   ),
 
   // Mock Anthropic API for LLM calls (query suggestions)
-  http.post("https://api.anthropic.com/v1/messages", ({ request }) => {
+  http.post("https://api.anthropic.com/v1/messages", () => {
     logger("Mocking LLM response for query suggestions");
     return HttpResponse.json({
-      id: "msg_test_" + crypto.randomUUID(),
+      id: `msg_test_${crypto.randomUUID()}`,
       type: "message",
       role: "assistant",
       content: [
