@@ -12,6 +12,13 @@ import * as vite from "vite";
 
 // Import and start the server
 async function startServer() {
+  // Initialize MSW for mocking HTTP requests during tests
+  if (process.env.NODE_ENV === "test") {
+    console.log("🔧 Initializing MSW for test server...");
+    const msw = await import("../mocks/msw.ts");
+    msw.default();
+  }
+
   invariant(process.send, "process.send is not defined");
   const port = Number(process.env.PORT);
   invariant(port, "PORT is not defined");
