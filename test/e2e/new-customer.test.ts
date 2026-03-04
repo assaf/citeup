@@ -1,8 +1,8 @@
 import test, { type Page, expect } from "@playwright/test";
-import { invariant } from "es-toolkit";
 import prisma from "~/lib/prisma.server";
 import type { Site, User } from "~/prisma";
 import { goto } from "~/test/helpers/launchBrowser";
+import { teardown } from "../helpers/setupGlobal";
 
 let page: Page;
 let user: User | null;
@@ -58,6 +58,7 @@ test("verifies user created in DB", async () => {
 test("clicks add site button", async () => {
   await page.getByRole("link", { name: "Add your first site" }).click();
   await expect(page).toHaveURL("/sites/new");
+  await page.reload();
 });
 
 test("fills out site add form", async () => {
@@ -69,29 +70,30 @@ test("fills out site add form", async () => {
 });
 
 test("verifies site created in DB", async () => {
-  invariant(user, "User not found");
   await page.waitForSelector('button:has-text("Save queries")');
   site = await prisma.site.findFirst({
-    where: { accountId: user.accountId },
+    where: { accountId: user?.accountId },
   });
   expect(site).toBeDefined();
   expect(site?.domain).toBe("example.com");
 });
 
 test("clicks suggest queries button", async () => {
-  invariant(site, "Site not found");
   await page.getByRole("button", { name: /save queries/i }).click();
-  await page.waitForURL(`/site/${site.id}/citations`);
+  await page.waitForURL(`/site/${site?.id}/citations`);
 });
 
 test("verifies queries saved in DB", async () => {
-  invariant(site, "Site not found");
   const queries = await prisma.siteQuery.findMany({
-    where: { siteId: site.id },
+    where: { siteId: site?.id },
   });
   expect(queries.length).toBeGreaterThan(0);
   expect(queries[0].group).toBe("1. discovery");
   expect(queries[0].query).toBe("Query 1");
   expect(queries[3].group).toBe("2. active_search");
   expect(queries[3].query).toBe("Query 4");
+});
+
+test.afterAll(async () => {
+  await teardown();
 });

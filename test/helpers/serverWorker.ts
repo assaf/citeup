@@ -48,7 +48,6 @@ async function startServer() {
           "react",
           "react-dom",
           "react-router",
-          "@ai-sdk/react",
           "lucide-react",
           "tailwindcss",
         ],
