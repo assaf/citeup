@@ -126,11 +126,12 @@ export default function AddSitePage() {
               <Field>
                 <FieldLabel htmlFor="url">Website URL or domain</FieldLabel>
                 <Input
+                  aria-label="Website URL or domain"
+                  autoFocus
                   id="url"
                   name="url"
-                  type="text"
                   placeholder="https://yoursite.com"
-                  autoFocus
+                  type="text"
                 />
                 {error && <FieldError>{error}</FieldError>}
               </Field>
