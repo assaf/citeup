@@ -2,10 +2,8 @@ import debug from "debug";
 import dotenv from "dotenv";
 import env from "env-var";
 
-const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
-console.log("📁 Loading env file:", envFile, "NODE_ENV:", process.env.NODE_ENV);
 dotenv.config({
-  path: envFile,
+  path: process.env.NODE_ENV === "test" ? ".env.test" : ".env",
   override: true,
   quiet: true,
 });

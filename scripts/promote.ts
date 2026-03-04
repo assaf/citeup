@@ -19,7 +19,7 @@ import { Octokit } from "octokit";
 import ora from "ora";
 import { timeago } from "~/lib/relativeTime";
 
-dotenv.configDotenv({ quiet: true });
+dotenv.config({ quiet: true });
 
 const vercelTeamId = env.get("VERCEL_TEAM_ID").required(true).asString();
 const vercelProjectId = env.get("VERCEL_PROJECT_ID").required(true).asString();

@@ -5,22 +5,18 @@
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import debug from "debug";
-import dotenv from "dotenv";
-import { invariant } from "es-toolkit";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import pg from "pg";
 import { PrismaClient } from "prisma/generated/client";
+import envVars from "./envVars";
 
-dotenv.configDotenv({ quiet: true });
-invariant(process.env.DATABASE_URL, "DATABASE_URL is required");
-
-const url = new URL(process.env.DATABASE_URL);
+const url = new URL(envVars.DATABASE_URL);
 const isLocal = url.hostname === "localhost";
 
 // Configure pg Pool for Supabase pooler (SSL configured via DATABASE_URL)
 const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: url.toString(),
   max: 1,
   idleTimeoutMillis: 0,
   connectionTimeoutMillis: 0,

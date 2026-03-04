@@ -1,13 +1,11 @@
-import dotenv from "dotenv";
 import { resolve } from "node:path";
-import { defineConfig, env } from "prisma/config";
-
-dotenv.configDotenv({ quiet: true });
+import { defineConfig } from "prisma/config";
+import envVars from "~/lib/envVars";
 
 // @see https://www.prisma.io/docs/orm/overview/databases/supabase#specific-considerations
 export default defineConfig({
   datasource: {
-    url: env("DATABASE_URL"),
+    url: new URL(envVars.DATABASE_URL).toString(),
   },
   migrations: {
     path: "prisma/migrations",
