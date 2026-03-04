@@ -3,6 +3,7 @@
 .claude/
 prisma/generated
 backup.sql
+server.log
 
 # React Router
 /.react-router/

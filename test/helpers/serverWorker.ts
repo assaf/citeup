@@ -14,9 +14,12 @@ import * as vite from "vite";
 async function startServer() {
   // Initialize MSW for mocking HTTP requests during tests
   if (process.env.NODE_ENV === "test") {
-    console.log("🔧 Initializing MSW for test server...");
-    const msw = await import("../mocks/msw.ts");
-    msw.default();
+    try {
+      const mswModule = await import("~/test/mocks/msw");
+      if (typeof mswModule.default === "function") mswModule.default();
+    } catch (error) {
+      console.error("Failed to initialize MSW:", error);
+    }
   }
 
   invariant(process.send, "process.send is not defined");

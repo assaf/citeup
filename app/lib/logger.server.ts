@@ -12,9 +12,10 @@ const colors = {
   error: (text: string) => styleText("red", text),
 };
 
-const logFile = import.meta.env.TEST
-  ? createWriteStream(resolve("server.log"), { flags: "a" })
-  : null;
+const logFile =
+  process.env.NODE_ENV === "test"
+    ? createWriteStream(resolve("server.log"), { flags: "a" })
+    : null;
 
 // @see https://no-color.org
 const isColorEnabled = !process.env.NO_COLOR;

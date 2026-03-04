@@ -28,7 +28,7 @@ if (import.meta.env.PROD) {
 }
 
 // Initialize MSW in test mode (on the server side)
-if (import.meta.env.TEST) msw();
+if (process.env.NODE_ENV === "test") msw();
 
 const logger = debug("server");
 
