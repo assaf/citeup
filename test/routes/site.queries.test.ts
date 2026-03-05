@@ -149,30 +149,6 @@ describe("site queries page", () => {
   });
 
   describe("suggest action", () => {
-    it("returns error when site has no content", async () => {
-      const token = crypto.randomUUID();
-      await prisma.session.create({
-        data: {
-          token,
-          userId: user.id,
-          ipAddress: "127.0.0.1",
-          userAgent: "test",
-        },
-      });
-      const cookieHeader = await sessionCookie.serialize(token);
-
-      const form = new FormData();
-      form.append("_intent", "suggest");
-
-      const response = await fetch(
-        `http://localhost:${port}/site/${siteId}/queries`,
-        { method: "POST", headers: { Cookie: cookieHeader }, body: form },
-      );
-      expect(response.status).toBe(200);
-      const body = await response.text();
-      expect(body).toContain("No site content available");
-    });
-
     it("completes gracefully when site has content", async () => {
       const siteWithContent = await prisma.site.create({
         data: {

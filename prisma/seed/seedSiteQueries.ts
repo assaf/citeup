@@ -1,3 +1,4 @@
+import addSiteQueries from "~/lib/addSiteQueries";
 import prisma from "~/lib/prisma.server";
 import type { Site } from "~/prisma";
 import queries from "./queries";
@@ -30,13 +31,7 @@ export default async function seedSiteQueries(site: Site) {
   await prisma.siteQuery.deleteMany({
     where: { siteId: site.id },
   });
-  await prisma.siteQuery.createMany({
-    data: queries.map(({ query, category }) => ({
-      siteId: site.id,
-      group: category,
-      query,
-    })),
-  });
+  await addSiteQueries(site, queries);
   await seedCitationRuns(site);
   console.info("✅ Seeded queries");
 }

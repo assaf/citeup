@@ -7,6 +7,7 @@ import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 import { Field, FieldError, FieldLabel } from "~/components/ui/FieldSet";
 import { Input } from "~/components/ui/Input";
+import addSiteQueries from "~/lib/addSiteQueries";
 import { requireUser } from "~/lib/auth.server";
 import defaultQueryCategories from "~/lib/llm-visibility/defaultQueryCategories";
 import generateSiteQueries from "~/lib/llm-visibility/generateSiteQueries";
@@ -55,16 +56,7 @@ export async function action({
     } catch {
       // ignore
     }
-    const valid = queries.filter((q) => q.group && q.query.trim());
-    if (valid.length > 0) {
-      await prisma.siteQuery.createMany({
-        data: valid.map((q) => ({
-          siteId: site.id,
-          group: q.group,
-          query: q.query.trim(),
-        })),
-      });
-    }
+    await addSiteQueries(site, queries);
     return redirect(`/site/${site.id}`);
   }
 

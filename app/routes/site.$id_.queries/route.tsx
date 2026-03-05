@@ -99,11 +99,6 @@ export async function action({ request, params }: Route.ActionArgs) {
       return { ok: true };
     }
     case "suggest": {
-      if (!site.content)
-        return {
-          ok: false,
-          error: "No site content available to generate suggestions from.",
-        };
       try {
         const suggestions = await generateSiteQueries(site);
         return { ok: true, suggestions };
