@@ -15,16 +15,16 @@ const HOSTNAME = "rentail.space";
 const QUERIES = [
   {
     query: "How do I find short-term retail space in shopping malls?",
-    category: "1. discovery",
+    group: "1. discovery",
   },
   {
     query:
       "What are the best platforms for finding pop-up shops in shopping centers?",
-    category: "1. discovery",
+    group: "1. discovery",
   },
   {
     query: "Where can I lease a kiosk in a mall for 3-6 months?",
-    category: "2. active_search",
+    group: "2. active_search",
   },
 ] as const;
 
@@ -153,13 +153,13 @@ describe("site page", () => {
     for (const { platform, model } of PLATFORMS) {
       for (let runIdx = 0; runIdx < runDays.length; runIdx++) {
         // Shift citation sets per run so visibility varies across history.
-        const queryData = QUERIES.flatMap(({ query, category }, qi) =>
+        const queryData = QUERIES.flatMap(({ query, group }, qi) =>
           ([1, 2, 3] as const).map((repetition, ri) => {
             const { citations, position } =
               CITATION_SETS[(qi * 3 + ri + runIdx) % CITATION_SETS.length];
             return {
               query,
-              category,
+              group,
               repetition,
               text: `Response for "${query}".`,
               citations,

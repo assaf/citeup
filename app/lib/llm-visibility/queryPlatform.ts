@@ -33,7 +33,7 @@ export default async function queryPlatform({
   modelId: string;
   newerThan: Temporal.PlainDateTime;
   platform: string;
-  queries: { query: string; category: string }[];
+  queries: { query: string; group: string }[];
   queryFn: QueryFn;
   repetitions: number;
   site: { id: string; domain: string };
@@ -66,13 +66,13 @@ export default async function queryPlatform({
       const query = queries[qi];
       for (let repetition = 1; repetition <= repetitions; repetition++) {
         await singleQueryRepetition({
-          site,
-          category: query.category,
+          group: query.group,
           platform,
           query: query.query,
           queryFn,
           repetition,
           runId: run.id,
+          site,
         });
         await delay(ms("2s"));
       }
@@ -86,7 +86,7 @@ export default async function queryPlatform({
 }
 
 async function singleQueryRepetition({
-  category,
+  group,
   platform,
   query,
   queryFn,
@@ -94,7 +94,7 @@ async function singleQueryRepetition({
   runId,
   site,
 }: {
-  category: string;
+  group: string;
   platform: string;
   query: string;
   queryFn: QueryFn;
@@ -107,12 +107,12 @@ async function singleQueryRepetition({
   });
   if (existing) {
     logger(
-      "[%s:%s] Repetition %d: %s (category: %s) — already exists",
+      "[%s:%s] Repetition %d: %s (group: %s) — already exists",
       site.id,
       platform,
       repetition,
       query,
-      category,
+      group,
     );
     return;
   }
@@ -120,12 +120,12 @@ async function singleQueryRepetition({
   try {
     const { citations, extraQueries, text } = await queryFn(query);
     logger(
-      "[%s:%s] Repetition %d: %s (category: %s)",
+      "[%s:%s] Repetition %d: %s (group: %s)",
       site.id,
       platform,
       repetition,
       query,
-      category,
+      group,
     );
     const index = citations.findIndex(
       (url) => new URL(url).hostname === site.domain,
@@ -133,7 +133,7 @@ async function singleQueryRepetition({
 
     await prisma.citationQuery.create({
       data: {
-        category,
+        group,
         citations,
         extraQueries,
         position: index >= 0 ? index : null,
@@ -144,22 +144,13 @@ async function singleQueryRepetition({
       },
     });
   } catch (error) {
-    logger(
-      "[%s:%s] Repetition %d: %s (category: %s) — error: %s",
-      site.id,
-      platform,
-      repetition,
-      query,
-      category,
-      error,
-    );
     captureException(error, {
       extra: {
         siteId: site.id,
         platform,
         runId,
         query,
-        category,
+        group,
         repetition,
       },
     });

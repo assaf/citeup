@@ -20,7 +20,7 @@ import {
 type Query = {
   id: string;
   query: string;
-  category: string;
+  group: string;
   repetition: number;
   position: number | null;
   citations: string[];
@@ -36,7 +36,7 @@ export type Run = {
 
 type QueryAggregate = {
   query: string;
-  category: string;
+  group: string;
   visibilityPct: number;
   avgCitations: number;
   score: number;
@@ -44,7 +44,7 @@ type QueryAggregate = {
 
 function computeMetrics(
   reps: Query[],
-): Omit<QueryAggregate, "query" | "category"> {
+): Omit<QueryAggregate, "query" | "group"> {
   if (reps.length === 0) return { visibilityPct: 0, avgCitations: 0, score: 0 };
 
   const visibilityPct = mean(reps.map((q) => (q.position !== null ? 100 : 0)));
@@ -66,7 +66,7 @@ export default function RecentVisibility({ run }: { run: Run }) {
   const aggregates: QueryAggregate[] = Object.entries(grouped).map(
     ([query, reps]) => ({
       query,
-      category: reps[0].category,
+      group: reps[0].group,
       ...computeMetrics(reps),
     }),
   );
@@ -91,9 +91,7 @@ export default function RecentVisibility({ run }: { run: Run }) {
           <TableHeader>
             <TableRow>
               <TableHead className="font-bold text-foreground">Query</TableHead>
-              <TableHead className="font-bold text-foreground">
-                Category
-              </TableHead>
+              <TableHead className="font-bold text-foreground">Group</TableHead>
               <TableHead className="text-right font-bold text-foreground">
                 Visibility
               </TableHead>
@@ -115,7 +113,7 @@ export default function RecentVisibility({ run }: { run: Run }) {
               >
                 <TableCell className="max-w-xs truncate">{agg.query}</TableCell>
                 <TableCell className="text-foreground/60 text-xs">
-                  {agg.category}
+                  {agg.group}
                 </TableCell>
                 <TableCell className="text-right">
                   {agg.visibilityPct.toFixed(0)}%

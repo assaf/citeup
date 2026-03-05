@@ -2,6 +2,7 @@ export const handle = { siteNav: true };
 
 import { captureException } from "@sentry/react-router";
 import SitePageHeader from "~/components/ui/SitePageHeader";
+import addSiteQueries from "~/lib/addSiteQueries";
 import { requireUser } from "~/lib/auth.server";
 import generateSiteQueries from "~/lib/llm-visibility/generateSiteQueries";
 import prisma from "~/lib/prisma.server";
@@ -44,11 +45,11 @@ export async function action({ request, params }: Route.ActionArgs) {
   if (!site) throw new Response("Not found", { status: 404 });
 
   const data = await request.formData();
-  const intent = String(data.get("_intent"));
+  const intent = data.get("_intent")?.toString();
 
   switch (intent) {
     case "add-group": {
-      const group = String(data.get("group")).trim();
+      const group = data.get("group")?.toString().trim();
       if (!group) return { ok: false, error: "Group name is required" };
       await prisma.siteQuery.create({
         data: { siteId: site.id, group, query: "" },
@@ -56,8 +57,8 @@ export async function action({ request, params }: Route.ActionArgs) {
       return { ok: true };
     }
     case "rename-group": {
-      const oldGroup = String(data.get("oldGroup"));
-      const newGroup = String(data.get("newGroup")).trim();
+      const oldGroup = data.get("oldGroup")?.toString().trim();
+      const newGroup = data.get("newGroup")?.toString().trim();
       if (!newGroup || newGroup === oldGroup) return { ok: true };
       await prisma.siteQuery.updateMany({
         where: { siteId: site.id, group: oldGroup },
@@ -66,21 +67,21 @@ export async function action({ request, params }: Route.ActionArgs) {
       return { ok: true };
     }
     case "delete-group": {
-      const group = String(data.get("group"));
+      const group = data.get("group")?.toString().trim();
       await prisma.siteQuery.deleteMany({ where: { siteId: site.id, group } });
       return { ok: true };
     }
     case "add-query": {
-      const group = String(data.get("group"));
-      const query = String(data.get("query") ?? "");
-      await prisma.siteQuery.create({
-        data: { siteId: site.id, group, query },
-      });
+      const group = data.get("group")?.toString();
+      const query = data.get("query")?.toString();
+      if (!group || !query)
+        return { ok: false, error: "Group and query are required" };
+      await addSiteQueries(site, [{ group, query }]);
       return { ok: true };
     }
     case "update-query": {
-      const id = String(data.get("id"));
-      const query = String(data.get("query"));
+      const id = data.get("id")?.toString();
+      const query = data.get("query")?.toString().trim();
       const existing = await prisma.siteQuery.findFirst({
         where: { id, siteId: site.id },
       });
@@ -89,7 +90,7 @@ export async function action({ request, params }: Route.ActionArgs) {
       return { ok: true };
     }
     case "delete-query": {
-      const id = String(data.get("id"));
+      const id = data.get("id")?.toString();
       const existing = await prisma.siteQuery.findFirst({
         where: { id, siteId: site.id },
       });

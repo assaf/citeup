@@ -34,7 +34,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       });
       const queries = siteQueryRows
         .filter((q) => q.query.trim())
-        .map((q) => ({ query: q.query, category: q.group }));
+        .map((q) => ({ query: q.query, group: q.group }));
       await queryAccount({ site, queries });
       logger("[cron:citation-runs] Done — %s (%s)", site.id, site.domain);
       results.push({ siteId: site.id, ok: true });

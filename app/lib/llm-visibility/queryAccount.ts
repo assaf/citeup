@@ -25,7 +25,7 @@ export default async function queryAccount({
   repetitions = 1,
 }: {
   site: Site;
-  queries: { query: string; category: string }[];
+  queries: { query: string; group: string }[];
   repetitions?: number;
 }) {
   const newerThan = Temporal.Now.instant()

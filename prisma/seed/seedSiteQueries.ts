@@ -69,7 +69,7 @@ async function seedCitationRuns(site: Site) {
       }
 
       const platformIdx = PLATFORMS.findIndex((p) => p.platform === platform);
-      const queryData = queries.flatMap(({ query, category }, qi) =>
+      const queryData = queries.flatMap(({ query, group }, qi) =>
         Array.from({ length: REPETITIONS }, (_, i) => {
           const rep = i + 1;
           const seed = qi * 10_000 + rep * 1_000 + runIdx * 10 + platformIdx;
@@ -79,7 +79,7 @@ async function seedCitationRuns(site: Site) {
           );
           return {
             query,
-            category,
+            group,
             repetition: rep,
             text: `Based on your query about "${query.toLowerCase()}", here are some relevant resources and platforms to consider.`,
             citations,
