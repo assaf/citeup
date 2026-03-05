@@ -1,7 +1,8 @@
 import { captureException } from "@sentry/react-router";
-import { PlusIcon, TrashIcon } from "lucide-react";
+import { CoffeeIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { redirect, useFetcher, useNavigate } from "react-router";
+import { RotateLoading } from "respinner";
 import { ActiveLink } from "~/components/ui/ActiveLink";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
@@ -248,6 +249,7 @@ function ReviewScreen({
           onClick={handleSave}
           disabled={nonEmpty.length === 0 || isProcessing}
         >
+          {isProcessing && <RotateLoading size={18} color="currentColor" />}
           {isProcessing ? "Saving…" : "Save queries"}
         </Button>
         <ActiveLink
@@ -257,6 +259,18 @@ function ReviewScreen({
           Skip
         </ActiveLink>
       </div>
+
+      <p className="flex flex-row gap-2 text-base text-foreground/60">
+        <span>
+          <CoffeeIcon className="size-6" />
+        </span>
+        <span>
+          Be patient, nothing will happen for a few minutes. We're going to
+          check all these queries against the domain, asking Claude, OpenAI,
+          Google, and Perplexity to see if they return any citations. Keep this
+          page open to see the progress.
+        </span>
+      </p>
     </main>
   );
 }

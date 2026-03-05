@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import SitePageHeader from "~/components/ui/SitePageHeader";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/Tabs";
 import { requireUser } from "~/lib/auth.server";
@@ -46,14 +46,11 @@ export default function SiteCitationsPage({
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-6 py-12">
-      <SitePageHeader site={site} title="Citations">
-        <Link
-          className="text-base text-foreground/60 hover:underline"
-          to={`/site/${site.id}/queries`}
-        >
-          Edit queries →
-        </Link>
-      </SitePageHeader>
+      <SitePageHeader
+        site={site}
+        title="Citations"
+        backTo={{ label: "Edit queries", path: `/site/${site.id}/queries` }}
+      />
 
       <Tabs
         defaultValue={platform}

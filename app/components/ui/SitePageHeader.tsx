@@ -1,12 +1,18 @@
+import { ArrowRightIcon } from "lucide-react";
 import { Link } from "react-router";
+import { ActiveLink } from "./ActiveLink";
 
-interface Props {
+export default function SitePageHeader({
+  site,
+  title,
+  backTo,
+  children,
+}: {
   site: { id: string; domain: string };
   title: string;
+  backTo?: { label: string; path: string };
   children?: React.ReactNode;
-}
-
-export default function SitePageHeader({ site, title, children }: Props) {
+}) {
   return (
     <div className="flex items-center justify-between gap-4">
       <div>
@@ -21,6 +27,15 @@ export default function SitePageHeader({ site, title, children }: Props) {
         </p>
         <h1 className="font-heading text-3xl">{title}</h1>
       </div>
+      {backTo && (
+        <ActiveLink
+          className="text-base text-foreground/60 hover:underline"
+          to={backTo.path}
+        >
+          {backTo.label}
+          <ArrowRightIcon className="size-4" />
+        </ActiveLink>
+      )}
       {children}
     </div>
   );

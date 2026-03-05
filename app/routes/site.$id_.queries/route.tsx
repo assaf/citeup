@@ -2,7 +2,7 @@ export const handle = { siteNav: true };
 
 import { captureException } from "@sentry/react-router";
 import SitePageHeader from "~/components/ui/SitePageHeader";
-import addSiteQueries from "~/lib/addSiteQueries";
+import addSiteQueries, { updateSiteQuery } from "~/lib/addSiteQueries";
 import { requireUser } from "~/lib/auth.server";
 import generateSiteQueries from "~/lib/llm-visibility/generateSiteQueries";
 import prisma from "~/lib/prisma.server";
@@ -72,21 +72,19 @@ export async function action({ request, params }: Route.ActionArgs) {
       return { ok: true };
     }
     case "add-query": {
-      const group = data.get("group")?.toString();
-      const query = data.get("query")?.toString();
-      if (!group || !query)
-        return { ok: false, error: "Group and query are required" };
+      const group = data.get("group")?.toString() ?? "";
+      const query = data.get("query")?.toString() ?? "";
       await addSiteQueries(site, [{ group, query }]);
       return { ok: true };
     }
     case "update-query": {
-      const id = data.get("id")?.toString();
-      const query = data.get("query")?.toString().trim();
+      const id = data.get("id")?.toString() ?? "";
+      const query = data.get("query")?.toString().trim() ?? "";
       const existing = await prisma.siteQuery.findFirst({
         where: { id, siteId: site.id },
       });
       if (!existing) return { ok: false, error: "Query not found" };
-      await prisma.siteQuery.update({ where: { id }, data: { query } });
+      await updateSiteQuery(id, query);
       return { ok: true };
     }
     case "delete-query": {
@@ -120,7 +118,11 @@ export default function SiteQueriesPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-6 py-12">
-      <SitePageHeader site={site} title="Citation Queries" />
+      <SitePageHeader
+        site={site}
+        title="Citation Queries"
+        backTo={{ label: "Citations", path: `/site/${site.id}/citations` }}
+      />
 
       <p className="text-base text-foreground/60">
         These queries are run against AI platforms to check where your site is

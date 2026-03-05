@@ -15,13 +15,11 @@ export default async function addSiteQueries(
   site: Site,
   queries: { group: string; query: string }[],
 ) {
-  const notEmpty = queries
-    .map(({ group, query }) => ({
-      group: group.trim(),
-      query: query.trim(),
-    }))
-    .filter((q) => q.group && q.query.trim());
-  const unique = uniqBy(notEmpty, (q) => `${q.group}:${q.query}`);
+  const trimmed = queries.map(({ group, query }) => ({
+    group: group.trim(),
+    query: query.trim(),
+  }));
+  const unique = uniqBy(trimmed, (q) => `${q.group}:${q.query}`);
   await prisma.siteQuery.createMany({
     data: unique.map(({ group, query }) => ({ siteId: site.id, group, query })),
   });

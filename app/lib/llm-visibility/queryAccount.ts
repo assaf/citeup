@@ -7,7 +7,7 @@ import queryGemini from "./geminiClient";
 import openaiClient from "./openaiClient";
 import queryPerplexity from "./perplexityClient";
 import {
-  default as runAllQueries,
+  default as queryPlatform,
   default as runPlatform,
 } from "./queryPlatform";
 
@@ -34,7 +34,7 @@ export default async function queryAccount({
     .toPlainDateTime();
 
   await Promise.all([
-    runAllQueries({
+    queryPlatform({
       modelId: "gpt-5-chat-latest",
       newerThan,
       platform: "chatgpt",
@@ -44,7 +44,7 @@ export default async function queryAccount({
       site,
     }),
 
-    runAllQueries({
+    queryPlatform({
       modelId: "sonar",
       newerThan,
       platform: "perplexity",

@@ -29,8 +29,8 @@ export default function PageHeader() {
     ? [
         { to: "/sites", label: "Dashboard" },
         { to: `/site/${siteId}/citations`, label: "Citations" },
-        { to: `/site/${siteId}/bots`, label: "Bot Traffic" },
         { to: `/site/${siteId}/queries`, label: "Queries" },
+        { to: `/site/${siteId}/bots`, label: "Bot Traffic" },
       ]
     : null;
 
