@@ -21,7 +21,7 @@ export default function BotInsights({
   });
 
   return (
-    <Card className="bg-[hsl(47,100%,95%)]">
+    <Card variant="yellow">
       <CardHeader>
         <CardTitle>
           <BrainIcon className="size-6" />

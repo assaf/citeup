@@ -4,6 +4,7 @@ import { useState } from "react";
 import { redirect, useFetcher } from "react-router";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent } from "~/components/ui/Card";
+import Main from "~/components/ui/Main";
 import { requireUser } from "~/lib/auth.server";
 import generateSiteQueries from "~/lib/llm-visibility/generateSiteQueries";
 import {
@@ -64,7 +65,7 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
   const fetcher = useFetcher<typeof action>();
 
   return (
-    <main className="mx-auto w-full max-w-2xl space-y-6 px-6 py-12">
+    <Main variant="wide">
       <div className="flex flex-row items-center justify-between gap-4">
         <h1 className="font-heading text-3xl">Your Sites</h1>
         {!isAddSiteFormOpen && (
@@ -75,7 +76,7 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
       {isAddSiteFormOpen && <AddSiteForm fetcher={fetcher} />}
 
       {sites.length > 0 && (
-        <Card className="w-full max-w-2xl">
+        <Card>
           <CardContent className="space-y-4 divide-y-2 divide-black/10">
             {sites.map((item) => (
               <SiteEntry
@@ -91,6 +92,6 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
           </CardContent>
         </Card>
       )}
-    </main>
+    </Main>
   );
 }

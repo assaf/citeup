@@ -9,6 +9,7 @@ import { Alert, AlertTitle } from "~/components/ui/Alert";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent } from "~/components/ui/Card";
 import { Input } from "~/components/ui/Input";
+import Main from "~/components/ui/Main";
 import Spinner from "~/components/ui/Spinner";
 import addSiteQueries from "~/lib/addSiteQueries";
 import { requireUser } from "~/lib/auth.server";
@@ -111,7 +112,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
   }
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-6 px-6 py-12">
+    <Main variant="wide">
       <div>
         <h1 className="font-heading text-2xl">Review suggested queries</h1>
         <p className="mt-1 text-base text-foreground/60">
@@ -205,6 +206,6 @@ export default function Index({ loaderData }: Route.ComponentProps) {
           </span>
         </p>
       )}
-    </main>
+    </Main>
   );
 }

@@ -79,7 +79,7 @@ export default function Blog({
       </section>
 
       <BlogPostsGrid
-        className="bg-[hsl(60,100%,99%)]"
+        className="mx-auto max-w-5xl bg-[hsl(60,100%,99%)]"
         posts={loaderData.posts}
       />
     </main>

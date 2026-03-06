@@ -10,6 +10,7 @@ import { Link } from "react-router";
 import CiteUpLogo from "~/components/layout/CiteUpLogo";
 import { ActiveLink } from "~/components/ui/ActiveLink";
 import BlogPostsGrid from "~/components/ui/BlogPostsGrid";
+import Main from "~/components/ui/Main";
 import { getCurrentUser } from "~/lib/auth.server";
 import { type BlogPost, recentBlogPosts } from "~/lib/blogPosts.server";
 import type { Route } from "./+types/route";
@@ -43,13 +44,13 @@ export default function HomePage({
   const { user, posts } = loaderData;
 
   return (
-    <main className="flex flex-col bg-[hsl(60,100%,99%)]">
+    <Main className="bg-[hsl(60,100%,99%)]">
       <LandingNav isSignedIn={!!user} />
       <HeroSection isSignedIn={!!user} />
       <HowItWorksSection />
       <ForWhoSection />
       {posts.length > 0 && <BlogSection posts={posts} />}
-    </main>
+    </Main>
   );
 }
 

@@ -9,6 +9,7 @@ import recordBotVisit from "~/lib/botTracking.server";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/root";
 import PageLayout from "./components/layout/PageLayout";
+import Main from "./components/ui/Main";
 import "./global.css";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -114,7 +115,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="prose prose-lg mx-auto py-32">
+    <Main variant="prose">
       <h1 className="mx-auto flex flex-row justify-center gap-2 text-4xl">
         <span className="font-bold text-red-500">{message}</span>
         <span className="text-gray-500">{details}</span>
@@ -124,17 +125,20 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
           <code>{stack}</code>
         </pre>
       )}
-    </main>
+    </Main>
   );
 }
 
 export function HydrateFallback() {
   return (
     <Layout>
-      <main className="prose prose-lg mx-auto flex flex-col items-center justify-center gap-4">
+      <Main
+        variant="prose"
+        className="flex flex-col items-center justify-center gap-4"
+      >
         <WaveLoading color="#111111" count={2} />
         <p className="text-gray-500 text-lg">Loading, please wait...</p>
-      </main>
+      </Main>
     </Layout>
   );
 }

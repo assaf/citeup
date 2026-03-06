@@ -1,10 +1,9 @@
-export const handle = { siteNav: true };
-
 import type { Temporal } from "@js-temporal/polyfill";
 import { sumBy } from "es-toolkit";
 import DateRangeSelector, {
   parseDateRange,
 } from "~/components/ui/DateRangeSelector";
+import Main from "~/components/ui/Main";
 import SitePageHeader from "~/components/ui/SitePageHeader";
 import { requireUser } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
@@ -16,6 +15,8 @@ import BotKeyMetrics from "./BotKeyMetrics";
 import BotTopPaths from "./BotTopPaths";
 import BotTrafficTrend from "./BotTrafficTrend";
 import NoTraffic from "./NoTraffic";
+
+export const handle = { siteNav: true };
 
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: `Bot Traffic — ${data?.site.domain} | CiteUp` }];
@@ -185,7 +186,7 @@ export default function SiteBotsPage({ loaderData }: Route.ComponentProps) {
   const isEmpty = totalVisits === 0;
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-6 px-6 py-12">
+    <Main variant="wide">
       <SitePageHeader site={site} title="Bot Traffic">
         <DateRangeSelector />
       </SitePageHeader>
@@ -209,6 +210,6 @@ export default function SiteBotsPage({ loaderData }: Route.ComponentProps) {
           </div>
         </section>
       )}
-    </main>
+    </Main>
   );
 }

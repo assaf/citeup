@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from "lucide-react";
 import type { useFetcher } from "react-router";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
@@ -17,7 +18,7 @@ export default function AddSiteForm({
   const url = fetcher.formData?.get("url")?.toString();
 
   return (
-    <Card className="w-full max-w-2xl" variant="yellow" fadeIn={true}>
+    <Card variant="yellow" fadeIn={true}>
       <CardHeader>
         <CardTitle>Add a Site</CardTitle>
       </CardHeader>
@@ -47,17 +48,22 @@ export default function AddSiteForm({
             </p>
             <Field>
               <FieldLabel htmlFor="url">Website URL or domain</FieldLabel>
-              <Input
-                aria-label="Website URL or domain"
-                autoFocus
-                id="url"
-                name="url"
-                placeholder="https://yoursite.com"
-                type="text"
-              />
+              <div className="flex justify-between gap-4">
+                <Input
+                  aria-label="Website URL or domain"
+                  autoFocus
+                  id="url"
+                  name="url"
+                  placeholder="https://yoursite.com"
+                  type="text"
+                />
+                <Button type="submit">
+                  Add Site
+                  <ArrowRightIcon className="size-4" />
+                </Button>
+              </div>
               {error && <FieldError>{error}</FieldError>}
             </Field>
-            <Button type="submit">Add Site</Button>
           </fetcher.Form>
         )}
       </CardContent>

@@ -6,6 +6,7 @@ import { ActiveLink } from "~/components/ui/ActiveLink";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent } from "~/components/ui/Card";
 import { Input } from "~/components/ui/Input";
+import Main from "~/components/ui/Main";
 import Spinner from "~/components/ui/Spinner";
 import defaultQueryCategories from "~/lib/llm-visibility/defaultQueryCategories";
 
@@ -73,7 +74,7 @@ export default function ReviewScreen({
   );
 
   return (
-    <main className="mx-auto max-w-2xl space-y-6 px-6 py-12">
+    <Main variant="wide">
       <div>
         <h1 className="font-heading text-2xl">Review suggested queries</h1>
         <p className="mt-1 text-base text-foreground/60">
@@ -154,6 +155,6 @@ export default function ReviewScreen({
           page open to see the progress.
         </span>
       </p>
-    </main>
+    </Main>
   );
 }

@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router";
+import Main from "~/components/ui/Main";
 import SitePageHeader from "~/components/ui/SitePageHeader";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/Tabs";
 import { requireUser } from "~/lib/auth.server";
@@ -45,7 +46,7 @@ export default function SiteCitationsPage({
   const run = runs.find((r) => r.platform === platform);
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-6 px-6 py-12">
+    <Main variant="wide">
       <SitePageHeader
         site={site}
         title="Citations"
@@ -83,6 +84,6 @@ export default function SiteCitationsPage({
           No runs yet for {PLATFORMS.find((p) => p.name === platform)?.label}.
         </p>
       )}
-    </main>
+    </Main>
   );
 }

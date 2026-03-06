@@ -1,6 +1,7 @@
 export const handle = { siteNav: true };
 
 import { captureException } from "@sentry/react-router";
+import Main from "~/components/ui/Main";
 import SitePageHeader from "~/components/ui/SitePageHeader";
 import addSiteQueries, {
   addSiteQueryGroup,
@@ -115,7 +116,7 @@ export default function SiteQueriesPage({ loaderData }: Route.ComponentProps) {
   const { site, groups } = loaderData;
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-6 px-6 py-12">
+    <Main variant="wide">
       <SitePageHeader
         site={site}
         title="Citation Queries"
@@ -148,6 +149,6 @@ export default function SiteQueriesPage({ loaderData }: Route.ComponentProps) {
 
         <AddQueriesGroup />
       </div>
-    </main>
+    </Main>
   );
 }
