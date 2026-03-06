@@ -55,6 +55,7 @@ function ChartContainer({
   return (
     <ChartContext.Provider value={{ config }}>
       <div
+        suppressHydrationWarning
         data-slot="chart"
         data-chart={chartId}
         className={twMerge(
