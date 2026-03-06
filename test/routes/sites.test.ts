@@ -1,7 +1,7 @@
 import { type Page, expect } from "@playwright/test";
 import { beforeAll, describe, it } from "vitest";
 import { hashPassword } from "~/lib/auth.server";
-import { removeElements } from "~/lib/html/parseHTML";
+import { modifyElements, removeElements } from "~/lib/html/parseHTML";
 import prisma from "~/lib/prisma.server";
 import type { Site, User } from "~/prisma";
 import { goto, port } from "../helpers/launchBrowser";
@@ -153,6 +153,17 @@ describe("sites route", () => {
       it("HTML matches baseline", async () => {
         await expect(page.locator("main")).toMatchInnerHTML({
           name: "sites.suggestions",
+          modify: (html) =>
+            modifyElements(
+              html,
+              (node) =>
+                node.tag === "a" &&
+                /\/site\/[^/]+/.test(node.attributes.href ?? ""),
+              (node) => ({
+                ...node,
+                attributes: { ...node.attributes, href: "/site/id" },
+              }),
+            ),
         });
       });
 
@@ -256,7 +267,7 @@ describe("sites route", () => {
     it("HTML matches baseline", async () => {
       await expect(page.locator("main")).toMatchInnerHTML({
         name: "sites.list",
-        strip: (html) =>
+        modify: (html) =>
           removeElements(html, (node) => {
             if (node.tag !== "a") return false;
             const href = node.attributes.href ?? "";

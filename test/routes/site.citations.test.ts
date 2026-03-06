@@ -189,7 +189,7 @@ describe("site page", () => {
     // ResizeObserver measurements that drift slightly between runs. The
     // screenshot test covers visual regressions in charts.
     await expect(page).toMatchInnerHTML({
-      strip: (html) =>
+      modify: (html) =>
         removeElements(html, (node) => {
           if (node.attributes["data-slot"] === "chart") return true;
           const href = node.attributes.href ?? "";

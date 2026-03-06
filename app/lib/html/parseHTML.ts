@@ -224,11 +224,32 @@ export function removeElements(
 ): void {
   for (let i = html.length - 1; i >= 0; i--) {
     const node = html[i];
-    if (node.type === "element" && match(node)) {
-      html.splice(i, 1);
-    } else if (node.type === "element" && node.children) {
+    if (node.type === "element" && match(node)) html.splice(i, 1);
+    else if (node.type === "element" && node.children)
       removeElements(node.children, match);
-    }
+  }
+}
+
+/**
+ * Recursively iterates the tree and finds the elements that match the given function.  The elements
+ * are found by reference, so the original tree is not modified.
+ *
+ * @param html - The HTML tree to find the elements in.
+ * @param match - The function to match the elements to find.
+ * @param modify - The function to modify the elements that match the given function.
+ */
+export function modifyElements(
+  html: HTMLNode[],
+  match: (node: HTMLNode & { type: "element" }) => boolean,
+  modify: (
+    node: HTMLNode & { type: "element" },
+  ) => HTMLNode & { type: "element" },
+): void {
+  for (let i = html.length - 1; i >= 0; i--) {
+    const node = html[i];
+    if (node.type === "element" && match(node)) html[i] = modify(node);
+    else if (node.type === "element" && node.children)
+      modifyElements(node.children, match, modify);
   }
 }
 

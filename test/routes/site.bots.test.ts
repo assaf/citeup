@@ -112,7 +112,7 @@ describe("site bots page", () => {
     it("HTML matches baseline", { timeout: 30_000 }, async () => {
       await expect(page.locator("main")).toMatchInnerHTML({
         name: "site.bots.empty",
-        strip: (html) =>
+        modify: (html) =>
           removeElements(html, (node) => {
             const href = node.attributes.href ?? "";
             return href.startsWith("/site/") && !href.endsWith("/bots");
@@ -190,7 +190,7 @@ describe("site bots page", () => {
     it("HTML matches baseline", { timeout: 30_000 }, async () => {
       await expect(page.locator("main")).toMatchInnerHTML({
         name: "site.bots",
-        strip: (html) =>
+        modify: (html) =>
           removeElements(html, (node) => {
             if (node.attributes["data-slot"] === "chart") return true;
             const href = node.attributes.href ?? "";

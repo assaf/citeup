@@ -26,13 +26,13 @@ declare global {
        *
        * @param options - The options for the matcher.
        * @param options.name - The name of the test.
-       * @param options.strip - A function to strip the HTML of any unwanted content.
+       * @param options.modify - A function to modify the HTML of any desired content.
        * @example
        * await expect(page).toMatchInnerHTML();
        */
       toMatchInnerHTML(options?: {
         name?: string;
-        strip?: (html: HTMLNode[]) => void;
+        modify?: (html: HTMLNode[]) => void;
       }): Promise<R>;
     }
   }
@@ -45,7 +45,7 @@ const dirname = path.resolve(
 expect.extend({
   async toMatchInnerHTML(
     locator: Locator | Page,
-    options?: { name?: string; strip?: (html: HTMLNode[]) => void },
+    options?: { name?: string; modify?: (html: HTMLNode[]) => void },
   ): Promise<{ message: () => string; pass: boolean }> {
     const name = options?.name || getTestName();
     const filename = path.resolve(dirname, `${name}.html`);
@@ -55,7 +55,7 @@ expect.extend({
         : await locator.innerHTML();
 
     const html = parseHTMLTree(rawHtml);
-    if (options?.strip) options.strip(html);
+    if (options?.modify) options.modify(html);
     const formattedHtml = formatHTMLTree(html);
 
     try {

@@ -37,27 +37,20 @@ type ActionResult =
   | { siteId: string }
   | { siteId: string; suggestions: Suggestion[] };
 
-export async function action({ request }: Route.ActionArgs) {
+export async function action({ params, request }: Route.ActionArgs) {
   try {
     const user = await requireUser(request);
-    const form = await request.formData();
 
-    const siteId = form.get("siteId")?.toString() ?? "";
     const site = await prisma.site.findFirst({
-      where: { id: siteId, accountId: user.accountId },
+      where: { id: params.id, accountId: user.accountId },
     });
     if (!site) return { error: "Site not found" };
 
+    const form = await request.formData();
     const raw = form.get("queries")?.toString() ?? "[]";
-    const { error, data: queries } = z
-      .array(
-        z.object({
-          group: z.string(),
-          query: z.string(),
-        }),
-      )
-      .safeParse(JSON.parse(raw));
-    if (error) throw new Error(error.message);
+    const queries = z
+      .array(z.object({ group: z.string(), query: z.string() }))
+      .parse(raw);
     await addSiteQueries(site, queries);
     return redirect(`/site/${site.id}`);
   } catch (error) {
@@ -101,12 +94,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
   function handleSave() {
     fetcher.submit(
-      {
-        siteId: loaderData.siteId,
-        queries: JSON.stringify(
-          nonEmpty.map(({ group, query }) => ({ group, query })),
-        ),
-      },
+      { queries: nonEmpty.map(({ group, query }) => ({ group, query })) },
       { method: "post" },
     );
   }

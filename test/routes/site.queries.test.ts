@@ -68,7 +68,7 @@ describe("site queries page", () => {
     it("HTML matches baseline", { timeout: 30_000 }, async () => {
       await expect(page.locator("main")).toMatchInnerHTML({
         name: "site-queries-empty",
-        strip: (html) =>
+        modify: (html) =>
           removeElements(html, (node) => {
             const href = node.attributes.href ?? "";
             return href.startsWith("/site/") && !href.endsWith("/queries");
@@ -133,7 +133,7 @@ describe("site queries page", () => {
     it("HTML matches baseline", { timeout: 30_000 }, async () => {
       await expect(page.locator("main")).toMatchInnerHTML({
         name: "site-queries",
-        strip: (html) =>
+        modify: (html) =>
           removeElements(html, (node) => {
             const href = node.attributes.href ?? "";
             return href.startsWith("/site/") && !href.endsWith("/queries");
