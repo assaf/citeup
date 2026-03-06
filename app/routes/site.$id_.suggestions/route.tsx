@@ -46,13 +46,12 @@ export async function action({ params, request }: Route.ActionArgs) {
     });
     if (!site) return { error: "Site not found" };
 
-    const form = await request.formData();
-    const raw = form.get("queries")?.toString() ?? "[]";
+    const raw = await request.json();
     const queries = z
       .array(z.object({ group: z.string(), query: z.string() }))
       .parse(raw);
     await addSiteQueries(site, queries);
-    return redirect(`/site/${site.id}`);
+    return redirect(`/site/${params.id}/citations`);
   } catch (error) {
     captureException(error);
     return {
@@ -62,8 +61,6 @@ export async function action({ params, request }: Route.ActionArgs) {
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {
-  const fetcher = useFetcher<ActionResult>();
-
   const [suggestions, setSuggestions] = useState<
     { id: string; group: string; query: string }[]
   >(loaderData.suggestions);
@@ -72,17 +69,9 @@ export default function Index({ loaderData }: Route.ComponentProps) {
     Object.entries(groupBy(suggestions, (s) => s.group)),
     [([group]) => group],
   );
+
+  const fetcher = useFetcher<ActionResult>();
   const isProcessing = fetcher.state !== "idle";
-
-  function updateQuery(id: string, query: string) {
-    setSuggestions((prev) =>
-      prev.map((q) => (q.id === id ? { ...q, query } : q)),
-    );
-  }
-
-  function removeQuery(id: string) {
-    setSuggestions((prev) => prev.filter((q) => q.id !== id));
-  }
 
   function addQuery(group: string) {
     const id = crypto.randomUUID();
@@ -92,11 +81,14 @@ export default function Index({ loaderData }: Route.ComponentProps) {
     }, 0);
   }
 
-  function handleSave() {
-    fetcher.submit(
-      { queries: nonEmpty.map(({ group, query }) => ({ group, query })) },
-      { method: "post" },
+  function updateQuery(id: string, query: string) {
+    setSuggestions((prev) =>
+      prev.map((q) => (q.id === id ? { ...q, query } : q)),
     );
+  }
+
+  function removeQuery(id: string) {
+    setSuggestions((prev) => prev.filter((q) => q.id !== id));
   }
 
   return (
@@ -167,7 +159,12 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
       <div className="flex items-center justify-between gap-4">
         <Button
-          onClick={handleSave}
+          onClick={() => {
+            fetcher.submit(
+              nonEmpty.map(({ group, query }) => ({ group, query })),
+              { method: "post", encType: "application/json", flushSync: true },
+            );
+          }}
           disabled={nonEmpty.length === 0 || isProcessing}
         >
           {isProcessing && <Spinner />}

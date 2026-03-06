@@ -7,30 +7,29 @@ import { getBotMetrics } from "./llm-visibility/getBotMetrics.server";
 import prisma from "./prisma.server";
 
 /**
- * Add a site to an account. If the domain is not valid, already added, or
- * does not have DNS records, throws an error.
+ * Add a site to an account. If the domain is not valid, or DNS does not
+ * resolve, throws an error. If the domain already exists, returns the existing
+ * site without adding it again.
  *
  * @param account - The account to add the site to.
  * @param url - The URL of the site to add.
- * @throws {Error} If the domain is not valid, already added, or does not have DNS records.
- * @returns The added site.
+ * @throws {Error} If the domain is not valid or DNS does not resolve.
+ * @returns The site that was added or already exists in the database.
  */
 export async function addSiteToAccount(
   account: Account,
   url: string,
 ): Promise<Site> {
+  console.log("\n\n\nAdding site to account:", account.id, url);
   const domain = extractDomain(url);
   if (!domain) throw new Error("Enter a valid website URL or domain name");
 
   const existing = await prisma.site.findFirst({
     where: { accountId: account.id, domain },
   });
-  if (existing) throw new Error("That domain is already added to your account");
+  if (existing) return existing;
 
-  const dnsOk = await verifyDomain(domain);
-  if (!dnsOk)
-    throw new Error(`No DNS records found for ${domain}. Is the domain live?`);
-
+  await verifyDomain(domain);
   const site = await prisma.site.create({
     data: { domain, account: { connect: { id: account.id } } },
   });
@@ -56,12 +55,12 @@ export function extractDomain(url: string): string | null {
 }
 
 /**
- * Verify that a domain has DNS records.
+ * Verify that a domain has DNS records. Throws an error if the domain has no DNS records.
  *
  * @param domain - The domain to verify.
- * @returns True if the domain has DNS records, false otherwise.
+ * @throws {Error} If the domain has no DNS records.
  */
-export async function verifyDomain(domain: string): Promise<boolean> {
+export async function verifyDomain(domain: string): Promise<void> {
   try {
     await Promise.race([
       Promise.any([
@@ -72,9 +71,8 @@ export async function verifyDomain(domain: string): Promise<boolean> {
         setTimeout(() => reject(new Error("timeout")), 5_000),
       ),
     ]);
-    return true;
   } catch {
-    return false;
+    throw new Error(`No DNS records found for ${domain}. Is the domain live?`);
   }
 }
 

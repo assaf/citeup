@@ -32,6 +32,7 @@ with numbered references.`,
       },
     ],
     maxOutputTokens: 2000,
+    maxRetries: import.meta.env.PROD ? 2 : 0,
   });
   const citations = sources
     .filter((source) => source.sourceType === "url")

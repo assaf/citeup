@@ -25,6 +25,7 @@ references.`,
       web_search: anthropic.tools.webSearch_20250305({}),
     },
     toolChoice: { type: "tool", toolName: "web_search" },
+    maxRetries: import.meta.env.PROD ? 2 : 0,
   });
   const citations = sources
     .filter((source) => source.sourceType === "url")

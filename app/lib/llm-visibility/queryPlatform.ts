@@ -1,8 +1,6 @@
 import type { Temporal } from "@js-temporal/polyfill";
 import { captureException } from "@sentry/react-router";
-import { ms } from "convert";
 import debug from "debug";
-import { delay } from "es-toolkit";
 import prisma from "~/lib/prisma.server";
 import type { QueryFn } from "./llmVisibility";
 
@@ -74,7 +72,6 @@ export default async function queryPlatform({
           runId: run.id,
           site,
         });
-        await delay(ms("2s"));
       }
     }
   } catch (error) {

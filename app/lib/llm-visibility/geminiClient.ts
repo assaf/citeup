@@ -36,6 +36,7 @@ references.`,
       }),
     },
     toolChoice: { type: "tool", toolName: "web_search" },
+    maxRetries: import.meta.env.PROD ? 2 : 0,
   });
 
   const metadata = providerMetadata?.google.groundingMetadata as {

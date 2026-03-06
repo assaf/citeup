@@ -1,4 +1,6 @@
+import { ArrowRightIcon } from "lucide-react";
 import { Link, type useFetcher } from "react-router";
+import { ActiveLink } from "~/components/ui/ActiveLink";
 import type { Site } from "~/prisma";
 import DeleteSiteDialog from "./DeleteSiteDialog";
 import type { action } from "./route";
@@ -34,13 +36,13 @@ export default function SiteEntry({
         >
           {site.domain}
         </Link>
-        <DeleteSiteDialog
-          domain={site.domain}
-          onConfirm={() => {
-            fetcher.submit({ siteId: site.id }, { method: "DELETE" });
-          }}
-          isSubmitting={isSubmitting}
-        />
+        <ActiveLink
+          variant="button"
+          to={`/site/${site.id}/citations`}
+          aria-label="View site"
+        >
+          View Site <ArrowRightIcon className="size-4" />
+        </ActiveLink>
       </p>
       <Link
         to={`/site/${site.id}/citations`}
@@ -69,6 +71,15 @@ export default function SiteEntry({
           <p className="font-bold text-3xl">{uniqueBots.toLocaleString()}</p>
         </div>
       </Link>
+      <div>
+        <DeleteSiteDialog
+          domain={site.domain}
+          onConfirm={() => {
+            fetcher.submit({ siteId: site.id }, { method: "DELETE" });
+          }}
+          isSubmitting={isSubmitting}
+        />
+      </div>
     </div>
   );
 }

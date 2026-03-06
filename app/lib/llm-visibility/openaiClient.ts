@@ -39,6 +39,7 @@ references.`,
       }),
     },
     toolChoice: { type: "tool", toolName: "web_search" },
+    maxRetries: import.meta.env.PROD ? 2 : 0,
   });
   const citations = (sources as LanguageModelV3Source[])
     .filter((s) => s.sourceType === "url")

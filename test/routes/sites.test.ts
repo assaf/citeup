@@ -1,22 +1,17 @@
-import { type Page, expect } from "@playwright/test";
-import { beforeAll, describe, it } from "vitest";
+import { type Locator, type Page, expect } from "@playwright/test";
+import { afterAll, beforeAll, describe, it } from "vitest";
 import { hashPassword } from "~/lib/auth.server";
-import { modifyElements, removeElements } from "~/lib/html/parseHTML";
+import type { HTMLNode } from "~/lib/html/HTMLNode";
+import { modifyElements } from "~/lib/html/parseHTML";
 import prisma from "~/lib/prisma.server";
 import type { Site, User } from "~/prisma";
-import { goto, port } from "../helpers/launchBrowser";
+import { goto } from "../helpers/launchBrowser";
 import { signIn } from "../helpers/signIn";
-
-const EMAIL = "sites-test@example.com";
-const PASSWORD = "correct-password-123";
 
 describe("unauthenticated access", () => {
   it("redirects to /sign-in", async () => {
-    const response = await fetch(`http://localhost:${port}/sites`, {
-      redirect: "manual",
-    });
-    expect(response.status).toBe(302);
-    expect(response.headers.get("location")).toContain("/sign-in");
+    const page = await goto("/sites");
+    expect(page.url()).toContain("/sign-in");
   });
 });
 
@@ -25,12 +20,11 @@ describe("sites route", () => {
   let user: User;
 
   beforeAll(async () => {
-    await prisma.account.deleteMany();
     user = await prisma.user.create({
       data: {
         id: "user-sites-test",
-        email: EMAIL,
-        passwordHash: await hashPassword(PASSWORD),
+        email: "sites-test@example.com",
+        passwordHash: await hashPassword("correct-password-123"),
         account: { create: { id: "account-sites-test" } },
       },
     });
@@ -39,13 +33,7 @@ describe("sites route", () => {
   });
 
   describe("empty state", () => {
-    it("shows add site form", async () => {
-      await expect(
-        page.getByRole("button", { name: "Add Site" }),
-      ).toBeVisible();
-    });
-
-    it("shows URL input and descriptive text", async () => {
+    it("should show URL input and descriptive text", async () => {
       await expect(
         page.getByRole("textbox", { name: "Website URL or domain" }),
       ).toBeVisible();
@@ -55,258 +43,296 @@ describe("sites route", () => {
       await expect(page.getByText("Enter a full URL")).toBeVisible();
     });
 
-    it("HTML matches baseline", async () => {
+    it("should show add site button", async () => {
+      await expect(
+        page.getByRole("button", { name: "Add Site" }),
+      ).toBeVisible();
+    });
+
+    it("should match HTML baseline", async () => {
       await expect(page.locator("main")).toMatchInnerHTML({
         name: "sites.empty",
+        modify: fixBaseline,
       });
     });
 
-    it("screenshot matches baseline", async () => {
+    it("should match screenshot baseline", async () => {
       await expect(page.locator("main")).toMatchScreenshot({
         name: "sites.empty",
       });
     });
+  });
 
-    it("shows error for invalid URL", async () => {
+  describe("when user enters invalid URL", () => {
+    beforeAll(async () => {
+      page = await goto("/sites");
       await page
         .getByRole("textbox", { name: "Website URL or domain" })
         .fill("http://192.168.1.1");
       await page.getByRole("button", { name: "Add Site" }).click();
+    });
+
+    it("should show error for invalid URL", async () => {
       await expect(
         page.getByText("Enter a valid website URL or domain name"),
       ).toBeVisible();
     });
+  });
 
-    it("shows error for localhost", async () => {
+  describe("when user enters localhost URL", () => {
+    beforeAll(async () => {
+      page = await goto("/sites");
       await page
         .getByRole("textbox", { name: "Website URL or domain" })
         .fill("localhost");
       await page.getByRole("button", { name: "Add Site" }).click();
+    });
+
+    it("should show error for localhost", async () => {
       await expect(
         page.getByText("Enter a valid website URL or domain name"),
       ).toBeVisible();
     });
+  });
 
-    describe("DNS failure", () => {
-      it("shows DNS error for domain with no records", async () => {
-        await page
-          .getByRole("textbox", { name: "Website URL or domain" })
-          .fill("this-domain-does-not-exist.invalid");
-        await page.getByRole("button", { name: "Add Site" }).click();
-        await expect(
-          page.getByText("Enter a valid website URL or domain name"),
-        ).toBeVisible();
+  describe("when DNS failure", () => {
+    beforeAll(async () => {
+      page = await goto("/sites");
+      await page
+        .getByRole("textbox", { name: "Website URL or domain" })
+        .fill("this-domain-does-not-exist.invalid");
+      await page.getByRole("button", { name: "Add Site" }).click();
+    });
+
+    it("should show DNS error for domain with no records", async () => {
+      await expect(
+        page.getByText(
+          "No DNS records found for this-domain-does-not-exist.invalid. Is the domain live?",
+        ),
+      ).toBeVisible();
+    });
+  });
+
+  describe("when duplicate domain", () => {
+    let page: Page;
+
+    beforeAll(async () => {
+      await prisma.site.create({
+        data: {
+          id: "site-1",
+          domain: "duplicate-test.com",
+          accountId: user.accountId,
+        },
+      });
+      page = await goto("/sites");
+      await page.getByRole("button", { name: "Add Site" }).click();
+      await page
+        .getByRole("textbox", { name: "Website URL or domain" })
+        .fill("duplicate-test.com");
+      await page.getByRole("button", { name: "Add Site" }).click();
+    });
+
+    it("should redirect to site page", async () => {
+      await expect(page).toHaveURL("/site/site-1/suggestions");
+    });
+
+    afterAll(async () => {
+      await prisma.site.deleteMany();
+    });
+  });
+
+  describe("when successful save", () => {
+    let site: Site;
+
+    beforeAll(async () => {
+      await prisma.site.deleteMany();
+      await page
+        .getByRole("textbox", { name: "Website URL or domain" })
+        .fill("example.com");
+      await page.getByRole("button", { name: "Add Site" }).click();
+      await page.waitForURL(/\/site\/[^/]+\/suggestions/);
+      site = await prisma.site.findFirstOrThrow({
+        where: { domain: "example.com", accountId: user.accountId },
       });
     });
 
-    describe("duplicate domain", () => {
-      it("shows error when domain already exists", async () => {
-        const domain = "duplicate-test.com";
-        await prisma.site.create({
-          data: { id: "site-1", domain, accountId: user.accountId },
-        });
+    it("should save site and redirect to suggestions page", async () => {
+      expect(site).not.toBeNull();
+    });
 
-        const token = crypto.randomUUID();
-        await prisma.session.create({
-          data: {
-            token,
-            userId: user.id,
-            ipAddress: "127.0.0.1",
-            userAgent: "test",
-          },
-        });
+    it("should navigate to suggestions page", async () => {
+      expect(new URL(page.url()).pathname).toMatch(
+        `/site/${site.id}/suggestions`,
+      );
+    });
 
-        await page
-          .getByRole("textbox", { name: "Website URL or domain" })
-          .fill("duplicate-test.com");
-        await page.getByRole("button", { name: "Add Site" }).click();
-        await expect(
-          page.getByText("That domain is already added to your account"),
-        ).toBeVisible();
+    it("should match HTML baseline", async () => {
+      await expect(page.locator("main")).toMatchInnerHTML({
+        name: "sites.suggestions",
+        modify: fixBaseline,
       });
     });
 
-    describe("successful save", () => {
-      let site: Site;
+    it("should match screenshot baseline", async () => {
+      await expect(page.locator("main")).toMatchScreenshot({
+        name: "sites.suggestions",
+      });
+    });
 
+    describe("when skip button", () => {
       beforeAll(async () => {
-        await page
-          .getByRole("textbox", { name: "Website URL or domain" })
-          .fill("example.com");
-        await page.getByRole("button", { name: "Add Site" }).click();
-        await page.waitForURL(/\/site\/[^/]+\/suggestions/);
-        site = await prisma.site.findFirstOrThrow({
-          where: { domain: "example.com", accountId: user.accountId },
-        });
+        await page.getByRole("link", { name: "Skip" }).click();
+        await page.waitForURL(/\/site\/[^/]+\/citations/);
       });
 
-      it("saves site and redirects to site page", async () => {
-        expect(site).not.toBeNull();
-      });
-
-      it("navigates to suggestions page", async () => {
+      it("should navigate to citations page", async () => {
         expect(new URL(page.url()).pathname).toMatch(
-          `/site/${site.id}/suggestions`,
+          `/site/${site.id}/citations`,
+        );
+      });
+    });
+
+    describe("when save queries button", () => {
+      beforeAll(async () => {
+        await page.goto(`/site/${site.id}/suggestions`);
+        await page.getByRole("button", { name: "Save queries" }).click();
+        await page.waitForURL(/\/site\/[^/]+\/citations/);
+      });
+
+      it("should navigate to citations page", async () => {
+        expect(new URL(page.url()).pathname).toMatch(
+          `/site/${site.id}/citations`,
         );
       });
 
-      it("HTML matches baseline", async () => {
+      it("should match HTML baseline", async () => {
         await expect(page.locator("main")).toMatchInnerHTML({
-          name: "sites.suggestions",
-          modify: (html) =>
-            modifyElements(
-              html,
-              (node) =>
-                node.tag === "a" &&
-                /\/site\/[^/]+/.test(node.attributes.href ?? ""),
-              (node) => ({
-                ...node,
-                attributes: { ...node.attributes, href: "/site/id" },
-              }),
-            ),
+          name: "sites.citations",
+          modify: fixBaseline,
         });
       });
 
-      it("screenshot matches baseline", async () => {
+      it("should match screenshot baseline", async () => {
         await expect(page.locator("main")).toMatchScreenshot({
-          name: "sites.suggestions",
-        });
-      });
-
-      describe("skip button", () => {
-        beforeAll(async () => {
-          await page.getByRole("link", { name: "Skip" }).click();
-          await page.waitForURL(/\/site\/[^/]+\/citations/);
-        });
-
-        it("navigates to citations page", async () => {
-          expect(new URL(page.url()).pathname).toMatch(
-            `/site/${site.id}/citations`,
-          );
-        });
-      });
-
-      describe("save queries button", () => {
-        beforeAll(async () => {
-          await page.goto(`/site/${site.id}/suggestions`);
-          await page.getByRole("button", { name: "Save queries" }).click();
-          await page.waitForURL(/\/site\/[^/]+\/citations/);
-        });
-
-        it("navigates to citations page", async () => {
-          expect(new URL(page.url()).pathname).toMatch(
-            `/site/${site.id}/citations`,
-          );
-        });
-
-        it("HTML matches baseline", async () => {
-          await expect(page.locator("main")).toMatchInnerHTML({
-            name: "sites.citations",
-          });
-        });
-
-        it("screenshot matches baseline", async () => {
-          await expect(page.locator("main")).toMatchScreenshot({
-            name: "sites.citations",
-          });
+          name: "sites.citations",
         });
       });
     });
   });
 
-  describe("with one site", () => {
-    let page: Awaited<ReturnType<typeof goto>>;
-
+  describe("when site available", () => {
     beforeAll(async () => {
-      const user = await prisma.user.create({
-        data: {
-          id: "user-sites-test-2",
-          email: "sites-test-2@example.com",
-          passwordHash: await hashPassword(PASSWORD),
-          account: { create: { id: "account-sites-test-2" } },
-        },
-      });
       await prisma.site.create({
         data: {
           id: "site-dashboard-test",
-          domain: "example.com",
+          domain: "dashboard-test.com",
           accountId: user.accountId,
         },
       });
-      await signIn(user.id);
       page = await goto("/sites");
     });
 
-    it("shows the site domain", async () => {
+    it("should show column headers", async () => {
+      const container = page.locator('a:has-text("Citations")').last();
       await expect(
-        page.getByText("example.com", { exact: true }),
+        container.getByText("Citations", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        container.getByText("Avg Score", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        container.getByText("Bot Visits", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        container.getByText("Unique Bots", { exact: true }),
       ).toBeVisible();
     });
 
-    it("shows column headers", async () => {
-      await expect(page.getByText("Citations", { exact: true })).toBeVisible();
-      await expect(page.getByText("Avg Score", { exact: true })).toBeVisible();
-      await expect(page.getByText("Bot Visits", { exact: true })).toBeVisible();
-      await expect(
-        page.getByText("Unique Bots", { exact: true }),
-      ).toBeVisible();
-    });
-
-    it("shows View button", async () => {
-      const link = page.getByRole("link", { name: "example.com" });
-      await expect(link).toBeVisible();
-      await expect(link).toHaveAttribute("href", /\/site\//);
-    });
-
-    it("shows Delete button", async () => {
-      await expect(
-        page.getByRole("button", { name: "Delete site" }),
-      ).toBeVisible();
-    });
-
-    it("HTML matches baseline", async () => {
+    it("should match HTML baseline", async () => {
       await expect(page.locator("main")).toMatchInnerHTML({
         name: "sites.list",
-        modify: (html) =>
-          removeElements(html, (node) => {
-            if (node.tag !== "a") return false;
-            const href = node.attributes.href ?? "";
-            return href.startsWith("/site/") && href !== "/sites/new";
-          }),
+        modify: fixBaseline,
       });
     });
 
-    it("screenshot matches baseline", async () => {
+    it("should match screenshot baseline", async () => {
       await expect(page.locator("main")).toMatchScreenshot({
         name: "sites.list",
       });
     });
 
-    describe("delete button", () => {
+    describe("when delete button", () => {
+      let deleteConfirmBtn: Locator;
+      let confirmDomainInput: Locator;
+      let count: number;
+
       beforeAll(async () => {
+        count = await prisma.site.count();
         const deleteBtn = page
           .getByRole("button", { name: "Delete site" })
           .first();
         await deleteBtn.click();
+
+        deleteConfirmBtn = page.getByRole("button", {
+          name: "Delete Site",
+        });
+        confirmDomainInput = page.getByPlaceholder("dashboard-test.com");
       });
 
-      it("delete button opens confirmation dialog", async () => {
+      it("should open confirmation dialog", async () => {
         await expect(
           page.getByText("Are you sure you want to delete"),
         ).toBeVisible();
       });
 
-      it("delete dialog requires domain name match", async () => {
-        const deleteConfirmBtn = page.getByRole("button", {
-          name: "Delete Site",
-        });
+      it("should require domain name match", async () => {
         // Initially disabled
         await expect(deleteConfirmBtn).toBeDisabled();
-
         // Type wrong domain
-        await page.getByPlaceholder("example.com").fill("wrong.com");
+        await confirmDomainInput.fill("wrong.com");
         await expect(deleteConfirmBtn).toBeDisabled();
       });
+
+      describe("when domain matches", () => {
+        beforeAll(async () => {
+          await confirmDomainInput.fill("dashboard-test.com");
+          await expect(deleteConfirmBtn).toBeEnabled();
+          await page.getByRole("button", { name: "Delete Site" }).click();
+          await expect(page.getByRole("dialog")).toBeHidden();
+        });
+
+        it("should delete site", async () => {
+          const updated = await prisma.site.count({
+            where: { accountId: user.accountId },
+          });
+          expect(updated).toBe(count - 1);
+        });
+      });
+    });
+
+    afterAll(async () => {
+      await prisma.site.deleteMany();
     });
   });
 });
+
+function fixBaseline(html: HTMLNode[]) {
+  modifyElements(
+    html,
+    (node) =>
+      node.tag === "a" && /\/site\/[^/]+/.test(node.attributes.href ?? ""),
+    (node) => ({
+      ...node,
+      attributes: { ...node.attributes, href: "/site/id" },
+    }),
+  );
+  modifyElements(
+    html,
+    (node) => node.tag === "input",
+    (node) => ({
+      ...node,
+      attributes: { ...node.attributes, id: "_r_0_" },
+    }),
+  );
+  return html;
+}

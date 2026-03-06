@@ -1,4 +1,3 @@
-import { TrashIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { Button } from "~/components/ui/Button";
 import {
@@ -41,8 +40,9 @@ export default function DeleteSiteDialog({
           variant="ghost"
           disabled={isSubmitting}
           aria-label="Delete site"
+          size="sm"
         >
-          <TrashIcon className="size-4" />
+          Delete Site
         </Button>
       </DialogTrigger>
 
