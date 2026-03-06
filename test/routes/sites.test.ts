@@ -143,9 +143,11 @@ describe("sites route", () => {
 
   describe("when successful save", () => {
     let site: Site;
+    let page: Page;
 
     beforeAll(async () => {
       await prisma.site.deleteMany();
+      page = await goto("/sites");
       await page
         .getByRole("textbox", { name: "Website URL or domain" })
         .fill("example.com");
