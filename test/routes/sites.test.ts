@@ -325,7 +325,7 @@ function fixBaseline(html: HTMLNode[]) {
     (node) => node.tag === "input",
     (node) => ({
       ...node,
-      attributes: { ...node.attributes, id: "_r_0_" },
+      attributes: { ...node.attributes, id: "_r_0_", style: "" },
     }),
   );
   return html;
