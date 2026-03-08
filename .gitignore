@@ -19,3 +19,4 @@ __screenshots__/*.new.png
 __screenshots__/*.new.html
 __screenshots__/*.html.diff
 test-results/
+.vercel

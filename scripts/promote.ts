@@ -11,7 +11,7 @@ import { Vercel } from "@vercel/sdk";
 import type { GetDeploymentResponseBody } from "@vercel/sdk/models/getdeploymentop.js";
 import type { GetDeploymentsResponseBody } from "@vercel/sdk/models/getdeploymentsop.js";
 import dotenv from "dotenv";
-import env from "env-var";
+import envVars from "env-var";
 import { invariant } from "es-toolkit";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -21,13 +21,16 @@ import { timeago } from "~/lib/relativeTime";
 
 dotenv.config({ quiet: true });
 
-const vercelTeamId = env.get("VERCEL_TEAM_ID").required(true).asString();
-const vercelProjectId = env.get("VERCEL_PROJECT_ID").required(true).asString();
+const vercelTeamId = envVars.get("VERCEL_TEAM_ID").required(true).asString();
+const vercelProjectId = envVars
+  .get("VERCEL_PROJECT_ID")
+  .required(true)
+  .asString();
 const vercel = new Vercel({
-  bearerToken: env.get("VERCEL_TOKEN").required(true).asString(),
+  bearerToken: envVars.get("VERCEL_TOKEN").required(true).asString(),
 });
 const octokit = new Octokit({
-  auth: env.get("GITHUB_TOKEN").required(true).asString(),
+  auth: envVars.get("GITHUB_TOKEN").required(true).asString(),
 });
 
 const colorCodes: { [key: string]: [string, string] } = {
