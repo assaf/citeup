@@ -10,14 +10,9 @@ import "~/lib/logger.server";
 import msw from "~/test/mocks/msw";
 import captureException from "./lib/captureException.server";
 
-// Only enable Sentry in production at runtime (not during build)
-let sentryInitialized = false;
-function initSentry() {
-  if (sentryInitialized || !import.meta.env.PROD) return;
-  sentryInitialized = true;
-
+if (import.meta.env.PROD)
   Sentry.init({
-    dsn: "https://6cd9dc3668f2e758eb884e7335f0adff@o510761.ingest.us.sentry.io/4510954701783040",
+    dsn: import.meta.env.VITE_SENTRY_DSN,
     enableLogs: true,
     environment: "production",
     integrations: [
@@ -30,7 +25,6 @@ function initSentry() {
     ],
     tracesSampleRate: 1.0,
   });
-}
 
 // Initialize MSW in test mode (on the server side)
 if (process.env.NODE_ENV === "test") msw();
@@ -50,7 +44,6 @@ export default Sentry.wrapSentryHandleRequest(
     // biome-ignore lint/suspicious/noExplicitAny: Sentry wrapper requires flexible type
     loadContext?: any,
   ) => {
-    initSentry();
     const start = Date.now();
     logger("%s %s", request.method, request.url);
 
