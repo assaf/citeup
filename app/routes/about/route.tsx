@@ -59,7 +59,7 @@ function schemaData() {
         jobTitle: "CEO",
       },
       email: "hello@citeup.com",
-      sameAs: ["https://github.com/assaf/citeup"],
+      sameAs: ["https://github.com/citeup-app/citeup"],
       knowsAbout: [
         "LLM Citation Visibility",
         "AI Search Optimization",

@@ -111,7 +111,7 @@ async function githubWorkflows() {
   );
 
   const { data } = await octokit.rest.actions.listWorkflowRuns({
-    owner: "assaf",
+    owner: "citeup-app",
     repo: "citeup",
     workflow_id: "deploy.yml",
   });

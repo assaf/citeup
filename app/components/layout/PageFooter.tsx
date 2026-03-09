@@ -71,7 +71,7 @@ function SocialLinks() {
         className="inline-flex items-center gap-1 font-medium transition-colors hover:text-[#F59E0B]"
         rel="noopener noreferrer"
         target="_blank"
-        to="https://github.com/assaf/citeup"
+        to="https://github.com/citeup-app/citeup"
       >
         <svg
           className="size-4"
