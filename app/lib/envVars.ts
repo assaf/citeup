@@ -1,11 +1,7 @@
 import dotenv from "dotenv";
 import env from "env-var";
 
-dotenv.config({
-  // path: process.env.NODE_ENV === "test" ? ".env.test" : ".env",
-  // override: true,
-  quiet: true,
-});
+dotenv.config({ quiet: true });
 
 const envVars = {
   ANTHROPIC_API_KEY: env.get("ANTHROPIC_API_KEY").required().asString(),
