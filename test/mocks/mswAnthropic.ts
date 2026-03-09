@@ -41,6 +41,18 @@ export default http.post(
           output_tokens: 500,
         },
       });
-    } else return HttpResponse.error();
+    } else {
+      // Citation query — return a minimal valid response with no sources.
+      logger("Mocking LLM response for citation query");
+      return HttpResponse.json({
+        id: `msg_test_${crypto.randomUUID()}`,
+        type: "message",
+        role: "assistant",
+        content: [{ type: "text", text: "No results found." }],
+        model: "claude-haiku-4-5-20251001",
+        stop_reason: "end_turn",
+        usage: { input_tokens: 10, output_tokens: 5 },
+      });
+    }
   },
 );

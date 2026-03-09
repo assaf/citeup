@@ -2,6 +2,7 @@ import debug from "debug";
 import { HttpResponse, http, passthrough } from "msw";
 import { setupServer } from "msw/node";
 import anthropic from "./mswAnthropic";
+import gemini from "./mswGemini";
 import openai from "./mswOpenAI";
 import perplexity from "./mswPerplexity";
 
@@ -14,6 +15,7 @@ const handlers = [
   ),
 
   anthropic,
+  gemini,
   openai,
   perplexity,
 
