@@ -10,12 +10,11 @@ const logger = debug("server");
 
 // Vercel Cron fires a GET with Authorization: Bearer <CRON_SECRET>.
 export async function loader({ request }: Route.LoaderArgs) {
-  const cronSecret = envVars.CRON_SECRET;
-  if (cronSecret) {
-    const auth = request.headers.get("Authorization");
-    if (auth !== `Bearer ${cronSecret}`)
-      return new Response("Unauthorized", { status: 401 });
-  }
+  if (
+    process.env.CRON_SECRET &&
+    request.headers.get("authorization") !== `Bearer ${process.env.CRON_SECRET}`
+  )
+    return new Response("Unauthorized", { status: 401 });
 
   const since = new Date(
     Temporal.Now.instant().subtract({ hours: 24 }).epochMilliseconds,
