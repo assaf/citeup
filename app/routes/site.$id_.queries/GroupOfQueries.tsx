@@ -69,9 +69,6 @@ export default function GroupOfQueries({
           <Input
             aria-label="Group name"
             className="font-bold"
-            variant="ghost"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
             onBlur={() => {
               if (!groupName.trim() || groupName === group) return;
               renameFetcher.submit(
@@ -83,6 +80,9 @@ export default function GroupOfQueries({
                 { method: "post" },
               );
             }}
+            onChange={(e) => setGroupName(e.target.value)}
+            value={groupName}
+            variant="ghost"
           />
           <TrashButton
             onClick={() => {

@@ -1,9 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import {
-  extractDomain,
-  fetchPageContent,
-  verifyDomain,
-} from "~/lib/sites.server";
+import { extractDomain, fetchPageContent } from "~/lib/sites.server";
 
 vi.mock("node:dns", () => ({
   default: {
@@ -35,28 +31,6 @@ describe("extractDomain", () => {
   });
 });
 
-describe("verifyDomain", () => {
-  it("returns true when A record resolves", async () => {
-    const { default: dns } = await import("node:dns");
-    vi.mocked(dns.promises.resolve).mockResolvedValue(["1.2.3.4"] as never);
-    await expect(verifyDomain("example.com")).resolves.not.toThrow();
-  });
-
-  it("returns true when only CNAME record resolves", async () => {
-    const { default: dns } = await import("node:dns");
-    vi.mocked(dns.promises.resolve)
-      .mockRejectedValueOnce(new Error("ENODATA"))
-      .mockResolvedValueOnce(["alias.example.com"] as never);
-    await expect(verifyDomain("example.com")).resolves.not.toThrow();
-  });
-
-  it("returns false when DNS lookup fails", async () => {
-    const { default: dns } = await import("node:dns");
-    vi.mocked(dns.promises.resolve).mockRejectedValue(new Error("ENOTFOUND"));
-    await expect(verifyDomain("nonexistent.invalid")).rejects.toThrow();
-  });
-});
-
 describe("fetchPageContent", () => {
   it("returns extracted text from HTML", async () => {
     vi.stubGlobal(
@@ -75,11 +49,15 @@ describe("fetchPageContent", () => {
       "fetch",
       vi.fn().mockResolvedValue({ ok: false, text: async () => "" }),
     );
-    expect(await fetchPageContent("example.com")).toBeNull();
+    expect(fetchPageContent("example.com")).rejects.toThrow(
+      "I couldn't fetch the main page of example.com",
+    );
   });
 
   it("returns null on network error", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network")));
-    expect(await fetchPageContent("example.com")).toBeNull();
+    expect(fetchPageContent("example.com")).rejects.toThrow(
+      "I couldn't fetch the main page of example.com",
+    );
   });
 });

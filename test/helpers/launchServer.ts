@@ -23,7 +23,7 @@ export async function launchServer(port: number): Promise<void> {
   worker = fork(resolve("test/helpers/serverWorker.ts"), {
     execArgv: ["--import", "tsx/esm"],
     stdio: debug.enabled("server")
-      ? [null, process.stdout, process.stderr]
+      ? ["ignore", process.stdout, process.stderr, "ipc"]
       : undefined,
     env: {
       ...process.env,

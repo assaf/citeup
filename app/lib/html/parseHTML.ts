@@ -1,5 +1,39 @@
 import type { HTMLNode } from "./HTMLNode";
 
+const emptyAttributes = [
+  // Form elements
+  "disabled",
+  "checked",
+  "selected",
+  "required",
+  "readonly",
+  "multiple",
+  "autofocus", // on <input>, <textarea>, <select>
+  "novalidate", // on <form>
+  "formnovalidate", // on <form>
+
+  // Media / resources
+  "autoplay", // on <audio>, <video>
+  "controls", // on <audio>, <video>
+  "loop", // on <audio>, <video>
+  "muted", // on <audio>, <video>
+  "default", // on <track>
+  "async", // on <script>
+  "defer",
+
+  // Content / behavior
+  "hidden",
+  "open", // on <details>, <dialog>
+  "ismap", // on <img>
+  "reversed", // on <ol>
+  "allowfullscreen", // on <iframe>
+  "playsinline", // on <video>
+
+  // Less common attributes
+  "inert",
+  "itemscope",
+];
+
 /**
  * Parses an HTML string into a tree of elements and text nodes.  The HTML is
  * assumed to be valid, well-formed HTML (i.e., as returned by innerHTML).
@@ -22,13 +56,9 @@ export default function parseHTMLTree(html: string): HTMLNode[] {
       match = attrRegex.exec(attrStr);
       if (match === null) break;
       const [, name, doubleVal, singleVal] = match;
-      if (typeof doubleVal !== "undefined") {
-        attrs[name] = doubleVal;
-      } else if (typeof singleVal !== "undefined") {
-        attrs[name] = singleVal;
-      } else {
-        attrs[name] = "";
-      }
+      const value = doubleVal ?? singleVal;
+      if (value !== undefined && value !== "") attrs[name] = value;
+      else if (emptyAttributes.includes(name)) attrs[name] = "";
     }
     return attrs;
   }

@@ -32,6 +32,7 @@ export async function action({ request }: Route.ActionArgs) {
 
   switch (request.method) {
     case "POST": {
+      // Add a new site to the account
       const url = formData.get("url")?.toString() ?? "";
       try {
         const site = await addSiteToAccount(user.account, url);
@@ -49,6 +50,7 @@ export async function action({ request }: Route.ActionArgs) {
     }
 
     case "DELETE": {
+      // Delete the site
       const siteId = formData.get("siteId")?.toString();
       invariant(siteId, "Site ID is required");
       await deleteSite({ accountId: user.accountId, siteId });

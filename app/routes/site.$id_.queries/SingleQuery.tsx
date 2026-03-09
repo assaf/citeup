@@ -24,10 +24,8 @@ export default function SingleQuery({
       <div className="flex items-center gap-1">
         <Input
           aria-label="Query text"
-          variant="ghost"
-          placeholder="Enter query…"
-          value={value}
           onChange={(e) => setValue(e.target.value)}
+          placeholder="Enter query…"
           onBlur={() => {
             if (value === query) return;
             updateFetcher.submit(
@@ -69,6 +67,8 @@ export default function SingleQuery({
               }
             }
           }}
+          value={value}
+          variant="ghost"
         />
         <TrashButton
           onClick={() => {

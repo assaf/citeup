@@ -38,15 +38,15 @@ export default function AddQueriesGroup() {
       {isAddingGroup ? (
         <div className="flex items-center gap-2">
           <Input
-            ref={newGroupInputRef}
-            placeholder="Group name, e.g. 1. discovery"
-            value={newGroupName}
+            onBlur={submitNewGroup}
             onChange={(e) => setNewGroupName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") submitNewGroup();
               if (e.key === "Escape") cancelAddingGroup();
             }}
-            onBlur={submitNewGroup}
+            placeholder="Group name, e.g. 1. discovery"
+            ref={newGroupInputRef}
+            value={newGroupName}
           />
           <Button
             onClick={cancelAddingGroup}

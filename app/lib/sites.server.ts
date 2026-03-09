@@ -1,7 +1,10 @@
 import { Temporal } from "@js-temporal/polyfill";
+import { ms } from "convert";
+import { invariant } from "es-toolkit";
 import dns from "node:dns";
 import parseHTMLTree, { getBodyContent } from "~/lib/html/parseHTML";
 import type { Account, Site } from "~/prisma";
+import captureException from "./captureException.server";
 import calculateCitationMetrics from "./llm-visibility/calculateCitationMetrics";
 import { getBotMetrics } from "./llm-visibility/getBotMetrics.server";
 import prisma from "./prisma.server";
@@ -28,9 +31,13 @@ export async function addSiteToAccount(
   });
   if (existing) return existing;
 
-  await verifyDomain(domain);
+  const content = await fetchPageContent(domain);
   const site = await prisma.site.create({
-    data: { domain, account: { connect: { id: account.id } } },
+    data: {
+      account: { connect: { id: account.id } },
+      content,
+      domain,
+    },
   });
   return site;
 }
@@ -81,21 +88,21 @@ export async function verifyDomain(domain: string): Promise<void> {
  *
  * @param domain - The domain to fetch the page content for.
  * @returns The page content, or null if the page is not found or the request times out.
+ * @throws {Error} If the page is not found or the request times out.
  */
 export async function fetchPageContent(domain: string): Promise<string | null> {
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10_000);
     const response = await fetch(`https://${domain}/`, {
-      signal: controller.signal,
+      signal: AbortSignal.timeout(ms("5s")),
+      redirect: "follow",
     });
-    clearTimeout(timeout);
-    if (!response.ok) return null;
+    invariant(response.ok, response.statusText);
     const html = await response.text();
     const tree = parseHTMLTree(html);
     return getBodyContent(tree).slice(0, 5_000);
-  } catch {
-    return null;
+  } catch (error) {
+    captureException(error, { extra: { domain } });
+    throw new Error(`I couldn't fetch the main page of ${domain}`);
   }
 }
 

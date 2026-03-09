@@ -89,24 +89,6 @@ describe("sites route", () => {
     });
   });
 
-  describe("when DNS failure", () => {
-    beforeAll(async () => {
-      page = await goto("/sites");
-      await page
-        .getByRole("textbox", { name: "Website URL or domain" })
-        .fill("this-domain-does-not-exist.invalid");
-      await page.getByRole("button", { name: "Add Site" }).click();
-    });
-
-    it("should show DNS error for domain with no records", async () => {
-      await expect(
-        page.getByText(
-          "No DNS records found for this-domain-does-not-exist.invalid. Is the domain live?",
-        ),
-      ).toBeVisible();
-    });
-  });
-
   describe("when duplicate domain", () => {
     let page: Page;
 
@@ -316,13 +298,23 @@ function fixBaseline(html: HTMLNode[]) {
     }),
   );
 
-  // Ignore the varying style attribute on input elements
+  // Ignore the varying id attribute on input elements
   modifyElements(
     html,
     (node) => node.tag === "input",
     (node) => ({
       ...node,
-      attributes: { ...node.attributes, id: "_r_0_", style: null },
+      attributes: { ...node.attributes, id: null },
+    }),
+  );
+
+  // Ignore the varying id attribute on button elements
+  modifyElements(
+    html,
+    (node) => node.tag === "button",
+    (node) => ({
+      ...node,
+      attributes: { ...node.attributes, id: null },
     }),
   );
 

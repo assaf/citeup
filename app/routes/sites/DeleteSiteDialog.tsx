@@ -62,20 +62,22 @@ export default function DeleteSiteDialog({
         </p>
 
         <Input
-          ref={inputRef}
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={domain}
-          disabled={isSubmitting}
           className="mb-6"
+          disabled={isSubmitting}
+          onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") confirmIfValid();
           }}
+          placeholder={domain}
+          ref={inputRef}
+          type="text"
+          value={input}
         />
 
         <DialogFooter>
-          <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+          <DialogClose render={<Button variant="outline" />}>
+            Cancel
+          </DialogClose>
           <Button
             onClick={confirmIfValid}
             disabled={!isValid || isSubmitting}

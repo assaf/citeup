@@ -2,24 +2,21 @@ import { Output, generateText } from "ai";
 import { z } from "zod";
 import prisma from "~/lib/prisma.server";
 import type { Site } from "~/prisma";
-import { fetchPageContent } from "../sites.server";
 import { haiku } from "./anthropic";
 import queryGroups from "./queryGroups";
 
 /**
- * Generate site queries for a given site. If the site content is not available,
- * uses the content from the database. If the generated queries are not valid,
- * throws an error.
+ * Generate site queries for a given site. Use the content from the database if
+ * available.
  *
  * @param site - The site to generate queries for.
  * @returns The generated queries.
- * @throws {Error} If the site content is not available and the database content is not available.
- * @throws {Error} If the generated queries are not valid.
  */
 export default async function generateSiteQueries(
   site: Site,
 ): Promise<{ group: string; query: string }[]> {
-  const content = await fetchPageContent(site.domain);
+  const content =
+    site.content ?? "I couldn't fetch the main page of the website.";
   const { output } = await generateText({
     model: haiku,
     output: Output.array({

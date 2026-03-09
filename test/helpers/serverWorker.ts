@@ -5,9 +5,9 @@
  * cleanly when the test is done.
  */
 
+import { invariant } from "es-toolkit";
 import { rm } from "node:fs/promises";
 import { resolve } from "node:path";
-import { invariant } from "es-toolkit";
 import * as vite from "vite";
 
 // Import and start the server
@@ -39,7 +39,7 @@ async function startServer() {
         sourcemap: true,
       },
       clearScreen: false,
-      logLevel: "warn", // Reduced log level to avoid noise
+      logLevel: "info",
       root: process.cwd(),
       optimizeDeps: {
         // List all hook-using packages here so Vite pre-bundles them in the
@@ -58,6 +58,7 @@ async function startServer() {
           "recharts",
           "usehooks-ts",
           "lucide-react",
+          "@base-ui/react",
         ],
       },
       server: {
