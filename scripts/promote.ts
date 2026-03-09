@@ -21,11 +21,8 @@ import { timeago } from "~/lib/relativeTime";
 
 dotenv.config({ quiet: true });
 
-const vercelTeamId = envVars.get("VERCEL_TEAM_ID").required(true).asString();
-const vercelProjectId = envVars
-  .get("VERCEL_PROJECT_ID")
-  .required(true)
-  .asString();
+const teamId = envVars.get("VERCEL_ORG_ID").required(true).asString();
+const projectId = envVars.get("VERCEL_PROJECT_ID").required(true).asString();
 const vercel = new Vercel({
   bearerToken: envVars.get("VERCEL_TOKEN").required(true).asString(),
 });
@@ -155,8 +152,8 @@ async function getRecentDeployment(): Promise<
   console.info(colorize("blue", "Vercel deployments:"));
 
   const { deployments } = await vercel.deployments.getDeployments({
-    projectId: vercelProjectId,
-    teamId: vercelTeamId,
+    projectId,
+    teamId,
     limit: 5,
   });
 
@@ -205,11 +202,11 @@ async function promoteToProduction(
 
   const { id } = await vercel.deployments.createDeployment({
     slug: deployment.name,
-    teamId: vercelTeamId,
+    teamId,
     requestBody: {
       deploymentId: deployment.uid,
       name: deployment.url,
-      project: vercelProjectId,
+      project: projectId,
       target: "production",
     },
   });
