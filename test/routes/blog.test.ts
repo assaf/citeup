@@ -50,12 +50,10 @@ describe("Blog Listing", () => {
     expect(title).toContain("CiteUp");
   });
 
-  it("should match inner HTML snapshot", async () => {
-    await expect(blogSection).toMatchInnerHTML();
-  });
-
-  it("should match visual regression test", async () => {
-    await expect(blogSection).toMatchScreenshot();
+  it("should match visually", async () => {
+    await expect(blogSection).toMatchVisual({
+      name: "blog.list",
+    });
   });
 
   describe("navigates to first blog post", () => {

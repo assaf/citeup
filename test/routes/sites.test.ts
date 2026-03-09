@@ -49,16 +49,10 @@ describe("sites route", () => {
       ).toBeVisible();
     });
 
-    it("should match HTML baseline", async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
+    it("should match visually", async () => {
+      await expect(page.locator("main")).toMatchVisual({
         name: "sites.empty",
         modify: fixBaseline,
-      });
-    });
-
-    it("should match screenshot baseline", async () => {
-      await expect(page.locator("main")).toMatchScreenshot({
-        name: "sites.empty",
       });
     });
   });
@@ -174,16 +168,10 @@ describe("sites route", () => {
       );
     });
 
-    it("should match HTML baseline", async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
+    it("should match visually", async () => {
+      await expect(page.locator("main")).toMatchVisual({
         name: "sites.suggestions",
         modify: fixBaseline,
-      });
-    });
-
-    it("should match screenshot baseline", async () => {
-      await expect(page.locator("main")).toMatchScreenshot({
-        name: "sites.suggestions",
       });
     });
 
@@ -210,16 +198,10 @@ describe("sites route", () => {
         );
       });
 
-      it("should match HTML baseline", async () => {
-        await expect(page.locator("main")).toMatchInnerHTML({
+      it("should match visually", async () => {
+        await expect(page.locator("main")).toMatchVisual({
           name: "sites.citations",
           modify: fixBaseline,
-        });
-      });
-
-      it("should match screenshot baseline", async () => {
-        await expect(page.locator("main")).toMatchScreenshot({
-          name: "sites.citations",
         });
       });
     });
@@ -253,16 +235,10 @@ describe("sites route", () => {
       ).toBeVisible();
     });
 
-    it("should match HTML baseline", async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
+    it("should match visually", async () => {
+      await expect(page.locator("main")).toMatchVisual({
         name: "sites.list",
         modify: fixBaseline,
-      });
-    });
-
-    it("should match screenshot baseline", async () => {
-      await expect(page.locator("main")).toMatchScreenshot({
-        name: "sites.list",
       });
     });
 
@@ -296,6 +272,13 @@ describe("sites route", () => {
         // Type wrong domain
         await confirmDomainInput.fill("wrong.com");
         await expect(deleteConfirmBtn).toBeDisabled();
+      });
+
+      it("should match visually", async () => {
+        await expect(page.locator("main")).toMatchVisual({
+          name: "sites.delete",
+          modify: fixBaseline,
+        });
       });
 
       describe("when domain matches", () => {

@@ -51,15 +51,9 @@ describe("profile route", () => {
       ).toBeVisible();
     });
 
-    it("HTML matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
-        name: "profile-email-update",
-      });
-    });
-
-    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchScreenshot({
-        name: "profile-email-update",
+    it("should match visually", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchVisual({
+        name: "profile.email.update",
       });
     });
 
@@ -136,15 +130,9 @@ describe("profile route", () => {
       ).toBeVisible();
     });
 
-    it("HTML matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
-        name: "profile-password-update",
-      });
-    });
-
-    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchScreenshot({
-        name: "profile-password-update",
+    it("should match visually", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchVisual({
+        name: "profile.password.update",
       });
     });
 

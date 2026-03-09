@@ -2,7 +2,6 @@
 
 import { expect } from "@playwright/test";
 import { invariant } from "es-toolkit";
-import { readdirSync, unlinkSync } from "node:fs";
 import {
   access,
   constants,
@@ -97,12 +96,4 @@ function getTestName(): string {
   const match = callerLine.match(/\/(.+?):\d+/);
   const testFile = match ? path.basename(match[1]) : "unknown";
   return testFile.replace(/\.test\.(ts|tsx)$/, "");
-}
-
-export async function removeNewHTML() {
-  await mkdir(dirname, { recursive: true });
-  const list = readdirSync(dirname);
-  for (const file of list)
-    if (file.endsWith(".new.html") || file.endsWith(".html.diff"))
-      unlinkSync(path.resolve(dirname, file));
 }

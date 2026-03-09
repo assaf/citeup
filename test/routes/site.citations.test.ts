@@ -182,13 +182,14 @@ describe("site page", () => {
     }
   });
 
-  it("HTML matches baseline", { timeout: 30_000 }, async () => {
+  it("should match visually", { timeout: 30_000 }, async () => {
     await signIn(user.id);
     const page = await goto(`/site/${siteId}/citations`);
     // Strip chart SVGs: Recharts computes floating-point coordinates from
     // ResizeObserver measurements that drift slightly between runs. The
     // screenshot test covers visual regressions in charts.
-    await expect(page).toMatchInnerHTML({
+    await expect(page).toMatchVisual({
+      name: "site.citations",
       modify: (html) =>
         removeElements(html, (node) => {
           if (node.attributes["data-slot"] === "chart") return true;
@@ -196,11 +197,5 @@ describe("site page", () => {
           return href.startsWith("/site/");
         }),
     });
-  });
-
-  it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-    const page = await goto(`/site/${siteId}/citations`);
-    await page.waitForTimeout(500);
-    await expect(page).toMatchScreenshot();
   });
 });

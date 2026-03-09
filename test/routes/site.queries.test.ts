@@ -65,20 +65,14 @@ describe("site queries page", () => {
       ).toBeVisible();
     });
 
-    it("HTML matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
-        name: "site-queries-empty",
+    it("should match visually", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchVisual({
+        name: "site.queries.empty",
         modify: (html) =>
           removeElements(html, (node) => {
             const href = node.attributes.href ?? "";
             return href.startsWith("/site/") && !href.endsWith("/queries");
           }),
-      });
-    });
-
-    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchScreenshot({
-        name: "site-queries-empty",
       });
     });
   });
@@ -130,20 +124,14 @@ describe("site queries page", () => {
       await expect(addQueryButtons).toHaveCount(2);
     });
 
-    it("HTML matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
-        name: "site-queries",
+    it("should match visually", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchVisual({
+        name: "site.queries",
         modify: (html) =>
           removeElements(html, (node) => {
             const href = node.attributes.href ?? "";
             return href.startsWith("/site/") && !href.endsWith("/queries");
           }),
-      });
-    });
-
-    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchScreenshot({
-        name: "site-queries",
       });
     });
   });

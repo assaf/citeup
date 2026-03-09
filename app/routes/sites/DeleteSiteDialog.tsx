@@ -35,15 +35,17 @@ export default function DeleteSiteDialog({
         setInput("");
       }}
     >
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          disabled={isSubmitting}
-          aria-label="Delete site"
-          size="sm"
-        >
-          Delete Site
-        </Button>
+      <DialogTrigger
+        render={
+          <Button
+            variant="ghost"
+            disabled={isSubmitting}
+            aria-label="Delete site"
+            size="sm"
+          />
+        }
+      >
+        Delete Site
       </DialogTrigger>
 
       <DialogContent>
@@ -73,9 +75,7 @@ export default function DeleteSiteDialog({
         />
 
         <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
+          <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
           <Button
             onClick={confirmIfValid}
             disabled={!isValid || isSubmitting}

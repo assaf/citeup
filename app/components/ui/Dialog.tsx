@@ -1,41 +1,39 @@
-import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { Dialog } from "@base-ui/react/dialog";
 import { X } from "lucide-react";
 import type * as React from "react";
 import { twMerge } from "tailwind-merge";
 
-function Dialog({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
+function DialogRoot({ ...props }: React.ComponentProps<typeof Dialog.Root>) {
+  return <Dialog.Root data-slot="dialog" {...props} />;
 }
 
 function DialogTrigger({
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
+}: React.ComponentProps<typeof Dialog.Trigger>) {
+  return <Dialog.Trigger data-slot="dialog-trigger" {...props} />;
 }
 
 function DialogPortal({
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Portal>) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
+}: React.ComponentProps<typeof Dialog.Portal>) {
+  return <Dialog.Portal data-slot="dialog-portal" {...props} />;
 }
 
-function DialogClose({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
+function DialogClose({ ...props }: React.ComponentProps<typeof Dialog.Close>) {
+  return <Dialog.Close data-slot="dialog-close" {...props} />;
 }
 
 function DialogOverlay({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+}: Omit<React.ComponentProps<typeof Dialog.Backdrop>, "className"> & {
+  className?: string;
+}) {
   return (
-    <DialogPrimitive.Overlay
+    <Dialog.Backdrop
       data-slot="dialog-overlay"
       className={twMerge(
-        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-overlay data-[state=closed]:animate-out data-[state=open]:animate-in",
+        "fixed inset-0 z-50 bg-overlay transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0",
         className,
       )}
       {...props}
@@ -47,24 +45,26 @@ function DialogContent({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+}: Omit<React.ComponentProps<typeof Dialog.Popup>, "className"> & {
+  className?: string;
+}) {
   return (
     <DialogPortal>
       <DialogOverlay />
-      <DialogPrimitive.Content
+      <Dialog.Popup
         data-slot="dialog-content"
         className={twMerge(
-          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-base border-2 border-border bg-background p-6 shadow-shadow duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in sm:max-w-lg",
+          "fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-base border-2 border-border bg-background p-6 shadow-shadow transition-all duration-200 data-ending-style:scale-95 data-starting-style:scale-95 data-ending-style:opacity-0 data-starting-style:opacity-0 sm:max-w-lg",
           className,
         )}
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute top-4 right-4 rounded-base opacity-100 ring-offset-white focus:outline-hidden focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0">
+        <Dialog.Close className="absolute top-4 right-4 rounded-base opacity-100 ring-offset-white focus:outline-hidden focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0">
           <X />
           <span className="sr-only">Close</span>
-        </DialogPrimitive.Close>
-      </DialogPrimitive.Content>
+        </Dialog.Close>
+      </Dialog.Popup>
     </DialogPortal>
   );
 }
@@ -98,9 +98,11 @@ function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
 function DialogTitle({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Title>) {
+}: Omit<React.ComponentProps<typeof Dialog.Title>, "className"> & {
+  className?: string;
+}) {
   return (
-    <DialogPrimitive.Title
+    <Dialog.Title
       data-slot="dialog-title"
       className={twMerge(
         "font-heading text-lg leading-none tracking-tight",
@@ -114,9 +116,11 @@ function DialogTitle({
 function DialogDescription({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Description>) {
+}: Omit<React.ComponentProps<typeof Dialog.Description>, "className"> & {
+  className?: string;
+}) {
   return (
-    <DialogPrimitive.Description
+    <Dialog.Description
       data-slot="dialog-description"
       className={twMerge("font-base text-foreground text-sm", className)}
       {...props}
@@ -125,7 +129,7 @@ function DialogDescription({
 }
 
 export {
-  Dialog,
+  DialogRoot as Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,

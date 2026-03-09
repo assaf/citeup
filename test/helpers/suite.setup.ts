@@ -8,6 +8,7 @@ import prisma from "~/lib/prisma.server";
 import msw from "~/test/mocks/msw";
 import "./toMatchInnerHTML";
 import "./toMatchScreenshot";
+import "./toMatchVisual";
 import "./trimConsole";
 
 Sentry.init({ enabled: false });

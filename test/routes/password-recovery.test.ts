@@ -78,14 +78,11 @@ describe("password recovery route", () => {
     await expect(page.getByText("Link expired")).toBeVisible();
   });
 
-  it("HTML matches baseline", async () => {
+  it("should match visually", async () => {
     const page = await goto("/password-recovery");
-    await expect(page.locator("main")).toMatchInnerHTML();
-  });
-
-  it("screenshot matches baseline", async () => {
-    const page = await goto("/password-recovery");
-    await expect(page.locator("main")).toMatchScreenshot();
+    await expect(page.locator("main")).toMatchVisual({
+      name: "password-recovery",
+    });
   });
 
   it("clicks the sign-in button and redirects to sign-in page", async () => {

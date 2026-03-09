@@ -109,19 +109,8 @@ describe("site bots page", () => {
       ).toBeVisible();
     });
 
-    it("HTML matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
-        name: "site.bots.empty",
-        modify: (html) =>
-          removeElements(html, (node) => {
-            const href = node.attributes.href ?? "";
-            return href.startsWith("/site/") && !href.endsWith("/bots");
-          }),
-      });
-    });
-
-    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchScreenshot({
+    it("should match visually", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchVisual({
         name: "site.bots.empty",
       });
     });
@@ -187,22 +176,15 @@ describe("site bots page", () => {
       ).toBeVisible();
     });
 
-    it("HTML matches baseline", { timeout: 30_000 }, async () => {
-      await expect(page.locator("main")).toMatchInnerHTML({
-        name: "site.bots",
+    it("should match visually", { timeout: 30_000 }, async () => {
+      await expect(page.locator("main")).toMatchVisual({
+        name: "site.bots.with-visits",
         modify: (html) =>
           removeElements(html, (node) => {
             if (node.attributes["data-slot"] === "chart") return true;
             const href = node.attributes.href ?? "";
             return href.startsWith("/site/") && !href.endsWith("/bots");
           }),
-      });
-    });
-
-    it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-      await page.waitForTimeout(500);
-      await expect(page.locator("main")).toMatchScreenshot({
-        name: "site.bots",
       });
     });
   });

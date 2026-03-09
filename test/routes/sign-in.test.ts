@@ -57,14 +57,11 @@ describe("sign-in route", () => {
     expect(new URL(page.url()).pathname).toBe("/sites");
   });
 
-  it("HTML matches baseline", async () => {
+  it("should match visually", async () => {
     const page = await goto("/sign-in");
-    await expect(page.locator("main")).toMatchInnerHTML();
-  });
-
-  it("screenshot matches baseline", async () => {
-    const page = await goto("/sign-in");
-    await expect(page.locator("main")).toMatchScreenshot();
+    await expect(page.locator("main")).toMatchVisual({
+      name: "sign-in",
+    });
   });
 
   it("clicks the sign-up button and redirects to sign-up page", async () => {

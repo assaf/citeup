@@ -61,13 +61,11 @@ describe("Blog Post Rendering", () => {
     expect(articleClasses).toContain("mx-auto");
   });
 
-  it("should match inner HTML snapshot", async () => {
-    await expect(page.locator("article")).toMatchInnerHTML();
-  });
-
-  it("should match visual regression test", async () => {
+  it("should match visually", async () => {
     await page.setViewportSize({ width: 2560, height: 1440 });
-    await expect(page.locator("article")).toMatchScreenshot();
+    await expect(page.locator("article")).toMatchVisual({
+      name: "blog.slug",
+    });
   });
 
   describe("404", () => {

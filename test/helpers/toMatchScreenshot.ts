@@ -3,7 +3,6 @@
 import { expect } from "@playwright/test";
 import { invariant } from "es-toolkit";
 import looksSame from "looks-same";
-import { readdirSync, unlinkSync } from "node:fs";
 import {
   access,
   constants,
@@ -110,12 +109,4 @@ function getTestName(): string {
   const match = callerLine.match(/\/(.+?):\d+/);
   const testFile = match ? path.basename(match[1]) : "unknown";
   return testFile.replace(/\.test\.(ts|tsx)$/, "");
-}
-
-export async function removeDiffImages() {
-  await mkdir(dirname, { recursive: true });
-  const list = readdirSync(dirname);
-  for (const file of list)
-    if (file.endsWith(".diff.png") || file.endsWith(".new.png"))
-      unlinkSync(path.resolve(dirname, file));
 }

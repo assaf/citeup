@@ -60,12 +60,10 @@ describe("FAQ page", () => {
     expect(firstQuestion.acceptedAnswer.text).toBeTruthy();
   });
 
-  it("should match inner HTML snapshot", async () => {
-    await expect(page.locator("main")).toMatchInnerHTML();
-  });
-
-  it("should match visual regression test", async () => {
-    await expect(page.locator("main")).toMatchScreenshot();
+  it("should match visually", async () => {
+    await expect(page.locator("main")).toMatchVisual({
+      name: "faq",
+    });
   });
 
   it("should have proper meta title", async () => {

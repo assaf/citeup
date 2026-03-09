@@ -59,14 +59,11 @@ describe("home page", () => {
     await expect(page.locator("footer")).toBeVisible();
   });
 
-  it("HTML matches baseline", { timeout: 30_000 }, async () => {
+  it("should match visually", { timeout: 30_000 }, async () => {
     const page = await goto("/");
-    await expect(page.locator("main")).toMatchInnerHTML();
-  });
-
-  it("screenshot matches baseline", { timeout: 30_000 }, async () => {
-    const page = await goto("/");
-    await expect(page).toMatchScreenshot();
+    await expect(page.locator("main")).toMatchVisual({
+      name: "home",
+    });
   });
 
   it("sign-up CTA navigates to sign-up page", async () => {

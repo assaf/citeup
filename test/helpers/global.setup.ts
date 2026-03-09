@@ -8,8 +8,7 @@ import { promisify } from "node:util";
 import prisma from "~/lib/prisma.server";
 import { port } from "./launchBrowser";
 import { closeServer, launchServer } from "./launchServer";
-import { removeNewHTML } from "./toMatchInnerHTML";
-import { removeDiffImages } from "./toMatchScreenshot";
+import { removeTemporaryFiles } from "./toMatchVisual";
 
 export default async function setup() {
   // Kill any server processes running on the port
@@ -23,8 +22,8 @@ export default async function setup() {
   await rm("node_modules/.vite/deps", { recursive: true, force: true });
 
   // Remove regression testing diff images
-  await removeDiffImages();
-  await removeNewHTML();
+  await removeTemporaryFiles();
+  await removeTemporaryFiles();
 
   // Launch server and start test env MSW handlers
   await launchServer(port);
