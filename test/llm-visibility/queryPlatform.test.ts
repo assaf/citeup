@@ -53,7 +53,6 @@ const PLATFORM_ARGS = {
   modelId: "claude-haiku-4-5-20251001",
   platform: "claude",
   queries: QUERIES,
-  repetitions: 3,
 } as const;
 
 function newerThan24h() {

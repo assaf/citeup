@@ -14,7 +14,6 @@ const OTHER_CITATIONS = [
 ];
 
 const HOSTNAME = "rentail.space";
-const REPETITIONS = 3;
 
 const PLATFORMS = [
   { platform: "chatgpt", model: "gpt-5-chat-latest", visibilityRate: 0.45 },
