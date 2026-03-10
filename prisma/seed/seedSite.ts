@@ -9,13 +9,11 @@ export default async function seedSite(): Promise<Site> {
 }
 
 async function seedAccount(): Promise<User> {
+  const apiKey = "citeup_21945ffb0342eb204b60aaf28c7bdca9";
   const account = await prisma.account.upsert({
     where: { id: "cmm4h5qam000004l75z7mobty" },
-    update: {},
-    create: {
-      id: "cmm4h5qam000004l75z7mobty",
-      apiKey: "citeup_21945ffb0342eb204b60aaf28c7bdca9",
-    },
+    update: { apiKey },
+    create: { id: "cmm4h5qam000004l75z7mobty", apiKey },
   });
 
   const user = await prisma.user.upsert({

@@ -64,25 +64,18 @@ async function seedCitationRuns(site: Site) {
       }
 
       const platformIdx = PLATFORMS.findIndex((p) => p.platform === platform);
-      const queryData = queries.flatMap(({ query, group }, qi) =>
-        Array.from({ length: REPETITIONS }, (_, i) => {
-          const rep = i + 1;
-          const seed = qi * 10_000 + rep * 1_000 + runIdx * 10 + platformIdx;
-          const { citations, position } = generateCitations(
-            seed,
-            visibilityRate,
-          );
-          return {
-            query,
-            group,
-            repetition: rep,
-            text: `Based on your query about "${query.toLowerCase()}", here are some relevant resources and platforms to consider.`,
-            citations,
-            position,
-            extraQueries: [] as string[],
-          };
-        }),
-      );
+      const queryData = queries.flatMap(({ query, group }, qi) => {
+        const seed = qi * 10_000 + runIdx * 10 + platformIdx;
+        const { citations, position } = generateCitations(seed, visibilityRate);
+        return {
+          query,
+          group,
+          text: `Based on your query about "${query.toLowerCase()}", here are some relevant resources and platforms to consider.`,
+          citations,
+          position,
+          extraQueries: [] as string[],
+        };
+      });
 
       await prisma.citationQueryRun.create({
         data: {
