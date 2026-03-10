@@ -12,6 +12,7 @@ import {
   Text,
   pixelBasedPreset,
 } from "@react-email/components";
+import envVars from "../envVars";
 
 /**
  * EmailLayout is a component that wraps the email content and provides a consistent layout.
@@ -76,7 +77,7 @@ function Header({ subject }: { subject: string }) {
       <Img
         alt="Rentail.space Logo"
         height="80"
-        src="https://citeup.vercel.app/icon-192.png"
+        src={new URL("/icon-192.png", envVars.APP_URL).toString()}
         className="mx-auto mb-8 block"
         width="80"
       />
@@ -94,24 +95,21 @@ function Footer({ isCustomer = true }: { isCustomer: boolean }) {
       {isCustomer && (
         <Text className="mb-4 text-center text-gray-500 text-sm leading-relaxed">
           You're receiving this email because you signed up for an account at{" "}
-          <Link
-            href="https://citeup.vercel.app"
-            className="text-light underline"
-          >
+          <Link href={envVars.APP_URL} className="text-light underline">
             rentail.space
           </Link>
         </Text>
       )}
       <Text className="my-2 text-center text-light text-sm leading-relaxed">
         <Link
-          href="https://citeup.vercel.app/privacy"
+          href={new URL("/privacy", envVars.APP_URL).toString()}
           className="text-primary underline"
         >
           Privacy Policy
         </Link>{" "}
         •{" "}
         <Link
-          href="https://citeup.vercel.app/terms"
+          href={new URL("/terms", envVars.APP_URL).toString()}
           className="text-primary underline"
         >
           Terms of Service

@@ -1,3 +1,4 @@
+import envVars from "~/lib/envVars";
 import type { Route } from "./+types/route";
 import AboutCTA from "./AboutCTA";
 import AboutHeader from "./AboutHeader";
@@ -44,14 +45,14 @@ function schemaData() {
     name: "About CiteUp",
     description:
       "Learn about CiteUp, the platform that monitors LLM citation visibility for brands and content creators.",
-    url: "https://citeup.vercel.app/about",
+    url: new URL("/about", envVars.APP_URL).toString(),
     mainEntity: {
       "@type": "Organization",
-      "@id": "https://citeup.vercel.app#organization",
+      "@id": new URL("#organization", envVars.APP_URL).toString(),
       name: "CiteUp",
       description:
         "Platform for monitoring LLM citation visibility across AI platforms",
-      url: "https://citeup.vercel.app",
+      url: new URL("/about", envVars.APP_URL).toString(),
       foundingDate: "2026",
       founder: {
         "@type": "Person",
@@ -59,7 +60,12 @@ function schemaData() {
         jobTitle: "CEO",
       },
       email: "hello@citeup.com",
-      sameAs: ["https://github.com/citeup-app/citeup"],
+      sameAs: [
+        new URL(
+          "https://github.com/citeup-app/citeup",
+          envVars.APP_URL,
+        ).toString(),
+      ],
       knowsAbout: [
         "LLM Citation Visibility",
         "AI Search Optimization",

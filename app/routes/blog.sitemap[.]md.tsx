@@ -1,4 +1,5 @@
 import { recentBlogPosts } from "~/lib/blogPosts.server";
+import envVars from "~/lib/envVars";
 
 export async function loader() {
   const blogPosts = await recentBlogPosts();
@@ -25,7 +26,7 @@ ${blogPosts
   return new Response(markdown, {
     headers: {
       "Content-Type": "text/markdown",
-      Link: `<https://citeup.vercel.app/blog>; rel="alternate"; type="text/html"`,
+      Link: `<${new URL("/blog", envVars.APP_URL).toString()}>; rel="alternate"; type="text/html"`,
     },
   });
 }

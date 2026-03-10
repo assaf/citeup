@@ -1,3 +1,4 @@
+import { generateApiKey } from "random-password-toolkit";
 import { Form, redirect } from "react-router";
 import { ActiveLink } from "~/components/ui/ActiveLink";
 import AuthForm from "~/components/ui/AuthForm";
@@ -45,7 +46,11 @@ export async function action({ request }: Route.ActionArgs) {
   const passwordHash = await hashPassword(password);
 
   const user = await prisma.$transaction(async (tx) => {
-    const account = await tx.account.create({ data: {} });
+    const account = await tx.account.create({
+      data: {
+        apiKey: `citeup_${generateApiKey(16)}`,
+      },
+    });
     return tx.user.create({
       data: { email, passwordHash, accountId: account.id },
     });

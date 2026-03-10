@@ -8,8 +8,9 @@ import type {
 } from "react-router";
 import "~/lib/logger.server";
 import msw from "~/test/mocks/msw";
+import { createBotTracker } from "./lib/botTracker";
 import captureException from "./lib/captureException.server";
-import { trackRequest } from "./lib/selfTracker.server";
+import envVars from "./lib/envVars";
 
 if (import.meta.env.PROD)
   Sentry.init({
@@ -32,6 +33,11 @@ if (process.env.NODE_ENV === "test") msw();
 
 const logger = debug("server");
 
+const tracker = createBotTracker({
+  apiKey: envVars.BOT_TRACKER_API_KEY,
+  endpoint: envVars.BOT_TRACKER_URL,
+});
+
 export function getLoadContext() {
   return {};
 }
@@ -45,7 +51,7 @@ export default Sentry.wrapSentryHandleRequest(
     // biome-ignore lint/suspicious/noExplicitAny: Sentry wrapper requires flexible type
     loadContext?: any,
   ) => {
-    trackRequest(request); // fire-and-forget, production only
+    tracker?.track(request); // fire-and-forget, production only
     const start = Date.now();
     logger("%s %s", request.method, request.url);
 

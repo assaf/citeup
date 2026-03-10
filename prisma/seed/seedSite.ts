@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import type { Site, User } from "prisma/generated/client";
+import envVars from "~/lib/envVars";
 import prisma from "~/lib/prisma.server";
 
 export default async function seedSite(): Promise<Site> {
@@ -13,6 +14,7 @@ async function seedAccount(): Promise<User> {
     update: {},
     create: {
       id: "cmm4h5qam000004l75z7mobty",
+      apiKey: "citeup_21945ffb0342eb204b60aaf28c7bdca9",
     },
   });
 
@@ -56,7 +58,7 @@ async function seedSites(user: User): Promise<Site> {
       accountId: user.accountId,
       content:
         "CiteUp Sign in Get started The Search Console for AI Does ChatGPT mention  your brand? CiteUp runs your queries across ChatGPT, Claude, Gemini, and Perplexity — and records every time they cite your website.",
-      domain: "citeup.vercel.app",
+      domain: envVars.APP_URL,
     },
   });
   console.info("✅ Sites: %s, %s", rentail.id, citeUp.id);

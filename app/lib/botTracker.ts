@@ -1,33 +1,37 @@
-export type BotTrackerConfig = {
-  apiKey: string;
-  endpoint: string;
-};
-
-export type BotTrackPayload = {
-  url: string;
-  userAgent?: string | null;
-  accept?: string | null;
-  ip?: string | null;
-  referer?: string | null;
-};
-
-export type BotTracker = {
-  track: (payload: BotTrackPayload) => void;
-};
-
+/**
+ * Create a bot tracker instance.
+ *
+ * @param apiKey - The API key to use for authentication.
+ * @param endpoint - The endpoint to use for tracking.
+ * @returns A bot tracker instance.
+ */
 export function createBotTracker({
   apiKey,
   endpoint,
-}: BotTrackerConfig): BotTracker {
+}: {
+  apiKey: string;
+  endpoint: string;
+}): {
+  /**
+   * Track a bot visit given an HTTP request.
+   */
+  track: (request: Request) => void;
+} {
   return {
-    track({ url, userAgent, accept, ip, referer }) {
+    track(request) {
       fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({ url, userAgent, accept, ip, referer }),
+        body: JSON.stringify({
+          accept: request.headers.get("accept"),
+          ip: request.headers.get("x-forwarded-for"),
+          referer: request.headers.get("referer"),
+          url: request.url.toString(),
+          userAgent: request.headers.get("user-agent"),
+        }),
       }).catch(() => {});
     },
   };

@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import recordBotVisit from "~/lib/botTracking.server";
+import envVars from "~/lib/envVars";
 import prisma from "~/lib/prisma.server";
 
 function makeRequest(
   userAgent: string,
-  url = "https://citeup.vercel.app/",
+  url = new URL("/", envVars.APP_URL).toString(),
   accept?: string,
   referer?: string,
 ) {
@@ -25,7 +26,7 @@ describe("trackBotVisit", () => {
     await prisma.site.create({
       data: {
         account: { create: { id: "account-1" } },
-        domain: "citeup.vercel.app",
+        domain: new URL("/", envVars.APP_URL).hostname,
       },
     });
   });
@@ -70,7 +71,10 @@ describe("trackBotVisit", () => {
 
   it("records domain and path from request URL", async () => {
     await recordBotVisit(
-      makeRequest("Googlebot/2.1", "https://citeup.vercel.app/blog/post"),
+      makeRequest(
+        "Googlebot/2.1",
+        new URL("/blog/post", envVars.APP_URL).toString(),
+      ),
     );
     const last = await prisma.botVisit.findFirstOrThrow();
     expect(last.path).toBe("/blog/post");
@@ -80,7 +84,7 @@ describe("trackBotVisit", () => {
     await recordBotVisit(
       makeRequest(
         "Googlebot/2.1",
-        "https://citeup.vercel.app/",
+        new URL("/", envVars.APP_URL).toString(),
         "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
       ),
     );
@@ -92,7 +96,7 @@ describe("trackBotVisit", () => {
     await recordBotVisit(
       makeRequest(
         "Googlebot/2.1",
-        "https://citeup.vercel.app/",
+        new URL("/", envVars.APP_URL).toString(),
         "text/html",
         "https://google.com",
       ),
@@ -105,9 +109,9 @@ describe("trackBotVisit", () => {
     await recordBotVisit(
       makeRequest(
         "Googlebot/2.1",
-        "https://citeup.vercel.app/",
+        new URL("/", envVars.APP_URL).toString(),
         "text/html",
-        "https://citeup.vercel.app/",
+        new URL("/", envVars.APP_URL).toString(),
       ),
     );
     const last = await prisma.botVisit.findFirst();

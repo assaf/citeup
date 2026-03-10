@@ -1,4 +1,5 @@
 import { loadBlogPost } from "~/lib/blogPosts.server";
+import envVars from "~/lib/envVars";
 import { formatDateHuge } from "~/lib/temporal";
 import type { Route } from "./+types/blog.$slug[.]md";
 
@@ -24,7 +25,7 @@ ${post.body}
     return new Response(md, {
       headers: {
         "Content-Type": "text/markdown",
-        Link: `<https://citeup.vercel.app/blog/${slug}>; rel="alternate"; type="text/html"`,
+        Link: `<${new URL(`/blog/${slug}`, envVars.APP_URL).toString()}>; rel="alternate"; type="text/html"`,
       },
     });
   } catch {
