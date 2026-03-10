@@ -137,7 +137,7 @@ describe("site page", () => {
     user = await prisma.user.create({
       data: {
         id: "user-1",
-        account: { create: { id: "account-1" } },
+        account: { create: { id: "account-1", apiKey: "api-key-1" } },
         email: "site-page-test@test.com",
         passwordHash: "test",
       },

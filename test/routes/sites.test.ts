@@ -25,7 +25,9 @@ describe("sites route", () => {
         id: "user-sites-test",
         email: "sites-test@example.com",
         passwordHash: await hashPassword("correct-password-123"),
-        account: { create: { id: "account-sites-test" } },
+        account: {
+          create: { id: "account-sites-test", apiKey: "api-key-sites-test" },
+        },
       },
     });
     await signIn(user.id);

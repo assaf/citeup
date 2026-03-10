@@ -26,7 +26,9 @@ describe("site queries page", () => {
     user = await prisma.user.create({
       data: {
         id: "user-queries-1",
-        account: { create: { id: "account-queries-1" } },
+        account: {
+          create: { id: "account-queries-1", apiKey: "api-key-queries-1" },
+        },
         email: "site-queries-test@test.com",
         passwordHash: "test",
       },
