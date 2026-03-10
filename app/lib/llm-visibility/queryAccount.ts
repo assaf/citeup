@@ -35,6 +35,7 @@ export default async function queryAccount({
 
   await Promise.all([
     queryPlatform({
+      accountId: site.accountId,
       modelId: "gpt-5-chat-latest",
       newerThan,
       platform: "chatgpt",
@@ -45,6 +46,7 @@ export default async function queryAccount({
     }),
 
     queryPlatform({
+      accountId: site.accountId,
       modelId: "sonar",
       newerThan,
       platform: "perplexity",
@@ -55,6 +57,7 @@ export default async function queryAccount({
     }),
 
     runPlatform({
+      accountId: site.accountId,
       modelId: "claude-haiku-4-5-20251001",
       newerThan,
       platform: "claude",
@@ -65,6 +68,7 @@ export default async function queryAccount({
     }),
 
     runPlatform({
+      accountId: site.accountId,
       modelId: "gemini-2.5-flash",
       newerThan,
       platform: "gemini",

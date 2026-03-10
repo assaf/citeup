@@ -49,6 +49,7 @@ const QUERIES = [
 ];
 
 const PLATFORM_ARGS = {
+  accountId: "account-1",
   modelId: "claude-haiku-4-5-20251001",
   platform: "claude",
   queries: QUERIES,

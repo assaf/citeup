@@ -2,6 +2,7 @@ import type { Temporal } from "@js-temporal/polyfill";
 import debug from "debug";
 import captureException from "~/lib/captureException.server";
 import prisma from "~/lib/prisma.server";
+import { checkUsageLimits, recordUsageEvent } from "~/lib/usage/usageLimit.server";
 import type { QueryFn } from "./llmVisibility";
 
 const logger = debug("server");
@@ -20,6 +21,7 @@ const logger = debug("server");
  * @param site - The site to query.
  */
 export default async function queryPlatform({
+  accountId,
   modelId,
   newerThan,
   platform,
@@ -28,6 +30,7 @@ export default async function queryPlatform({
   repetitions,
   site,
 }: {
+  accountId: string;
   modelId: string;
   newerThan: Temporal.PlainDateTime;
   platform: string;
@@ -64,7 +67,9 @@ export default async function queryPlatform({
       const query = queries[qi];
       for (let repetition = 1; repetition <= repetitions; repetition++) {
         await singleQueryRepetition({
+          accountId,
           group: query.group,
+          modelId,
           platform,
           query: query.query,
           queryFn,
@@ -82,7 +87,9 @@ export default async function queryPlatform({
 }
 
 async function singleQueryRepetition({
+  accountId,
   group,
+  modelId,
   platform,
   query,
   queryFn,
@@ -90,7 +97,9 @@ async function singleQueryRepetition({
   runId,
   site,
 }: {
+  accountId: string;
   group: string;
+  modelId: string;
   platform: string;
   query: string;
   queryFn: QueryFn;
@@ -114,7 +123,15 @@ async function singleQueryRepetition({
   }
 
   try {
-    const { citations, extraQueries, text } = await queryFn(query);
+    await checkUsageLimits(accountId);
+    const { citations, extraQueries, text, usage } = await queryFn(query);
+    await recordUsageEvent({
+      accountId,
+      platform,
+      model: modelId,
+      inputTokens: usage.inputTokens ?? 0,
+      outputTokens: usage.outputTokens ?? 0,
+    });
     logger(
       "[%s:%s] Repetition %d: %s (group: %s)",
       site.id,
