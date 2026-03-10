@@ -3,6 +3,7 @@ import captureException from "~/lib/captureException.server";
 import envVars from "~/lib/envVars";
 import queryAccount from "~/lib/llm-visibility/queryAccount";
 import prisma from "~/lib/prisma.server";
+import { UsageLimitExceededError } from "~/lib/usage/UsageLimitExceededError";
 import type { Route } from "./+types/cron.citation-runs";
 
 const logger = debug("server");
@@ -45,7 +46,8 @@ export async function loader({ request }: Route.LoaderArgs) {
         site.domain,
         message,
       );
-      captureException(error, { extra: { siteId: site.id } });
+      if (!(error instanceof UsageLimitExceededError))
+        captureException(error, { extra: { siteId: site.id } });
       results.push({ siteId: site.id, ok: false, error: message });
     }
   }
