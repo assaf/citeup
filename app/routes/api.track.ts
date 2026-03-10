@@ -1,4 +1,5 @@
 import { z } from "zod";
+import prisma from "~/lib/prisma.server";
 import recordBotVisit from "~/lib/botTracking.server";
 import type { Route } from "./+types/api.track";
 
@@ -15,6 +16,13 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Authorization, Content-Type",
 };
+
+function forbidden() {
+  return Response.json(
+    { tracked: false, reason: "Forbidden" },
+    { status: 403, headers: CORS_HEADERS },
+  );
+}
 
 export async function action({ request }: Route.ActionArgs) {
   if (request.method === "OPTIONS")
@@ -40,6 +48,28 @@ export async function action({ request }: Route.ActionArgs) {
     );
   }
 
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader?.startsWith("Bearer ")) return forbidden();
+  const apiKey = authHeader.slice(7);
+
+  const hostname = new URL(data.url).hostname.toLowerCase();
+
+  // Check if the site exists at all first
+  const siteExists = await prisma.site.findFirst({
+    where: { domain: hostname },
+  });
+  if (!siteExists)
+    return Response.json(
+      { tracked: false, reason: "site not found" },
+      { headers: CORS_HEADERS },
+    );
+
+  // Verify the API key matches the account that owns this site
+  const site = await prisma.site.findFirst({
+    where: { domain: hostname, account: { apiKey } },
+  });
+  if (!site) return forbidden();
+
   const { url: rawUrl, userAgent, accept, ip, referer } = data;
   const { tracked, reason } = await recordBotVisit({
     url: rawUrl,
@@ -47,6 +77,7 @@ export async function action({ request }: Route.ActionArgs) {
     accept: accept || null,
     ip: ip || null,
     referer: referer || null,
+    site,
   });
   return Response.json({ tracked, reason }, { headers: CORS_HEADERS });
 }

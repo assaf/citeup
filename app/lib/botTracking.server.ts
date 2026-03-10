@@ -84,12 +84,14 @@ export default async function recordBotVisit({
   referer,
   url,
   userAgent,
+  site: resolvedSite,
 }: {
   accept: string | null;
   ip: string | null;
   referer: string | null;
   url: string;
   userAgent: string | null;
+  site?: { id: string };
 }): Promise<{ tracked: boolean; reason?: string }> {
   if (!userAgent) return { tracked: false, reason: "no user agent" };
 
@@ -100,7 +102,7 @@ export default async function recordBotVisit({
 
   const { hostname, pathname } = new URL(url);
   const domain = hostname.toLowerCase();
-  const site = await prisma.site.findFirst({ where: { domain } });
+  const site = resolvedSite ?? await prisma.site.findFirst({ where: { domain } });
   if (!site) return { tracked: false, reason: "site not found" };
 
   const date = new Date(
