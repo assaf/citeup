@@ -62,8 +62,7 @@ export default function RecentVisibility({
       <CardHeader>
         <CardTitle>Most Recent Run</CardTitle>
         <CardDescription>
-          {new Date(run.createdAt).toLocaleDateString()} · {run.model} ·{" "}
-          {run.queries.length} checks
+          {run.model} · {run.queries.length} checks
         </CardDescription>
       </CardHeader>
       <CardContent>
