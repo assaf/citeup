@@ -21,6 +21,12 @@ import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/route";
 import OurSource from "./OurSource";
 
+export const handle = { siteNav: true };
+
+export function meta(): Route.MetaDescriptors {
+  return [{ title: "Add a Site | Cite.me.in" }];
+}
+
 export async function loader({ request, params }: Route.LoaderArgs) {
   const user = await requireUser(request);
   const suggestions = await prisma.siteQuerySuggestion.findMany({
@@ -31,10 +37,6 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     where: { id: params.id, accountId: user.accountId },
   });
   return { siteId: params.id, site, suggestions };
-}
-
-export function meta(): Route.MetaDescriptors {
-  return [{ title: "Add a Site | Cite.me.in" }];
 }
 
 export async function action({ params, request }: Route.ActionArgs) {

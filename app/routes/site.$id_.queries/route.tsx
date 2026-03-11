@@ -1,5 +1,3 @@
-export const handle = { siteNav: true };
-
 import Main from "~/components/ui/Main";
 import SitePageHeader from "~/components/ui/SitePageHeader";
 import addSiteQueries, {
@@ -15,6 +13,8 @@ import type { Route } from "./+types/route";
 import AddQueriesGroup from "./AddQueriesGroup";
 import GroupOfQueries from "./GroupOfQueries";
 import SuggestedQueries from "./SuggestedQueries";
+
+export const handle = { siteNav: true };
 
 export function meta({ loaderData }: Route.MetaArgs) {
   return [

@@ -9,58 +9,35 @@ import CiteMeInLogo from "./CiteMeInLogo";
 import type { HeaderLink } from "./PageLayout";
 
 export default function PageHeader() {
-  const matches = useMatches() as UIMatch<
-    unknown,
-    {
-      hideHeader?: boolean;
-      siteNav?: boolean;
-      headerLinks?: { to: string; label: string }[];
-      dropdownLinks?: { to: string; label: string }[];
-    }
-  >[];
-
+  const matches = useMatches() as UIMatch<unknown, { hideHeader?: boolean }>[];
   const lastHandle = last(matches.filter((m) => m.handle))?.handle;
   if (lastHandle?.hideHeader) return null;
-
-  // Build site nav links when on a /site/:id/* page
-  const siteMatch = matches.find((m) => m.handle?.siteNav);
-  const siteId = siteMatch?.params.id as string | undefined;
-  const siteLinks = siteId
-    ? [
-        { to: "/sites", label: "Dashboard" },
-        { to: `/site/${siteId}/citations`, label: "Citations" },
-        { to: `/site/${siteId}/queries`, label: "Queries" },
-        { to: `/site/${siteId}/bots`, label: "Bot Traffic" },
-      ]
-    : null;
-
-  const { headerLinks, dropdownLinks } =
-    last(
-      matches.filter(
-        (match) =>
-          match.handle &&
-          ("headerLinks" in match.handle || "secondaryLinks" in match.handle),
-      ),
-    )?.handle || {};
-
-  const navLinks = siteLinks ?? headerLinks;
 
   return (
     <header className="z-10 flex min-h-16 w-full items-center border-black border-b-2 bg-[hsl(60,100%,99%)] p-2 print:hidden">
       <CiteMeInLogo className="w-1/2" />
-
-      {navLinks && <HeaderLinks links={navLinks} />}
-      {dropdownLinks && <DropdownMenu links={dropdownLinks} />}
-
+      <HeaderLinks />
       <AccountMenu className="w-1/2 justify-end" />
     </header>
   );
 }
 
-function HeaderLinks({ links }: { links: HeaderLink[] }) {
+function HeaderLinks() {
+  const matches = useMatches() as UIMatch<unknown, { siteNav?: boolean }>[];
+  const navLinks = [];
+  const siteMatch = matches.find((m) => m.handle?.siteNav);
+  const siteId = siteMatch?.params.id as string | undefined;
+  if (siteMatch) navLinks.push({ to: "/sites", label: "Dashboard" });
+  if (siteId)
+    navLinks.push(
+      { to: `/site/${siteId}/citations`, label: "Citations" },
+      { to: `/site/${siteId}/queries`, label: "Queries" },
+      { to: `/site/${siteId}/bots`, label: "Bot Traffic" },
+    );
+
   return (
     <nav className="hidden items-center gap-6 whitespace-nowrap md:flex">
-      {links.map((link) => (
+      {navLinks.map((link) => (
         <NavLink
           key={link.to}
           to={link.to}
@@ -80,7 +57,7 @@ function HeaderLinks({ links }: { links: HeaderLink[] }) {
   );
 }
 
-function DropdownMenu({ links }: { links: HeaderLink[] }) {
+export function DropdownMenu({ links }: { links: HeaderLink[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 

@@ -20,6 +20,8 @@ export function meta(): Route.MetaDescriptors {
   return [{ title: "Your Sites | Cite.me.in" }];
 }
 
+export const handle = { siteNav: true };
+
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
   const sites = await loadSitesWithMetrics(user.accountId);

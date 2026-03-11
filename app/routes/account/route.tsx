@@ -13,6 +13,8 @@ export function meta(): Route.MetaDescriptors {
   ];
 }
 
+export const handle = { siteNav: true };
+
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
   const script = `
