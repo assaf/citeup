@@ -1,4 +1,4 @@
-import { sortBy, uniqBy } from "es-toolkit";
+import { sortBy } from "es-toolkit";
 import { ArrowRightIcon } from "lucide-react";
 import { Link } from "react-router";
 import { twMerge } from "tailwind-merge";
@@ -20,23 +20,20 @@ import {
 import type { Prisma } from "~/prisma";
 
 export default function RecentVisibility({
-  run,
+  lastRun,
   site,
 }: {
-  run: Prisma.CitationQueryRunGetPayload<{ include: { queries: true } }>;
+  lastRun: Prisma.CitationQueryRunGetPayload<{ include: { queries: true } }>;
   site: { id: string; domain: string };
 }) {
-  const queries = sortBy(
-    uniqBy(run.queries, (q) => `${q.group}:${q.query}`),
-    ["group", "query"],
-  );
+  const queries = sortBy(lastRun.queries, ["group", "query"]);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Most Recent Run</CardTitle>
         <CardDescription>
-          {run.model} · {queries.length} checks
+          {lastRun.model} · {queries.length} checks
         </CardDescription>
       </CardHeader>
       <CardContent>

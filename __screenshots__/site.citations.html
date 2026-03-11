@@ -75,9 +75,6 @@
                 <th class="h-10 px-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right font-bold text-foreground">
                   Positions
                 </th>
-                <th class="h-10 px-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right font-bold text-foreground">
-                  Score
-                </th>
                 <th class="h-10 px-2 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px]"></th>
               </tr>
             </thead>
@@ -92,10 +89,7 @@
                 <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
                   2
                 </td>
-                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
-                  10
-                </td>
-                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px]"></td>
+                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right"></td>
               </tr>
               <tr class="border-b transition-colors data-[state=selected]:bg-muted bg-green-100 hover:bg-green-100/80">
                 <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-foreground/60 text-xs">
@@ -107,64 +101,42 @@
                 <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
                   3
                 </td>
-                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
-                  10
-                </td>
-                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px]"></td>
+                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right"></td>
               </tr>
-              <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <tr class="border-b transition-colors data-[state=selected]:bg-muted bg-green-100 hover:bg-green-100/80">
                 <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-foreground/60 text-xs">
                   2. active_search
                 </td>
                 <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] max-w-xs truncate">
                   Where can I lease a kiosk in a mall for 3-6 months?
                 </td>
-                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right"></td>
                 <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right">
-                  50
+                  1
                 </td>
-                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px]"></td>
+                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right"></td>
               </tr>
             </tbody>
-            <tfoot class="border-t bg-muted/50 font-medium [&amp;&gt;tr]:last:border-b-0">
-              <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] font-bold" colspan="2">
-                  Average
-                </td>
-                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right font-bold"></td>
-                <td class="p-2 align-middle [&amp;:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-[2px] text-right font-bold">
-                  23.3
-                </td>
-              </tr>
-            </tfoot>
           </table>
         </div>
       </div>
     </div>
-    <div class="grid gap-4 md:grid-cols-3">
-      <div class="flex flex-col gap-6 rounded-base border-2 border-border py-6 font-base shadow-shadow bg-secondary-background text-foreground" data-slot="card">
-        <div class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-[data-slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6" data-slot="card-header">
-          <div class="flex items-center justify-center gap-2 font-heading text-2xl leading-none" data-slot="card-title">
-            Visibility %
-          </div>
+    <div class="flex flex-col gap-6 rounded-base border-2 border-border py-6 font-base shadow-shadow bg-secondary-background text-foreground" data-slot="card">
+      <div class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-[data-slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6" data-slot="card-header">
+        <div class="flex items-center justify-center gap-2 font-heading text-2xl leading-none" data-slot="card-title">
+          Citation / Score Trend
         </div>
-        <div class="px-6" data-slot="card-content"></div>
       </div>
-      <div class="flex flex-col gap-6 rounded-base border-2 border-border py-6 font-base shadow-shadow bg-secondary-background text-foreground" data-slot="card">
-        <div class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-[data-slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6" data-slot="card-header">
-          <div class="flex items-center justify-center gap-2 font-heading text-2xl leading-none" data-slot="card-title">
-            Citation Ratio %
-          </div>
+      <div class="px-6 flex flex-col gap-6" data-slot="card-content">
+        <div>
+          <p class="text-center text-foreground/60 text-sm">
+            Count of citations that reference this site.
+          </p>
         </div>
-        <div class="px-6" data-slot="card-content"></div>
-      </div>
-      <div class="flex flex-col gap-6 rounded-base border-2 border-border py-6 font-base shadow-shadow bg-secondary-background text-foreground" data-slot="card">
-        <div class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-[data-slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6" data-slot="card-header">
-          <div class="flex items-center justify-center gap-2 font-heading text-2xl leading-none" data-slot="card-title">
-            Score
-          </div>
+        <div>
+          <p class="text-center text-foreground/60 text-sm">
+            Percentage of citations that reference this site (eg score = 100 means 100% of citations reference this site).
+          </p>
         </div>
-        <div class="px-6" data-slot="card-content"></div>
       </div>
     </div>
   </main>
@@ -237,6 +209,6 @@
     </div>
   </footer>
 </div>
-<span aria-hidden="true" id="recharts_measurement_span" style="position: absolute; top: -20000px; left: 0px; padding: 0px; margin: 0px; border: none; white-space: pre;">
-  15
+<span aria-hidden="true" id="recharts_measurement_span" style="position: absolute; top: -20000px; left: 0px; padding: 0px; margin: 0px; border: none; white-space: pre; font-size: 12px; letter-spacing: normal;">
+  10
 </span>

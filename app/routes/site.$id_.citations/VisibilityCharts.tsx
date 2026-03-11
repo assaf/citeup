@@ -1,105 +1,118 @@
-import { mean } from "es-toolkit";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { sum } from "es-toolkit";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 import {
-  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "~/components/ui/Chart";
-import type { Prisma } from "~/prisma";
+import type { Prisma, Site } from "~/prisma";
 
-const chartConfig = {
-  visibilityPct: { label: "Visibility %", color: "var(--chart-1)" },
-  citationRatio: { label: "Citation Ratio %", color: "var(--chart-3)" },
-  score: { label: "Score", color: "var(--chart-4)" },
-} satisfies ChartConfig;
-
-const CHART_KEYS = ["visibilityPct", "citationRatio", "score"] as const;
-type ChartKey = (typeof CHART_KEYS)[number];
-
-type RunPoint = { date: string } & Record<ChartKey, number>;
-
-function runToPoint(
-  run: Prisma.CitationQueryRunGetPayload<{ include: { queries: true } }>,
-): RunPoint {
-  const { queries } = run;
-  if (queries.length === 0) {
-    return {
-      date: run.createdAt.toISOString().slice(0, 10),
-      visibilityPct: 0,
-      citationRatio: 0,
-      score: 0,
-    };
-  }
-
-  const visibilityPct = mean(
-    queries.map((q) => (q.position !== null ? 100 : 0)),
-  );
-  const citationRatio =
-    mean(
-      queries.map((q) =>
-        q.position !== null && q.citations.length > 0
-          ? (1 / q.citations.length) * 100
-          : 0,
-      ),
-    ) || 0;
-  const score =
-    mean(
-      queries.map((q) => {
-        if (q.position === null) return 0;
-        if (q.position === 0) return 50;
-        return Math.max(0, 10 * (q.citations.length - q.position));
-      }),
-    ) || 0;
-
-  return {
-    date: run.createdAt.toISOString().slice(0, 10),
-    visibilityPct: +visibilityPct.toFixed(1),
-    citationRatio: +citationRatio.toFixed(1),
-    score: +score.toFixed(1),
-  };
-}
+const charts = [
+  {
+    config: {
+      citations: { label: "Citations", color: "var(--chart-3)" },
+    },
+    dataKey: "citations",
+    name: "Citations",
+    color: "var(--chart-3)",
+    explainer: "Count of citations that reference this site.",
+  },
+  {
+    config: {
+      score: { label: "Score", color: "var(--chart-4)" },
+    },
+    dataKey: "score",
+    name: "Score",
+    color: "var(--chart-4)",
+    explainer:
+      "Percentage of citations that reference this site (eg score = 100 means 100% of citations reference this site).",
+  },
+] as const;
 
 export default function VisibilityCharts({
-  runs,
+  recentRuns: runs,
+  site,
 }: {
-  runs: Prisma.CitationQueryRunGetPayload<{ include: { queries: true } }>[];
+  recentRuns: Prisma.CitationQueryRunGetPayload<{
+    include: { queries: true };
+  }>[];
+  site: Site;
 }) {
-  const data = runs.map(runToPoint);
+  const data = runs.map((run) => runToPoint(run, site));
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      {CHART_KEYS.map((key) => (
-        <Card key={key}>
-          <CardHeader>
-            <CardTitle>{chartConfig[key].label}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-36 w-full">
+    <Card>
+      <CardHeader>
+        <CardTitle>Citation / Score Trend</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-6">
+        {charts.map((chart) => (
+          <div key={chart.dataKey}>
+            <ChartContainer config={chart.config} className="h-36 w-full">
               <AreaChart data={data}>
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="date"
-                  tick={false}
-                  axisLine={false}
-                  tickLine={false}
+                  tickFormatter={(v) =>
+                    new Intl.DateTimeFormat("en-US", {
+                      dateStyle: "long",
+                    }).format(new Date(v as string))
+                  }
                 />
+                <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Area
+                  dataKey={chart.dataKey}
+                  name={chart.name}
+                  fill={chart.color}
+                  stroke={chart.color}
+                  strokeWidth={2}
                   type="monotone"
-                  dataKey={key}
-                  stroke={`var(--color-${key})`}
-                  fill={`var(--color-${key})`}
-                  fillOpacity={0.2}
-                  dot={false}
-                  activeDot={{ r: 4 }}
                 />
               </AreaChart>
             </ChartContainer>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+            <p className="text-center text-foreground/60 text-sm">
+              {chart.explainer}
+            </p>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   );
+}
+
+function runToPoint(
+  run: Prisma.CitationQueryRunGetPayload<{
+    include: { queries: true };
+  }>,
+  site: Site,
+): {
+  date: string;
+  citations: number;
+  score: number;
+} {
+  const { queries } = run;
+  if (queries.length === 0) {
+    return {
+      date: run.createdAt.toISOString().slice(0, 10),
+      citations: 0,
+      score: 0,
+    };
+  }
+
+  const citations = sum(
+    run.queries.map(
+      (q) =>
+        q.citations.filter((c) => new URL(c).hostname === site.domain).length,
+    ),
+  );
+  const totalCitations = sum(run.queries.map((q) => q.citations.length));
+  const score = (citations / totalCitations) * 100;
+
+  return {
+    date: run.createdAt.toISOString().slice(0, 10),
+    citations: +citations.toFixed(1),
+    score: +score.toFixed(1),
+  };
 }
