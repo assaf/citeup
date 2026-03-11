@@ -22,28 +22,34 @@ describe("sitemap.xml", () => {
   });
 
   it("should include homepage", () => {
-    expect(xml.urlset.url).toContainEqual({ loc: "https://cite.me.in/" });
+    expect(xml.urlset.url).toContainEqual({ loc: "http://localhost:5173/" });
   });
 
   it("should include /faq", () => {
-    expect(xml.urlset.url).toContainEqual({ loc: "https://cite.me.in/faq" });
+    expect(xml.urlset.url).toContainEqual({ loc: "http://localhost:5173/faq" });
   });
 
   it("should include /about", () => {
-    expect(xml.urlset.url).toContainEqual({ loc: "https://cite.me.in/about" });
+    expect(xml.urlset.url).toContainEqual({
+      loc: "http://localhost:5173/about",
+    });
   });
 
   it("should include /blog", () => {
-    expect(xml.urlset.url).toContainEqual({ loc: "https://cite.me.in/blog" });
+    expect(xml.urlset.url).toContainEqual({
+      loc: "http://localhost:5173/blog",
+    });
   });
 
   it("should include /privacy", () => {
     expect(xml.urlset.url).toContainEqual({
-      loc: "https://cite.me.in/privacy",
+      loc: "http://localhost:5173/privacy",
     });
   });
 
   it("should include /terms", () => {
-    expect(xml.urlset.url).toContainEqual({ loc: "https://cite.me.in/terms" });
+    expect(xml.urlset.url).toContainEqual({
+      loc: "http://localhost:5173/terms",
+    });
   });
 });

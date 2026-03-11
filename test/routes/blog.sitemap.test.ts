@@ -30,9 +30,9 @@ describe("blog/sitemap.xml", () => {
     const urls = Array.isArray(xml.urlset.url)
       ? xml.urlset.url
       : [xml.urlset.url];
-    expect(urls.some((u) => u.loc.startsWith("https://cite.me.in/blog/"))).toBe(
-      true,
-    );
+    expect(
+      urls.some((u) => u.loc.startsWith("http://localhost:5173/blog/")),
+    ).toBe(true);
   });
 
   it("should include the first post", () => {
@@ -41,7 +41,7 @@ describe("blog/sitemap.xml", () => {
       : [xml.urlset.url];
     expect(urls).toContainEqual(
       expect.objectContaining({
-        loc: "https://cite.me.in/blog/2026-02-26-how-citemein-was-born",
+        loc: "http://localhost:5173/blog/2026-02-26-how-citemein-was-born",
       }),
     );
   });
