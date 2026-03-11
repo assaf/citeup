@@ -225,6 +225,10 @@ async function waitForDeploy(
 
   while (true) {
     const status = await vercel.deployments.getDeployment({ idOrUrl });
+    if (status.readyState === "ERROR") throw new Error("Deployment failed");
+    if (status.readyState === "CANCELED")
+      throw new Error("Deployment was canceled");
+
     const isPromoted =
       status.readySubstate === "PROMOTED" && status.target === "production";
     if (isPromoted) {
