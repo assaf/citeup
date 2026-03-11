@@ -11,7 +11,7 @@ export default async function sendEmailVerificationEmail({
 }) {
   await sendEmail({
     to,
-    subject: "Verify your email address for rentail.space",
+    subject: "Verify your email address for cite.me.in",
     render: ({ subject }) => <EmailVerification subject={subject} url={url} />,
   });
 }
@@ -30,7 +30,7 @@ function EmailVerification({
       </Text>
 
       <Text className="my-4 text-base text-text leading-relaxed">
-        You recently requested to change your email address on rentail.space. To
+        You recently requested to change your email address on cite.me.in. To
         complete this change, please verify your new email address by clicking
         the button below.
       </Text>

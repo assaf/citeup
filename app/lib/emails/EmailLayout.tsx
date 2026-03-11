@@ -74,7 +74,7 @@ function Header({ subject }: { subject: string }) {
   return (
     <Section>
       <Img
-        alt="Rentail.space Logo"
+        alt="Cite.me.in Logo"
         height="80"
         src={new URL("/icon-192.png", import.meta.env.VITE_APP_URL).toString()}
         className="mx-auto mb-8 block"
@@ -98,7 +98,7 @@ function Footer({ isCustomer = true }: { isCustomer: boolean }) {
             href={import.meta.env.VITE_APP_URL}
             className="text-light underline"
           >
-            rentail.space
+            cite.me.in
           </Link>
         </Text>
       )}

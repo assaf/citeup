@@ -11,7 +11,6 @@ vi.mock("es-toolkit", async (importOriginal) => {
   return { ...original, delay: vi.fn().mockResolvedValue(undefined) };
 });
 
-// Citations cycle across repetitions — rentail.space appears at varying positions
 const CITATION_SETS = [
   {
     citations: ["https://rentail.space/listings", "https://other.com"],
