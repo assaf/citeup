@@ -340,61 +340,6 @@ describe("sites route", () => {
                       "https://delta-test.com/h",
                       "https://delta-test.com/i",
                       "https://delta-test.com/j",
-                    ],
-                    text: "response",
-                    group: "group",
-                    position: 0,
-                    extraQueries: [],
-                  },
-                ],
-              },
-            },
-          },
-        });
-        page = await goto("/sites");
-      });
-
-      it("shows citation count", async () => {
-        const siteRow = page
-          .locator("div")
-          .filter({ hasText: "delta-test.com" })
-          .first();
-        await expect(siteRow.getByText("10", { exact: true })).toBeVisible();
-      });
-
-      it("shows no delta badge", async () => {
-        const siteRow = page
-          .locator("div")
-          .filter({ hasText: "delta-test.com" })
-          .first();
-        await expect(siteRow.getByText("%")).not.toBeVisible();
-      });
-    });
-
-    describe("with two runs", () => {
-      beforeAll(async () => {
-        await prisma.citationQueryRun.create({
-          data: {
-            siteId,
-            platform: "chatgpt",
-            model: "gpt-4o",
-            createdAt: new Date(),
-            queries: {
-              createMany: {
-                data: [
-                  {
-                    query: "test query",
-                    citations: [
-                      "https://delta-test.com/a",
-                      "https://delta-test.com/b",
-                      "https://delta-test.com/c",
-                      "https://delta-test.com/d",
-                      "https://delta-test.com/e",
-                      "https://delta-test.com/f",
-                      "https://delta-test.com/g",
-                      "https://delta-test.com/h",
-                      "https://delta-test.com/i",
-                      "https://delta-test.com/j",
                       "https://delta-test.com/k",
                       "https://delta-test.com/l",
                       "https://delta-test.com/m",
@@ -419,11 +364,163 @@ describe("sites route", () => {
         page = await goto("/sites");
       });
 
+      it("shows citation count", async () => {
+        const siteRow = page
+          .locator("div")
+          .filter({ hasText: "delta-test.com" })
+          .first();
+        await expect(siteRow.getByText("20", { exact: true })).toBeVisible();
+      });
+
+      it("shows no delta badge", async () => {
+        const siteRow = page
+          .locator("div")
+          .filter({ hasText: "delta-test.com" })
+          .first();
+        await expect(siteRow.getByText("%")).not.toBeVisible();
+      });
+    });
+
+    describe("with two runs", () => {
+      beforeAll(async () => {
+        // Current run (newer): 10 citations → current=10, previous=20, delta=-50%
+        await prisma.citationQueryRun.create({
+          data: {
+            siteId,
+            platform: "chatgpt",
+            model: "gpt-4o",
+            createdAt: new Date(),
+            queries: {
+              createMany: {
+                data: [
+                  {
+                    query: "test query",
+                    citations: [
+                      "https://delta-test.com/a",
+                      "https://delta-test.com/b",
+                      "https://delta-test.com/c",
+                      "https://delta-test.com/d",
+                      "https://delta-test.com/e",
+                      "https://delta-test.com/f",
+                      "https://delta-test.com/g",
+                      "https://delta-test.com/h",
+                      "https://delta-test.com/i",
+                      "https://delta-test.com/j",
+                    ],
+                    text: "response",
+                    group: "group",
+                    position: 0,
+                    extraQueries: [],
+                  },
+                ],
+              },
+            },
+          },
+        });
+        page = await goto("/sites");
+      });
+
       it("should match visually", async () => {
         await expect(page.locator("main")).toMatchVisual({
           name: "sites.two-runs",
           modify: fixBaseline,
         });
+      });
+
+      it("citations: shows current count in large text", async () => {
+        const siteRow = page
+          .locator("div")
+          .filter({ hasText: "delta-test.com" })
+          .first();
+        await expect(
+          siteRow.locator("a.grid > div").nth(0).locator(".text-3xl"),
+        ).toHaveText("10");
+      });
+
+      it("citations: shows -50% delta in red", async () => {
+        const siteRow = page
+          .locator("div")
+          .filter({ hasText: "delta-test.com" })
+          .first();
+        const badge = siteRow
+          .locator("a.grid > div")
+          .nth(0)
+          .locator(".text-muted-foreground span")
+          .first();
+        await expect(badge).toHaveText("-50%");
+        await expect(badge).toHaveClass(/text-red-600/);
+      });
+
+      it("citations: shows previous count in small text", async () => {
+        const siteRow = page
+          .locator("div")
+          .filter({ hasText: "delta-test.com" })
+          .first();
+        await expect(
+          siteRow
+            .locator("a.grid > div")
+            .nth(0)
+            .locator(".text-muted-foreground span")
+            .last(),
+        ).toHaveText("20");
+      });
+
+      it("score: shows current score in large text", async () => {
+        const siteRow = page
+          .locator("div")
+          .filter({ hasText: "delta-test.com" })
+          .first();
+        await expect(
+          siteRow.locator("a.grid > div").nth(1).locator(".text-3xl"),
+        ).toHaveText("100.0");
+      });
+
+      it("score: shows +0% delta in green", async () => {
+        const siteRow = page
+          .locator("div")
+          .filter({ hasText: "delta-test.com" })
+          .first();
+        const badge = siteRow
+          .locator("a.grid > div")
+          .nth(1)
+          .locator(".text-muted-foreground span")
+          .first();
+        await expect(badge).toHaveText("+0%");
+        await expect(badge).toHaveClass(/text-green-700/);
+      });
+
+      it("score: shows previous score in small text", async () => {
+        const siteRow = page
+          .locator("div")
+          .filter({ hasText: "delta-test.com" })
+          .first();
+        await expect(
+          siteRow
+            .locator("a.grid > div")
+            .nth(1)
+            .locator(".text-muted-foreground span")
+            .last(),
+        ).toHaveText("100.0");
+      });
+
+      it("bot visits: shows 0", async () => {
+        const siteRow = page
+          .locator("div")
+          .filter({ hasText: "delta-test.com" })
+          .first();
+        await expect(
+          siteRow.locator("a.grid > div").nth(2).locator(".text-3xl"),
+        ).toHaveText("0");
+      });
+
+      it("unique bots: shows 0", async () => {
+        const siteRow = page
+          .locator("div")
+          .filter({ hasText: "delta-test.com" })
+          .first();
+        await expect(
+          siteRow.locator("a.grid > div").nth(3).locator(".text-3xl"),
+        ).toHaveText("0");
       });
     });
   });
