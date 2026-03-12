@@ -88,7 +88,7 @@ function DropdownMenu({
           </li>
 
           <li>
-            <AccountMenuItem
+            <AccountMenuLink
               to="/sites"
               icon={<LayoutDashboardIcon className="mr-2 size-4" />}
               label="Dashboard"
@@ -97,8 +97,8 @@ function DropdownMenu({
 
           {sites.map((site) => (
             <li key={site.id}>
-              <AccountMenuItem
-                className="max-w-44 truncate pl-8 text-black/80"
+              <AccountMenuLink
+                className="pl-8 text-black/80"
                 to={`/site/${site.id}`}
                 icon={<CornerDownRightIcon className="mr-2 size-4" />}
                 label={site.domain}
@@ -107,7 +107,7 @@ function DropdownMenu({
           ))}
 
           <li>
-            <AccountMenuItem
+            <AccountMenuLink
               to="/profile"
               icon={<UserIcon className="mr-2 size-4" />}
               label="Profile Settings"
@@ -115,7 +115,7 @@ function DropdownMenu({
           </li>
 
           <li>
-            <AccountMenuItem
+            <AccountMenuLink
               to="/account"
               icon={<SettingsIcon className="mr-2 size-4" />}
               label="Account"
@@ -141,7 +141,7 @@ function DropdownMenu({
   );
 }
 
-function AccountMenuItem({
+function AccountMenuLink({
   className,
   icon,
   label,
@@ -153,17 +153,15 @@ function AccountMenuItem({
   to: string;
 }) {
   return (
-    <li>
-      <Link
-        to={to}
-        className={twMerge(
-          "flex w-full items-center px-4 py-2 text-left font-medium text-black transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]",
-          className,
-        )}
-      >
-        {icon}
-        {label}
-      </Link>
-    </li>
+    <Link
+      to={to}
+      className={twMerge(
+        "flex items-center truncate px-4 py-2 text-left font-medium text-black transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]",
+        className,
+      )}
+    >
+      <span>{icon}</span>
+      <span className="truncate">{label}</span>
+    </Link>
   );
 }
