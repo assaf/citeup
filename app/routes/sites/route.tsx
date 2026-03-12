@@ -94,6 +94,8 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
                 citationsToDmain={item.citationsToDomain}
                 fetcher={fetcher}
                 key={item.site.id}
+                previousCitationsToDomain={item.previousCitationsToDomain}
+                previousScore={item.previousScore}
                 score={item.score}
                 site={item.site}
                 totalBotVisits={item.totalBotVisits}

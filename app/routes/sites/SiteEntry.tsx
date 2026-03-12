@@ -5,9 +5,26 @@ import type { Site } from "~/prisma";
 import DeleteSiteDialog from "./DeleteSiteDialog";
 import type { action } from "./route";
 
+function Delta({ current, previous }: { current: number; previous: number | null }) {
+  if (previous === null) return null;
+  if (previous === 0 && current === 0) return null;
+  if (previous === 0)
+    return <span className="text-sm font-medium text-green-700">new</span>;
+
+  const pct = Math.round(((current - previous) / previous) * 100);
+  const positive = pct >= 0;
+  return (
+    <span className={`text-sm font-medium ${positive ? "text-green-700" : "text-red-600"}`}>
+      {positive ? "+" : ""}{pct}%
+    </span>
+  );
+}
+
 export default function SiteEntry({
   citationsToDmain,
   fetcher,
+  previousCitationsToDomain,
+  previousScore,
   score,
   site,
   totalBotVisits,
@@ -15,6 +32,8 @@ export default function SiteEntry({
 }: {
   citationsToDmain: number;
   fetcher: ReturnType<typeof useFetcher<typeof action>>;
+  previousCitationsToDomain: number | null;
+  previousScore: number | null;
   score: number;
   site: Site;
   totalBotVisits: number;
@@ -50,15 +69,23 @@ export default function SiteEntry({
       >
         <div>
           <p className="font-light">Citations</p>
-          <p className="font-bold text-3xl">
-            {citationsToDmain.toLocaleString()}
-          </p>
+          <p className="font-bold text-3xl">{citationsToDmain.toLocaleString()}</p>
+          <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
+            <Delta current={citationsToDmain} previous={previousCitationsToDomain} />
+            {previousCitationsToDomain !== null && (
+              <span>{previousCitationsToDomain.toLocaleString()}</span>
+            )}
+          </div>
         </div>
         <div>
           <p className="font-light">Score</p>
-          <p className="font-bold text-3xl">
-            {score.toFixed(1).toLocaleString()}
-          </p>
+          <p className="font-bold text-3xl">{score.toFixed(1)}</p>
+          <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
+            <Delta current={score} previous={previousScore} />
+            {previousScore !== null && (
+              <span>{previousScore.toFixed(1)}</span>
+            )}
+          </div>
         </div>
         <div>
           <p className="font-light">Bot Visits</p>
