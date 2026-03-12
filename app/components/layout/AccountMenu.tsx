@@ -98,6 +98,7 @@ function DropdownMenu({
           {sites.map((site) => (
             <li key={site.id}>
               <AccountMenuItem
+                className="text-black/80"
                 to={`/site/${site.id}`}
                 icon={<CornerDownRightIcon className="mr-2 size-4" />}
                 label={site.domain}
@@ -141,19 +142,24 @@ function DropdownMenu({
 }
 
 function AccountMenuItem({
-  to,
+  className,
   icon,
   label,
+  to,
 }: {
-  to: string;
+  className?: string;
   icon: React.ReactNode;
   label: string;
+  to: string;
 }) {
   return (
     <li>
       <Link
         to={to}
-        className="flex w-full items-center px-4 py-2 text-left font-medium text-black transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]"
+        className={twMerge(
+          "flex w-full items-center px-4 py-2 text-left font-medium text-black transition-colors hover:bg-[hsl(47,100%,95%)] hover:text-[#F59E0B]",
+          className,
+        )}
       >
         {icon}
         {label}
