@@ -30,7 +30,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 
   const runs = await prisma.citationQueryRun.findMany({
     include: { queries: true },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ platform: "asc" }, { createdAt: "desc" }],
     where: { siteId: site.id },
   });
 
@@ -43,7 +43,8 @@ export default function SiteCitationsPage({
   const { site, runs } = loaderData;
   const [searchParams, setSearchParams] = useSearchParams();
   const platform = searchParams.get("platform") ?? PLATFORMS[0].name;
-  const run = runs.find((r) => r.platform === platform);
+  const recentRuns = runs.filter((r) => r.platform === platform);
+  const run = recentRuns[0];
 
   return (
     <Main variant="wide">
@@ -71,11 +72,8 @@ export default function SiteCitationsPage({
 
       {run ? (
         <>
-          <CitationsRecentRun lastRun={run} site={site} />
-          <VisibilityCharts
-            recentRuns={runs.filter((r) => r.platform === platform)}
-            site={site}
-          />
+          <CitationsRecentRun lastRun={recentRuns[0]} site={site} />
+          <VisibilityCharts recentRuns={recentRuns} site={site} />
         </>
       ) : (
         <p className="flex items-center justify-center py-8 text-center text-foreground/60 text-lg">

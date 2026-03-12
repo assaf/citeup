@@ -1,6 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { ms } from "convert";
-import { invariant, sumBy, uniqBy } from "es-toolkit";
+import { groupBy, invariant, sortBy, sumBy, uniqBy } from "es-toolkit";
 import dns from "node:dns";
 import parseHTMLTree, { getBodyContent } from "~/lib/html/parseHTML";
 import type { Account, Site } from "~/prisma";
@@ -139,7 +139,7 @@ export async function loadSitesWithMetrics(accountId: string): Promise<
           },
         },
         orderBy: { createdAt: "desc" },
-        take: 2,
+        where: { createdAt: { gte } },
       },
       botVisits: {
         select: { count: true, botType: true },
@@ -150,14 +150,21 @@ export async function loadSitesWithMetrics(accountId: string): Promise<
     where: { accountId },
   });
   return sites.map((site) => {
+    const byPlatform = Object.entries(
+      groupBy(site.citationRuns, ({ platform }) => platform),
+    ).map(([platform, runs]) => ({
+      platform,
+      runs: sortBy(runs, ["createdAt"]),
+    }));
+
     const current = calculateCitationMetrics({
       domain: site.domain,
-      queries: site.citationRuns[0]?.queries ?? [],
+      queries: byPlatform.flatMap(({ runs }) => runs[0]?.queries),
     });
     const previous = site.citationRuns[1]
       ? calculateCitationMetrics({
           domain: site.domain,
-          queries: site.citationRuns[1].queries,
+          queries: byPlatform.flatMap(({ runs }) => runs[1]?.queries ?? []),
         })
       : null;
 
