@@ -17,8 +17,10 @@
     "build",
     "node_modules",
     "package.json",
+    "prisma/backup.sql",
     "prisma/generated",
-    "prisma/backup.sql"
+    "public",
+    "scripts"
   ],
   "compilerOptions": {
     "baseUrl": ".",

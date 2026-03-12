@@ -19,9 +19,6 @@ env:
   SESSION_SECRET: "secret"
   VITE_APP_URL: "http://localhost:9222"
   VITE_EMAIL_FROM: "hello@cite.me.in"
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_TEAM: "team_bjyg9pgn8TQQVP2NLMPnSYSN"
-  VERCEL_PROJECT: "prj_Ipf1EVCJ9lIgoCIIbiizNp5W5O66"
 
 jobs:
   deploy:
@@ -129,8 +126,11 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           pnpm install --global vercel@latest
-          vercel link --yes --token ${{ env.VERCEL_TOKEN }} --scope ${{ env.VERCEL_TEAM }} --project ${{ env.VERCEL_PROJECT }}
-          vercel env run --token ${{ env.VERCEL_TOKEN }} -- pnpm prisma db push
+          vercel link --yes --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ env.VERCEL_TEAM }} --project ${{ env.VERCEL_PROJECT }}
+          vercel env run --token ${{ secrets.VERCEL_TOKEN }} -- pnpm prisma db push
+        env:
+          VERCEL_PROJECT: "prj_Ipf1EVCJ9lIgoCIIbiizNp5W5O66"
+          VERCEL_TEAM: "team_bjyg9pgn8TQQVP2NLMPnSYSN"
 
       - name: Deploy to Vercel
         uses: nexterias/actions-vercel@v1
@@ -141,8 +141,10 @@ jobs:
           prebuilt: false
           production: false
           project-id: ${{ env.VERCEL_PROJECT }}
-          token: ${{ env.VERCEL_TOKEN }}
+          token: ${{ secrets.VERCEL_TOKEN }}
         env:
           SENTRY_AUTH_TOKEN: "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"
           SENTRY_ORG: "labnotes"
           SENTRY_PROJECT: "citeup"
+          VERCEL_PROJECT: "prj_Ipf1EVCJ9lIgoCIIbiizNp5W5O66"
+          VERCEL_TEAM: "team_bjyg9pgn8TQQVP2NLMPnSYSN"
