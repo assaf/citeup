@@ -11,6 +11,7 @@ env:
   BOT_TRACKER_API_KEY: "bot-tracker-api-key"
   BOT_TRACKER_URL: "http://localhost:9222/api/track"
   POSTGRES_URL: "postgresql://postgres:postgres@localhost:5432/citeup"
+  POSTGRES_URL_NON_POOLING: "postgresql://postgres:postgres@localhost:5432/citeup"
   DEBUG: ""
   GOOGLE_GENERATIVE_AI_API_KEY: "AIza"
   NODE_OPTIONS: "--max-old-space-size=3096"
