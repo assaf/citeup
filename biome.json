@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -9,12 +9,15 @@
     "includes": [
       "**",
       "!__screenshots__",
-      "!.env*",
+      "!.claude",
+      "!.github",
       "!.react-router",
       "!.vercel",
+      "!.vscode",
       "!build",
       "!node_modules",
-      "!package.json"
+      "!prisma/generated",
+      "!prisma/backup.sql"
     ],
     "ignoreUnknown": false
   },

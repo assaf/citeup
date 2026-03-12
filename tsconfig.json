@@ -8,14 +8,17 @@
   ],
   "exclude": [
     "__screenshots__",
+    ".claude",
     ".github",
+    ".react-router",
     ".vercel",
+    ".vscode",
     "biome.json",
     "build",
     "node_modules",
     "package.json",
     "prisma/generated",
-    "prisma/seed"
+    "prisma/backup.sql"
   ],
   "compilerOptions": {
     "baseUrl": ".",
