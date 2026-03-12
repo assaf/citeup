@@ -72,7 +72,7 @@ export default function SiteEntry({
           <p className="font-bold text-3xl">{citationsToDmain.toLocaleString()}</p>
           <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
             <Delta current={citationsToDmain} previous={previousCitationsToDomain} />
-            {previousCitationsToDomain !== null && (
+            {previousCitationsToDomain !== null && previousCitationsToDomain !== 0 && (
               <span>{previousCitationsToDomain.toLocaleString()}</span>
             )}
           </div>
@@ -82,7 +82,7 @@ export default function SiteEntry({
           <p className="font-bold text-3xl">{score.toFixed(1)}</p>
           <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
             <Delta current={score} previous={previousScore} />
-            {previousScore !== null && (
+            {previousScore !== null && previousScore !== 0 && (
               <span>{previousScore.toFixed(1)}</span>
             )}
           </div>
