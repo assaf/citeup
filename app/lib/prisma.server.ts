@@ -19,8 +19,8 @@ const pool = new pg.Pool({
   connectionTimeoutMillis: 0,
   allowExitOnIdle: true,
   ssl: process.env.NODE_ENV === "production" && {
-    cert: readFileSync(resolve("prisma/prod-ca-2021.crt")),
-    rejectUnauthorized: false,
+    ca: readFileSync(resolve("prisma/prod-ca-2021.crt")).toString(),
+    rejectUnauthorized: true,
   },
 });
 
