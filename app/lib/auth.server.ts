@@ -6,7 +6,7 @@ import {
   utmCookie,
 } from "~/lib/cookies.server";
 import prisma from "~/lib/prisma.server";
-import type { Prisma } from "~/prisma";
+import type { User } from "~/prisma";
 
 /**
  * Hashes a password using bcrypt.
@@ -99,34 +99,18 @@ export async function signOut(): Promise<Headers> {
   });
 }
 
-/**
- * Gets the current user from the session cookie.
- *
- * @param request - The request object
- * @returns The user object if found, otherwise null
- */
-export async function getCurrentUser(
-  request: Request,
-): Promise<Prisma.UserGetPayload<{ include: { account: true } }> | null> {
+export async function getCurrentUser(request: Request): Promise<User | null> {
   const cookieHeader = request.headers.get("Cookie");
   const token = await sessionCookie.parse(cookieHeader);
   if (!token) return null;
   const session = await prisma.session.findUnique({
     where: { token },
-    include: { user: { include: { account: true } } },
+    include: { user: true },
   });
   return session?.user ?? null;
 }
 
-/**
- * Requires a user to be authenticated. If the user is not authenticated, it redirects to the sign-in page.
- *
- * @param request - The request object
- * @returns The user object if found, otherwise redirects to the sign-in page
- */
-export async function requireUser(
-  request: Request,
-): Promise<Prisma.UserGetPayload<{ include: { account: true } }>> {
+export async function requireUser(request: Request): Promise<User> {
   const user = await getCurrentUser(request);
   if (user) return user;
 
