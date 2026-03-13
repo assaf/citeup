@@ -54,7 +54,7 @@ export async function action({ request }: Route.ActionArgs) {
 
   const hostname = new URL(data.url).hostname.toLowerCase();
   const site = await prisma.site.findFirst({
-    where: { domain: hostname, account: { apiKey } },
+    where: { domain: hostname, apiKey },
   });
   if (!site) return forbidden();
 
