@@ -5,7 +5,7 @@ describe("calculateCitationMetrics", () => {
   it("returns 0 citations and 0 score when no citations", () => {
     const result = calculateCitationMetrics({
       domain: "example.com",
-      queries: [],
+      citations: [],
     });
     expect(result).toEqual({
       totalCitations: 0,
@@ -25,7 +25,7 @@ describe("calculateCitationMetrics", () => {
     ];
     const result = calculateCitationMetrics({
       domain: "example.com",
-      queries: queries,
+      citations: queries.flatMap(({ citations }) => citations),
     });
     expect(result.totalCitations).toBe(3);
     expect(result.citationsToDomain).toBe(2);
@@ -40,7 +40,7 @@ describe("calculateCitationMetrics", () => {
     ];
     const result = calculateCitationMetrics({
       domain: "example.com",
-      queries: queries,
+      citations: queries.flatMap(({ citations }) => citations),
     });
     expect(result.totalCitations).toBe(4);
     expect(result.citationsToDomain).toBe(2);
