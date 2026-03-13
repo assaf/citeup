@@ -14,10 +14,16 @@ import { createSession, verifyPassword } from "~/lib/auth.server";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/route";
 
+export async function loader({ request }: Route.LoaderArgs) {
+  const url = new URL(request.url);
+  return { inviteToken: url.searchParams.get("invite") ?? "" };
+}
+
 export async function action({ request }: Route.ActionArgs) {
   const form = await request.formData();
   const email = (form.get("email") ?? "").toString().trim();
   const password = (form.get("password") ?? "").toString();
+  const inviteToken = (form.get("inviteToken") ?? "").toString().trim();
 
   const user = await prisma.user.findUnique({ where: { email } });
 
@@ -26,15 +32,19 @@ export async function action({ request }: Route.ActionArgs) {
 
   const setCookie = await createSession(user.id, request);
 
-  return redirect("/sites", { headers: { "Set-Cookie": setCookie } });
+  const redirectTo = inviteToken ? `/invite/${inviteToken}` : "/sites";
+  return redirect(redirectTo, { headers: { "Set-Cookie": setCookie } });
 }
 
-export default function SignIn({ actionData }: Route.ComponentProps) {
+export default function SignIn({ actionData, loaderData }: Route.ComponentProps) {
   return (
     <AuthForm
       title="Sign in"
       form={
         <Form method="post">
+          {loaderData.inviteToken && (
+            <input type="hidden" name="inviteToken" value={loaderData.inviteToken} />
+          )}
           <FieldSet>
             <FieldGroup>
               <Field>
