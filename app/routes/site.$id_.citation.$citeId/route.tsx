@@ -26,9 +26,20 @@ export function meta({ loaderData }: Route.MetaArgs) {
 }
 
 export async function loader({ request, params }: Route.LoaderArgs) {
-  await requireUser(request);
+  const user = await requireUser(request);
   const citation = await prisma.citationQuery.findFirst({
-    where: { id: params.citeId, run: { siteId: params.id } },
+    where: {
+      id: params.citeId,
+      run: {
+        site: {
+          id: params.id,
+          OR: [
+            { ownerId: user.id },
+            { siteUsers: { some: { userId: user.id } } },
+          ],
+        },
+      },
+    },
     include: { run: { include: { site: true } } },
   });
   if (!citation) throw new Response("Not found", { status: 404 });
