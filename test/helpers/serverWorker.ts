@@ -10,14 +10,6 @@ import { rm } from "node:fs/promises";
 import { resolve } from "node:path";
 import * as vite from "vite";
 
-// chokidar v4 dropped FSEvents and falls back to Node.js's fs.watch, which
-// consumes one file descriptor per watched file. macOS defaults to 10240 open
-// fds — easily exhausted when Vite's dep optimizer watches node_modules.
-// Polling uses setInterval + fs.stat instead of fs.watch, so no fd pressure.
-// Must be set before any Vite/chokidar code runs.
-process.env.CHOKIDAR_USEPOLLING = "1";
-process.env.CHOKIDAR_INTERVAL = "86400000"; // 24 h — effectively never in tests
-
 // Import and start the server
 async function startServer() {
   // Initialize MSW for mocking HTTP requests during tests

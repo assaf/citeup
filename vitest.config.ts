@@ -9,9 +9,6 @@ export default defineConfig({
     sourcemap: false, // Disable source maps in tests to save memory
   },
   plugins: [tsconfigPaths()],
-  esbuild: {
-    logLevel: "error", // Reduce memory usage for esbuild transformations
-  },
   logLevel: process.env.CI ? "error" : "warn", // Only show errors in CI
 
   test: {

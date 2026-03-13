@@ -13,7 +13,6 @@ onlyBuiltDependencies:
   - "@prisma/engines"
   - "@sentry/cli"
   - core-js
-  - esbuild
   - msw
   - prisma
   - sharp
