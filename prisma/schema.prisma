@@ -172,8 +172,10 @@ model SiteInvitation {
   acceptedAt  DateTime?        @map("accepted_at")
 
   site        Site             @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  invitedBy   User             @relation("SentInvitations", fields: [invitedById], references: [id])
+  invitedBy   User             @relation("SentInvitations", fields: [invitedById], references: [id], onDelete: Cascade)
 
+  @@index([siteId])
+  @@index([email])
   @@map("site_invitations")
 }
 
