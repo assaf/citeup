@@ -33,6 +33,7 @@ function HeaderLinks() {
       { to: `/site/${siteId}/citations`, label: "Citations" },
       { to: `/site/${siteId}/queries`, label: "Queries" },
       { to: `/site/${siteId}/bots`, label: "Bot Traffic" },
+      { to: `/site/${siteId}/settings`, label: "Settings" },
     );
 
   return (
