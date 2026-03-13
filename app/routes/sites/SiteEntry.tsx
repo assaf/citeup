@@ -32,6 +32,7 @@ function Delta({
 export default function SiteEntry({
   citationsToDmain,
   fetcher,
+  isOwner,
   previousCitationsToDomain,
   previousScore,
   score,
@@ -41,6 +42,7 @@ export default function SiteEntry({
 }: {
   citationsToDmain: number;
   fetcher: ReturnType<typeof useFetcher<typeof action>>;
+  isOwner: boolean;
   previousCitationsToDomain: number | null;
   previousScore: number | null;
   score: number;
@@ -58,12 +60,17 @@ export default function SiteEntry({
       key={site.id}
     >
       <p className="flex flex-row items-center justify-between">
-        <Link
-          to={`/site/${site.id}/citations`}
-          className="w-full font-bold font-mono text-lg"
-        >
-          {site.domain}
-        </Link>
+        <span className="flex flex-row items-center gap-2">
+          <Link
+            to={`/site/${site.id}/citations`}
+            className="font-bold font-mono text-lg"
+          >
+            {site.domain}
+          </Link>
+          <span className="text-muted-foreground text-xs">
+            {isOwner ? "Owner" : "Member"}
+          </span>
+        </span>
         <ActiveLink
           variant="button"
           to={`/site/${site.id}/citations`}

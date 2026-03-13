@@ -8,7 +8,7 @@ import { requireUser } from "~/lib/auth.server";
 import captureException from "~/lib/captureException.server";
 import generateSiteQueries from "~/lib/llm-visibility/generateSiteQueries";
 import {
-  addSiteToAccount,
+  addSiteToUser,
   deleteSite,
   loadSitesWithMetrics,
 } from "~/lib/sites.server";
@@ -24,7 +24,7 @@ export const handle = { siteNav: true };
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
-  const sites = await loadSitesWithMetrics(user.accountId);
+  const sites = await loadSitesWithMetrics(user.id);
   return { sites };
 }
 
@@ -37,7 +37,7 @@ export async function action({ request }: Route.ActionArgs) {
       // Add a new site to the account
       const url = formData.get("url")?.toString() ?? "";
       try {
-        const { site, existing } = await addSiteToAccount(user.account, url);
+        const { site, existing } = await addSiteToUser(user, url);
         if (existing) {
           return redirect(`/site/${site.id}/citations`);
         } else {
@@ -59,7 +59,7 @@ export async function action({ request }: Route.ActionArgs) {
       // Delete the site
       const siteId = formData.get("siteId")?.toString();
       invariant(siteId, "Site ID is required");
-      await deleteSite({ accountId: user.accountId, siteId });
+      await deleteSite({ userId: user.id, siteId });
       return { ok: true };
     }
 
@@ -93,6 +93,7 @@ export default function SitesPage({ loaderData }: Route.ComponentProps) {
               <SiteEntry
                 citationsToDmain={item.citationsToDomain}
                 fetcher={fetcher}
+                isOwner={item.isOwner}
                 key={item.site.id}
                 previousCitationsToDomain={item.previousCitationsToDomain}
                 previousScore={item.previousScore}
