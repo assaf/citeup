@@ -76,14 +76,14 @@ describe("site bots page", () => {
   beforeAll(async () => {
     user = await prisma.user.create({
       data: {
-        id: "user-1",
+        id: "user-bots-1",
         email: "site-bots-test@test.com",
         passwordHash: "test",
       },
     });
     const site = await prisma.site.create({
       data: {
-        id: "site-1",
+        id: "site-bots-1",
         domain: "bots-test.example.com",
         ownerId: user.id,
         apiKey: "test-api-key-bots-1",
