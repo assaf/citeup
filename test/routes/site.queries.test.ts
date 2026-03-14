@@ -21,6 +21,7 @@ describe("unauthenticated access", () => {
 describe("site queries page", () => {
   let user: User;
   let siteId: string;
+  let siteDomain: string;
 
   beforeAll(async () => {
     user = await prisma.user.create({
@@ -39,6 +40,7 @@ describe("site queries page", () => {
       },
     });
     siteId = site.id;
+    siteDomain = site.domain;
   });
 
   describe("empty state", () => {
@@ -46,7 +48,7 @@ describe("site queries page", () => {
 
     beforeAll(async () => {
       await signIn(user.id);
-      page = await goto(`/site/${siteId}/queries`);
+      page = await goto(`/site/${siteDomain}/queries`);
     });
 
     it("shows empty state message", async () => {
@@ -100,7 +102,7 @@ describe("site queries page", () => {
           },
         ],
       });
-      page = await goto(`/site/${siteId}/queries`);
+      page = await goto(`/site/${siteDomain}/queries`);
     });
 
     it("shows group names", async () => {
@@ -163,7 +165,7 @@ describe("site queries page", () => {
       form.append("_intent", "suggest");
 
       const response = await fetch(
-        `http://localhost:${port}/site/${siteWithContent.id}/queries`,
+        `http://localhost:${port}/site/${siteWithContent.domain}/queries`,
         { method: "POST", headers: { Cookie: cookieHeader }, body: form },
       );
       // Action succeeds or fails gracefully — page renders, no server crash

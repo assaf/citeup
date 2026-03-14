@@ -71,6 +71,7 @@ describe("unauthenticated access", () => {
 describe("site bots page", () => {
   let user: User;
   let siteId: string;
+  let siteDomain: string;
 
   beforeAll(async () => {
     user = await prisma.user.create({
@@ -89,6 +90,7 @@ describe("site bots page", () => {
       },
     });
     siteId = site.id;
+    siteDomain = site.domain;
   });
 
   describe("empty state", () => {
@@ -96,7 +98,7 @@ describe("site bots page", () => {
 
     beforeAll(async () => {
       await signIn(user.id);
-      page = await goto(`/site/${siteId}/bots`);
+      page = await goto(`/site/${siteDomain}/bots`);
     });
 
     it("shows empty state message", async () => {
@@ -137,7 +139,7 @@ describe("site bots page", () => {
       }
       // Navigate with a fixed date range so the page content is deterministic
       page = await goto(
-        `/site/${siteId}/bots?from=2026-01-27&until=2026-02-26`,
+        `/site/${siteDomain}/bots?from=2026-01-27&until=2026-02-26`,
       );
     });
 
@@ -201,7 +203,7 @@ describe("site bots page", () => {
         },
       });
       page = await goto(
-        `/site/${siteId}/bots?from=2026-01-27&until=2026-02-26`,
+        `/site/${siteDomain}/bots?from=2026-01-27&until=2026-02-26`,
       );
     });
 

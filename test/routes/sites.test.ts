@@ -109,7 +109,7 @@ describe("sites route", () => {
     });
 
     it("should redirect to site page", async () => {
-      await expect(page).toHaveURL("/site/site-1/citations");
+      await expect(page).toHaveURL("/site/duplicate-test.com/citations");
     });
 
     afterAll(async () => {
@@ -146,7 +146,7 @@ describe("sites route", () => {
 
     it("should navigate to suggestions page", async () => {
       expect(new URL(page.url()).pathname).toMatch(
-        `/site/${site.id}/suggestions`,
+        `/site/${site.domain}/suggestions`,
       );
     });
 
@@ -160,7 +160,7 @@ describe("sites route", () => {
     it("should have skip link to citations page", async () => {
       const link = page.getByRole("link", { name: "Skip" });
       const href = await link.getAttribute("href");
-      expect(href).toContain(`/site/${site.id}`);
+      expect(href).toContain(`/site/${site.domain}`);
     });
 
     describe("when save queries button", () => {
@@ -176,7 +176,7 @@ describe("sites route", () => {
 
       it("should navigate to citations page", async () => {
         expect(new URL(page.url()).pathname).toMatch(
-          `/site/${site.id}/citations`,
+          `/site/${site.domain}/citations`,
         );
       });
 
