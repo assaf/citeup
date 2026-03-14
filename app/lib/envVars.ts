@@ -13,6 +13,7 @@ const envVars = {
     .required(false)
     .asString(),
   CRON_SECRET: env.get("CRON_SECRET").required(false).asString(),
+  ADMIN_API_SECRET: env.get("ADMIN_API_SECRET").required(false).asString(),
   POSTGRES_URL: env.get("POSTGRES_URL").required().asUrlString(),
   POSTGRES_URL_NON_POOLING: env
     .get("POSTGRES_URL_NON_POOLING")
