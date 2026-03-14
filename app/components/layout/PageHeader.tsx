@@ -26,14 +26,14 @@ function HeaderLinks() {
   const matches = useMatches() as UIMatch<unknown, { siteNav?: boolean }>[];
   const navLinks = [];
   const siteMatch = matches.find((m) => m.handle?.siteNav);
-  const siteId = siteMatch?.params.id as string | undefined;
+  const siteDomain = siteMatch?.params.domain as string | undefined;
   if (siteMatch) navLinks.push({ to: "/sites", label: "Dashboard" });
-  if (siteId)
+  if (siteDomain)
     navLinks.push(
-      { to: `/site/${siteId}/citations`, label: "Citations" },
-      { to: `/site/${siteId}/queries`, label: "Queries" },
-      { to: `/site/${siteId}/bots`, label: "Bot Traffic" },
-      { to: `/site/${siteId}/settings`, label: "Settings" },
+      { to: `/site/${siteDomain}/citations`, label: "Citations" },
+      { to: `/site/${siteDomain}/queries`, label: "Queries" },
+      { to: `/site/${siteDomain}/bots`, label: "Bot Traffic" },
+      { to: `/site/${siteDomain}/settings`, label: "Settings" },
     );
 
   return (

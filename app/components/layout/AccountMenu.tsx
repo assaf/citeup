@@ -98,7 +98,7 @@ function DropdownMenu({
             <li key={site.id}>
               <AccountMenuLink
                 className="pl-8 text-black/80"
-                to={`/site/${site.id}`}
+                to={`/site/${site.domain}`}
                 icon={<CornerDownRightIcon className="mr-2 size-4" />}
                 label={site.domain}
               />

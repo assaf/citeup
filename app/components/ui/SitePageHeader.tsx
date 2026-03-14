@@ -8,7 +8,7 @@ export default function SitePageHeader({
   backTo,
   children,
 }: {
-  site: { id: string; domain: string };
+  site: { domain: string };
   title: string;
   backTo?: { label: string; path: string };
   children?: React.ReactNode;
@@ -19,7 +19,7 @@ export default function SitePageHeader({
         <p>
           <Link
             className="block max-w-md truncate font-mono text-foreground/60 hover:underline"
-            to={`/site/${site.id}`}
+            to={`/site/${site.domain}`}
             title={site.domain}
           >
             {site.domain}

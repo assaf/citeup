@@ -47,7 +47,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
         data: { status: "ACCEPTED", acceptedAt: new Date() },
       }),
     ]);
-    throw redirect(`/site/${invitation.siteId}/citations`);
+    throw redirect(`/site/${invitation.site.domain}/citations`);
   }
 
   // Not logged in — check if user exists

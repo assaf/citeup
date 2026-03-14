@@ -39,10 +39,10 @@ export async function action({ request }: Route.ActionArgs) {
       try {
         const { site, existing } = await addSiteToUser(user, url);
         if (existing) {
-          return redirect(`/site/${site.id}/citations`);
+          return redirect(`/site/${site.domain}/citations`);
         } else {
           await generateSiteQueries(site);
-          return redirect(`/site/${site.id}/suggestions`);
+          return redirect(`/site/${site.domain}/suggestions`);
         }
       } catch (error) {
         captureException(error, { extra: { url } });

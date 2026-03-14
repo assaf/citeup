@@ -62,7 +62,7 @@ export default function SiteEntry({
       <p className="flex flex-row items-center justify-between">
         <span className="flex flex-row items-center gap-2">
           <Link
-            to={`/site/${site.id}/citations`}
+            to={`/site/${site.domain}/citations`}
             className="font-bold font-mono text-lg"
           >
             {site.domain}
@@ -73,14 +73,14 @@ export default function SiteEntry({
         </span>
         <ActiveLink
           variant="button"
-          to={`/site/${site.id}/citations`}
+          to={`/site/${site.domain}/citations`}
           aria-label="View site"
         >
           View Site <ArrowRightIcon className="size-4" />
         </ActiveLink>
       </p>
       <Link
-        to={`/site/${site.id}/citations`}
+        to={`/site/${site.domain}/citations`}
         className="mt-4 grid grid-cols-4 gap-4 text-center"
       >
         <div>
