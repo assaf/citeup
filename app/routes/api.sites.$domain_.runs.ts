@@ -1,3 +1,4 @@
+import { sumBy } from "es-toolkit";
 import { verifySiteAccess } from "~/lib/api/apiAuth.server";
 import { RunsSchema } from "~/lib/api/schemas";
 import prisma from "~/lib/prisma.server";
@@ -28,9 +29,12 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   return Response.json(
     RunsSchema.parse({
       runs: runs.map(({ queries, ...run }) => ({
-        ...run,
+        id: run.id,
+        platform: run.platform,
+        model: run.model,
+        completedAt: run.createdAt.toISOString().split("T")[0],
         queryCount: queries.length,
-        citationCount: queries.reduce((sum, q) => sum + q.citations.length, 0),
+        citationCount: sumBy(queries, (q) => q.citations.length),
       })),
     }),
   );

@@ -8,7 +8,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   return Response.json(
     SiteSchema.parse({
       domain: site.domain,
-      createdAt: site.createdAt,
+      createdAt: site.createdAt.toISOString().split("T")[0],
       users: [
         {
           id: site.owner.id,

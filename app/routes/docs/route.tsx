@@ -29,6 +29,7 @@ export default function ApiDocs({ loaderData }: Route.ComponentProps) {
     <main className="mx-auto w-full bg-white px-6 py-12">
       <article className="mx-auto max-w-5xl">
         <Streamdown
+          className="prose prose-lg mx-auto"
           mode="static"
           remarkPlugins={[remarkGfm]}
           controls={{

@@ -1,0 +1,96 @@
+import { beforeAll, describe, expect, it } from "vitest";
+import prisma from "~/lib/prisma.server";
+import { port } from "~/test/helpers/launchBrowser";
+
+const BASE = `http://localhost:${port}`;
+const API_KEY = "cite.me.in_sites_route_test_key";
+const DOMAIN = "api-sites-route-test.example";
+const EMAIL = "api-sites-route@test.example";
+const RUN_ID = "api-sites-route-run-1";
+
+function get(path: string, token?: string) {
+  return fetch(`${BASE}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+}
+
+beforeAll(async () => {
+  await prisma.user.upsert({
+    where: { id: "api-sites-route-user-1" },
+    create: {
+      id: "api-sites-route-user-1",
+      email: EMAIL,
+      passwordHash: "test",
+      apiKey: API_KEY,
+      ownedSites: {
+        create: {
+          domain: DOMAIN,
+          citationRuns: {
+            create: {
+              id: RUN_ID,
+              platform: "chatgpt",
+              model: "gpt-4o",
+              queries: {
+                create: {
+                  query: "best retail platforms",
+                  group: "retail",
+                  extraQueries: [],
+                  text: "Some answer",
+                  position: 1,
+                  citations: [
+                    `https://${DOMAIN}/page1`,
+                    `https://${DOMAIN}/page2`,
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    update: { apiKey: API_KEY },
+  });
+});
+
+describe("GET /api/me/:email", () => {
+  it("should return 401 without a token", async () => {
+    const res = await get(`/api/me/${EMAIL}`);
+    expect(res.status).toBe(401);
+  });
+
+  it("should return 404 for a user that doesn't exist", async () => {
+    const res = await get("/api/me/nonexistent@nonexistent.example");
+    expect(res.status).toBe(401);
+  });
+
+  it("should return 404 for a user that doesn't exist", async () => {
+    const res = await get(`/api/me/${EMAIL}`, "wrong-token");
+    expect(res.status).toBe(404);
+  });
+
+  describe("with a correct token", () => {
+    let response: Response;
+    let body: {
+      email: string;
+      sites: { domain: string; createdAt: string }[];
+    };
+
+    beforeAll(async () => {
+      response = await get(`/api/me/${EMAIL}`, API_KEY);
+      body = await response.json();
+    });
+
+    it("should return 200", async () => {
+      expect(response.status).toBe(200);
+    });
+
+    it("should return the user with their sites", async () => {
+      expect(body.email).toBe(EMAIL);
+      expect(Array.isArray(body.sites)).toBe(true);
+      expect(body.sites[0].domain).toBe(DOMAIN);
+      expect(body.sites[0].createdAt).toBe(
+        new Date().toISOString().split("T")[0],
+      );
+    });
+  });
+});

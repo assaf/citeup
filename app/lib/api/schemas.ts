@@ -6,8 +6,7 @@ extendZodWithOpenApi(z);
 
 export const SiteUserSchema = z
   .object({
-    id: z.string().openapi({ example: "clxyz123" }),
-    email: z.string().email().openapi({ example: "user@example.com" }),
+    email: z.email().openapi({ example: "user@example.com" }),
     role: z.enum(["owner", "member"]).openapi({ example: "owner" }),
   })
   .openapi("SiteUser");
@@ -15,17 +14,24 @@ export const SiteUserSchema = z
 export const SiteSchema = z
   .object({
     domain: z.string().openapi({ example: "example.com" }),
-    createdAt: z.date().openapi({ example: "2024-01-01T00:00:00.000Z" }),
+    createdAt: z.iso.date().openapi({ example: "2024-01-01" }),
     users: z.array(SiteUserSchema),
   })
   .openapi("Site");
+
+export const UserSchema = z
+  .object({
+    email: z.email().openapi({ example: "user@example.com" }),
+    sites: z.array(SiteSchema.omit({ users: true })),
+  })
+  .openapi("User");
 
 export const RunSummarySchema = z
   .object({
     id: z.string().openapi({ example: "clxyz456" }),
     platform: z.string().openapi({ example: "chatgpt" }),
     model: z.string().openapi({ example: "gpt-4o" }),
-    createdAt: z.date().openapi({ example: "2024-01-01T00:00:00.000Z" }),
+    completedAt: z.iso.date().openapi({ example: "2024-01-01" }),
     queryCount: z.number().int().openapi({ example: 5 }),
     citationCount: z.number().int().openapi({ example: 12 }),
   })
@@ -37,10 +43,10 @@ export const RunsSchema = z
 
 export const QuerySchema = z
   .object({
-    id: z.string().openapi({ example: "clxyz789" }),
-    query: z.string().openapi({ example: "best retail platforms" }),
-    group: z.string().openapi({ example: "retail" }),
-    position: z.number().int().nullable().openapi({ example: 1 }),
+    group: z.string().openapi({ example: "1. discovery" }),
+    query: z
+      .string()
+      .openapi({ example: "What are the best retail platforms?" }),
     citations: z
       .array(z.string())
       .openapi({ example: ["https://example.com/page1"] }),
@@ -52,7 +58,7 @@ export const RunDetailSchema = z
     id: z.string().openapi({ example: "clxyz456" }),
     platform: z.string().openapi({ example: "chatgpt" }),
     model: z.string().openapi({ example: "gpt-4o" }),
-    createdAt: z.date().openapi({ example: "2024-01-01T00:00:00.000Z" }),
+    completedAt: z.iso.date().openapi({ example: "2024-01-01" }),
     queries: z.array(QuerySchema),
   })
   .openapi("RunDetail");

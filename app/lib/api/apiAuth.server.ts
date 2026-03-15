@@ -11,6 +11,41 @@ export async function requireAdminApiKey(request: Request): Promise<void> {
     throw new Response("Unauthorized", { status: 401 });
 }
 
+export async function verifyUserAccess({
+  email,
+  request,
+}: {
+  email: string;
+  request: Request;
+}): Promise<{
+  id: string;
+  email: string;
+  createdAt: Date;
+  ownedSites: { domain: string; createdAt: Date }[];
+  siteUsers: { site: { domain: string; createdAt: Date } }[];
+}> {
+  const auth = request.headers.get("authorization");
+  if (!auth) throw new Response("Unauthorized", { status: 401 });
+  const [tokenType, token] = auth.split(/\s+/);
+  if (tokenType !== "Bearer")
+    throw new Response("Unauthorized", { status: 401 });
+
+  const user = await prisma.user.findFirst({
+    where: { email, apiKey: token },
+    select: {
+      id: true,
+      email: true,
+      createdAt: true,
+      ownedSites: { select: { domain: true, createdAt: true } },
+      siteUsers: {
+        select: { site: { select: { domain: true, createdAt: true } } },
+      },
+    },
+  });
+  if (!user) throw new Response("Not found", { status: 404 });
+  return user;
+}
+
 export async function verifySiteAccess({
   domain,
   request,
