@@ -1,4 +1,5 @@
 import { verifySiteAccess } from "~/lib/apiAuth.server";
+import { RunDetailSchema } from "~/lib/api-schemas";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/api.sites.$domain_.runs.$runId";
 
@@ -26,5 +27,5 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   });
 
   if (!run) throw new Response("Not found", { status: 404 });
-  return Response.json(run);
+  return Response.json(RunDetailSchema.parse(run));
 }

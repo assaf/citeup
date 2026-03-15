@@ -1,4 +1,5 @@
 import { verifySiteAccess } from "~/lib/apiAuth.server";
+import { RunsSchema } from "~/lib/api-schemas";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/api.sites.$domain_.runs";
 
@@ -24,11 +25,13 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     orderBy: { createdAt: "desc" },
   });
 
-  return Response.json({
-    runs: runs.map(({ queries, ...run }) => ({
-      ...run,
-      queryCount: queries.length,
-      citationCount: queries.reduce((sum, q) => sum + q.citations.length, 0),
-    })),
-  });
+  return Response.json(
+    RunsSchema.parse({
+      runs: runs.map(({ queries, ...run }) => ({
+        ...run,
+        queryCount: queries.length,
+        citationCount: queries.reduce((sum, q) => sum + q.citations.length, 0),
+      })),
+    }),
+  );
 }
