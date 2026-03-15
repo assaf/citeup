@@ -6,6 +6,7 @@ import { hashPassword, requireUser, verifyPassword } from "~/lib/auth.server";
 import captureException from "~/lib/captureException.server";
 import prisma from "~/lib/prisma.server";
 import type { Route } from "./+types/route";
+import ProfileApiKeyForm from "./ProfileApiKeyForm";
 import ProfileEmailForm from "./ProfileEmailForm";
 import ProfilePasswordForm from "./ProfilePasswordForm";
 
@@ -24,6 +25,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 export async function action({ request }: Route.ActionArgs) {
   const user = await requireUser(request);
   const form = await request.formData();
+
+  const intent = form.get("intent")?.toString();
+  if (intent === "regenerateApiKey") return regenerateApiKey({ userId: user.id });
 
   const email = form.get("email")?.toString().trim().toLowerCase();
   if (email) return updateEmail({ userId: user.id, email });
@@ -90,6 +94,22 @@ async function updatePassword({
   }
 }
 
+async function regenerateApiKey({ userId }: { userId: string }) {
+  try {
+    const { generateApiKey } = await import("random-password-toolkit");
+    const apiKey = `cite.me.in_${generateApiKey(24)}`;
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: { apiKey },
+      select: { apiKey: true },
+    });
+    return { apiKey: updated.apiKey };
+  } catch (error) {
+    captureException(error);
+    return { error: "Failed to generate API key" };
+  }
+}
+
 export default function ProfilePage() {
   const { user } = useLoaderData<typeof loader>();
 
@@ -102,6 +122,7 @@ export default function ProfilePage() {
             <TabsList>
               <TabsTrigger value="email">Email</TabsTrigger>
               <TabsTrigger value="password">Password</TabsTrigger>
+              <TabsTrigger value="apiKey">API Key</TabsTrigger>
             </TabsList>
           </div>
 
@@ -111,6 +132,10 @@ export default function ProfilePage() {
 
           <TabsContent value="password">
             <ProfilePasswordForm />
+          </TabsContent>
+
+          <TabsContent value="apiKey">
+            <ProfileApiKeyForm apiKey={user.apiKey ?? null} />
           </TabsContent>
         </Tabs>
       }

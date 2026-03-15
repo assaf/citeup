@@ -1,0 +1,34 @@
+import { useFetcher } from "react-router";
+import { Button } from "~/components/ui/Button";
+import {
+  FieldError,
+  FieldGroup,
+  FieldSet,
+} from "~/components/ui/FieldSet";
+import { Input } from "~/components/ui/Input";
+import type { action } from "./route";
+
+export default function ProfileApiKeyForm({ apiKey }: { apiKey: string | null }) {
+  const fetcher = useFetcher<typeof action>();
+  const data = fetcher.data;
+  const currentKey = (data && "apiKey" in data ? data.apiKey : null) ?? apiKey;
+
+  return (
+    <fetcher.Form method="post" action="/profile">
+      <FieldSet>
+        <FieldGroup>
+          {currentKey && (
+            <Input readOnly value={currentKey} className="font-mono text-sm" />
+          )}
+        </FieldGroup>
+        {data && "error" in data && data.error && (
+          <FieldError className="text-lg">{data.error}</FieldError>
+        )}
+        <input type="hidden" name="intent" value="regenerateApiKey" />
+        <Button type="submit" disabled={fetcher.state !== "idle"}>
+          {currentKey ? "Regenerate API key" : "Generate API key"}
+        </Button>
+      </FieldSet>
+    </fetcher.Form>
+  );
+}
